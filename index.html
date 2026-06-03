@@ -1,23 +1,72 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
-<title>PLTS KERE HORE</title>
+
+<title>PLTS INDUSTRIAL MONITOR</title>
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+
 body{
-  background:#0a0f1c;
+  background:#0b1220;
   color:#00ffcc;
   font-family:Arial;
+  margin:0;
   text-align:center;
+}
+
+h2{
+  margin-top:20px;
+}
+
+.flow{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+  margin:20px;
+}
+
+.box{
+  width:150px;
+  height:100px;
+  background:#111a2e;
+  border-radius:12px;
+  padding:10px;
+  margin:10px;
+}
+
+.arrow{
+  width:50px;
+  height:5px;
+  background:linear-gradient(90deg,#00ffcc,#00ff00);
+  animation:move 1s infinite linear;
+}
+
+@keyframes move{
+
+  0%{
+    transform:translateX(-10px);
+    opacity:0.2;
+  }
+
+  50%{
+    opacity:1;
+  }
+
+  100%{
+    transform:translateX(10px);
+    opacity:0.2;
+  }
 }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
   gap:10px;
   padding:10px;
 }
@@ -28,61 +77,115 @@ body{
   border-radius:12px;
 }
 
-.flow{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  margin:20px;
+.value{
+  font-size:24px;
+  margin-top:10px;
 }
 
-.box{
-  width:120px;
-  height:80px;
+canvas{
   background:#111a2e;
-  margin:0 10px;
-  border-radius:10px;
+  margin:20px;
+  border-radius:12px;
 }
 
-.arrow{
-  width:60px;
-  height:4px;
-  background:linear-gradient(90deg,#00ffcc,#00ff00);
-  animation:move 1s infinite linear;
-}
-
-@keyframes move{
-  0%{transform:translateX(-10px);opacity:0.2;}
-  50%{opacity:1;}
-  100%{transform:translateX(10px);opacity:0.2;}
-}
 </style>
 </head>
 
 <body>
 
-<h2>PLTS KERE HORE</h2>
+<h2>⚡ PLTS INDUSTRIAL MONITOR</h2>
 
 <div class="flow">
 
-  <div class="box">☀️ PV<br><span id="pv_p">0</span> W</div>
+  <div class="box">
+    ☀️ PV<br><br>
+    <span id="pv_p">0</span> W
+  </div>
+
   <div class="arrow"></div>
 
-  <div class="box">🔋 BAT<br><span id="bat_v">0</span> V</div>
+  <div class="box">
+    ⚙️ MPPT<br><br>
+    <span id="charge_p">0</span> W
+  </div>
+
   <div class="arrow"></div>
 
-  <div class="box">⚡ LOAD<br><span id="load_p">0</span> W</div>
+  <div class="box">
+    🔋 BATTERY<br><br>
+    <span id="bat_v">0</span> V
+  </div>
+
+  <div class="arrow"></div>
+
+  <div class="box">
+    ⚡ LOAD<br><br>
+    <span id="load_p">0</span> W
+  </div>
 
 </div>
 
 <div class="grid">
 
-  <div class="card">PV V <div id="pv_v"></div></div>
-  <div class="card">PV I <div id="pv_i"></div></div>
-  <div class="card">BAT I <div id="bat_i"></div></div>
+  <div class="card">
+    PV Voltage
+    <div class="value" id="pv_v">0</div>
+  </div>
 
-  <div class="card">SOC <div id="soc"></div>%</div>
-  <div class="card">kWh Day <div id="kwh_day"></div></div>
-  <div class="card">kWh Month <div id="kwh_month"></div></div>
+  <div class="card">
+    PV Current
+    <div class="value" id="pv_i">0</div>
+  </div>
+
+  <div class="card">
+    PV Power
+    <div class="value" id="pv_p2">0</div>
+  </div>
+
+  <div class="card">
+    Battery Voltage
+    <div class="value" id="bat_v2">0</div>
+  </div>
+
+  <div class="card">
+    Battery Current
+    <div class="value" id="bat_i">0</div>
+  </div>
+
+  <div class="card">
+    Charge Power
+    <div class="value" id="charge_p2">0</div>
+  </div>
+
+  <div class="card">
+    Load Power
+    <div class="value" id="load_p2">0</div>
+  </div>
+
+  <div class="card">
+    SOC
+    <div class="value" id="soc">0</div>
+  </div>
+
+  <div class="card">
+    MPPT Efficiency
+    <div class="value" id="mppt_eff">0</div>
+  </div>
+
+  <div class="card">
+    Status
+    <div class="value" id="status">IDLE</div>
+  </div>
+
+  <div class="card">
+    kWh Today
+    <div class="value" id="kwh_day">0</div>
+  </div>
+
+  <div class="card">
+    kWh Month
+    <div class="value" id="kwh_month">0</div>
+  </div>
 
 </div>
 

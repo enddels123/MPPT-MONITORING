@@ -1,67 +1,127 @@
-const client = mqtt.connect("wss://broker.hivemq.com:8000/mqtt");
+const client = mqtt.connect(
+"wss://broker.hivemq.com:8884/mqtt"
+);
+
 const topic = "solar/jnge/hybrid";
 
-let chart;
-
-window.onload = () => {
-
-  chart = new Chart(document.getElementById("chart"), {
-    type:"line",
-    data:{
-      labels:[],
-      datasets:[
-        {
-          label:"PV Power",
-          data:[],
-          borderColor:"#00ffcc"
-        },
-        {
-          label:"Load Power",
-          data:[],
-          borderColor:"#ffcc00"
-        }
-      ]
-    }
-  });
-};
-
 client.on("connect", () => {
+
+  console.log("MQTT Connected");
+
   client.subscribe(topic);
 });
 
-client.on("message", (t,msg)=>{
+const ctx = document
+.getElementById("chart")
+.getContext("2d");
 
-  try{
+const labels = [];
 
-    const d = JSON.parse(msg.toString());
+const pvData = [];
 
-    pv_v.innerText = d.pv_v ?? 0;
-    pv_i.innerText = d.pv_i ?? 0;
-    pv_p.innerText = d.pv_p ?? 0;
+const loadData = [];
 
-    bat_v.innerText = d.bat_v ?? 0;
-    bat_i.innerText = d.bat_i ?? 0;
+const chart = new Chart(ctx, {
 
-    soc.innerText = d.soc ?? 0;
-    load_p.innerText = d.load_p ?? 0;
+  type: "line",
 
-    kwh_day.innerText = d.kwh_day ?? 0;
-    kwh_month.innerText = d.kwh_month ?? 0;
+  data: {
 
-    chart.data.labels.push(new Date().toLocaleTimeString());
-    chart.data.datasets[0].data.push(d.pv_p);
-    chart.data.datasets[1].data.push(d.load_p);
+    labels: labels,
 
-    if(chart.data.labels.length > 20){
-      chart.data.labels.shift();
-      chart.data.datasets[0].data.shift();
-      chart.data.datasets[1].data.shift();
-    }
+    datasets: [
 
-    chart.update();
+      {
+        label: "PV Power",
+        data: pvData,
+        borderWidth: 2
+      },
 
-  } catch(e){
-    console.log("MQTT ERROR", e);
+      {
+        label: "Load Power",
+        data: loadData,
+        borderWidth: 2
+      }
+
+    ]
+  },
+
+  options: {
+    responsive: true
+  }
+});
+
+client.on("message", (topic, message) => {
+
+  const data = JSON.parse(message.toString());
+
+  // FLOW
+  document.getElementById("pv_p")
+  .innerHTML = data.pv_p.toFixed(1);
+
+  document.getElementById("charge_p")
+  .innerHTML = data.charge_p.toFixed(1);
+
+  document.getElementById("bat_v")
+  .innerHTML = data.bat_v.toFixed(1);
+
+  document.getElementById("load_p")
+  .innerHTML = data.load_p.toFixed(1);
+
+  // GRID
+  document.getElementById("pv_v")
+  .innerHTML = data.pv_v.toFixed(1) + " V";
+
+  document.getElementById("pv_i")
+  .innerHTML = data.pv_i.toFixed(1) + " A";
+
+  document.getElementById("pv_p2")
+  .innerHTML = data.pv_p.toFixed(1) + " W";
+
+  document.getElementById("bat_v2")
+  .innerHTML = data.bat_v.toFixed(1) + " V";
+
+  document.getElementById("bat_i")
+  .innerHTML = data.bat_i.toFixed(1) + " A";
+
+  document.getElementById("charge_p2")
+  .innerHTML = data.charge_p.toFixed(1) + " W";
+
+  document.getElementById("load_p2")
+  .innerHTML = data.load_p.toFixed(1) + " W";
+
+  document.getElementById("soc")
+  .innerHTML = data.soc.toFixed(1) + " %";
+
+  document.getElementById("mppt_eff")
+  .innerHTML = data.mppt_eff.toFixed(1) + " %";
+
+  document.getElementById("status")
+  .innerHTML = data.status;
+
+  document.getElementById("kwh_day")
+  .innerHTML = data.kwh_day.toFixed(2);
+
+  document.getElementById("kwh_month")
+  .innerHTML = data.kwh_month.toFixed(2);
+
+  // CHART
+  const now = new Date().toLocaleTimeString();
+
+  labels.push(now);
+
+  pvData.push(data.pv_p);
+
+  loadData.push(data.load_p);
+
+  if (labels.length > 20) {
+
+    labels.shift();
+
+    pvData.shift();
+
+    loadData.shift();
   }
 
+  chart.update();
 });
