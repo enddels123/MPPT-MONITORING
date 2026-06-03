@@ -1,88 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Solar Hybrid Monitor</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <title>JNGE Solar Monitor</title>
 
-<style>
-body{
-  background:#0a0f1c;
-  color:#00ffcc;
-  font-family:Arial;
-}
-.card{
-  display:inline-block;
-  margin:10px;
-  padding:15px;
-  background:#111a2e;
-  border-radius:10px;
-  width:180px;
-}
-h1{color:#00ffcc;}
-</style>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+  <style>
+    body {
+      background: #0a0f1c;
+      color: #00ffcc;
+      font-family: Arial;
+      text-align: center;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 20px;
+    }
+
+    .card {
+      background: #111a2e;
+      padding: 20px;
+      border-radius: 12px;
+      font-size: 18px;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #00ffcc;
+    }
+
+    h1 {
+      color: #00ffcc;
+    }
+  </style>
 </head>
 
 <body>
 
-<h1>⚡ SOLAR HYBRID MONITOR JNGE</h1>
+<h1>⚡ JNGE SOLAR MONITOR</h1>
 
-<div class="card">PV Volt<br><span id="pvv">0</span> V</div>
-<div class="card">PV Amp<br><span id="pvi">0</span> A</div>
-<div class="card">PV Power<br><span id="pvp">0</span> W</div>
+<div class="grid">
 
-<div class="card">Battery V<br><span id="bv">0</span> V</div>
-<div class="card">Battery A<br><span id="ba">0</span> A</div>
+  <div class="card">PV Voltage<br><span id="pv_v">0</span> V</div>
+  <div class="card">PV Current<br><span id="pv_i">0</span> A</div>
+  <div class="card">PV Power<br><span id="pv_p">0</span> W</div>
 
-<div class="card">kWh Day<br><span id="kd">0</span></div>
-<div class="card">kWh Month<br><span id="km">0</span></div>
+  <div class="card">Battery Voltage<br><span id="bat_v">0</span> V</div>
+  <div class="card">Battery Current<br><span id="bat_i">0</span> A</div>
 
-<canvas id="chart" height="120"></canvas>
+  <div class="card">kWh Day<br><span id="kwh_day">0</span></div>
+  <div class="card">kWh Month<br><span id="kwh_month">0</span></div>
 
-<script>
-let chart = new Chart(document.getElementById("chart"),{
-  type:"line",
-  data:{
-    labels:[],
-    datasets:[
-      {label:"PV Power", data:[], borderColor:"#00ffcc"},
-      {label:"Battery Power", data:[], borderColor:"#ffcc00"}
-    ]
-  }
-});
+</div>
 
-async function load(){
-  const res = await fetch("data.json");
-  const d = await res.json();
-
-  document.getElementById("pvv").innerText = d.pv_v;
-  document.getElementById("pvi").innerText = d.pv_i;
-  document.getElementById("pvp").innerText = d.pv_p;
-
-  document.getElementById("bv").innerText = d.bat_v;
-  document.getElementById("ba").innerText = d.bat_i;
-
-  document.getElementById("kd").innerText = d.kwh_day;
-  document.getElementById("km").innerText = d.kwh_month;
-
-  let t = new Date().toLocaleTimeString();
-
-  chart.data.labels.push(t);
-  chart.data.datasets[0].data.push(d.pv_p);
-  chart.data.datasets[1].data.push(d.bat_p);
-
-  if(chart.data.labels.length > 20){
-    chart.data.labels.shift();
-    chart.data.datasets[0].data.shift();
-    chart.data.datasets[1].data.shift();
-  }
-
-  chart.update();
-}
-
-setInterval(load,3000);
-load();
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
