@@ -13,14 +13,12 @@ window.onload = () => {
         {
           label:"PV Power",
           data:[],
-          borderColor:"#00ffcc",
-          tension:0.4
+          borderColor:"#00ffcc"
         },
         {
-          label:"Battery V",
+          label:"Load Power",
           data:[],
-          borderColor:"#00ff00",
-          tension:0.4
+          borderColor:"#ffcc00"
         }
       ]
     }
@@ -33,29 +31,37 @@ client.on("connect", () => {
 
 client.on("message", (t,msg)=>{
 
-  const d = JSON.parse(msg.toString());
+  try{
 
-  pv_v.innerText = d.pv_v;
-  pv_i.innerText = d.pv_i;
-  pv_p.innerText = d.pv_p;
+    const d = JSON.parse(msg.toString());
 
-  bat_v.innerText = d.bat_v;
-  bat_i.innerText = d.bat_i;
+    pv_v.innerText = d.pv_v ?? 0;
+    pv_i.innerText = d.pv_i ?? 0;
+    pv_p.innerText = d.pv_p ?? 0;
 
-  soc.innerText = d.soc;
-  kwh_day.innerText = d.kwh_day;
-  kwh_month.innerText = d.kwh_month;
+    bat_v.innerText = d.bat_v ?? 0;
+    bat_i.innerText = d.bat_i ?? 0;
 
-  chart.data.labels.push(new Date().toLocaleTimeString());
-  chart.data.datasets[0].data.push(d.pv_p);
-  chart.data.datasets[1].data.push(d.bat_v);
+    soc.innerText = d.soc ?? 0;
+    load_p.innerText = d.load_p ?? 0;
 
-  if(chart.data.labels.length>20){
-    chart.data.labels.shift();
-    chart.data.datasets[0].data.shift();
-    chart.data.datasets[1].data.shift();
+    kwh_day.innerText = d.kwh_day ?? 0;
+    kwh_month.innerText = d.kwh_month ?? 0;
+
+    chart.data.labels.push(new Date().toLocaleTimeString());
+    chart.data.datasets[0].data.push(d.pv_p);
+    chart.data.datasets[1].data.push(d.load_p);
+
+    if(chart.data.labels.length > 20){
+      chart.data.labels.shift();
+      chart.data.datasets[0].data.shift();
+      chart.data.datasets[1].data.shift();
+    }
+
+    chart.update();
+
+  } catch(e){
+    console.log("MQTT ERROR", e);
   }
-
-  chart.update();
 
 });
