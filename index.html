@@ -1,64 +1,246 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>JNGE Solar Monitor</title>
+<meta charset="UTF-8">
+<title>JNGE Solar Hybrid Dashboard</title>
 
-  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<!-- MQTT + Chart -->
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <style>
-    body {
-      background: #0a0f1c;
-      color: #00ffcc;
-      font-family: Arial;
-      text-align: center;
-    }
+<style>
+body{
+  margin:0;
+  background:#0a0f1c;
+  color:#00ffcc;
+  font-family:Arial;
+  text-align:center;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      padding: 20px;
-    }
+/* HEADER */
+h1{
+  margin:10px;
+  color:#00ffcc;
+}
 
-    .card {
-      background: #111a2e;
-      padding: 20px;
-      border-radius: 12px;
-      font-size: 18px;
-      transition: 0.3s;
-    }
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  padding:10px;
+}
 
-    .card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px #00ffcc;
-    }
+/* CARD */
+.card{
+  background:#111a2e;
+  padding:15px;
+  border-radius:12px;
+  box-shadow:0 0 10px rgba(0,255,204,0.2);
+}
 
-    h1 {
-      color: #00ffcc;
-    }
-  </style>
+/* FLOW ANIMATION */
+.flow-container{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:20px 0;
+}
+
+.box{
+  width:120px;
+  height:80px;
+  background:#111a2e;
+  margin:0 10px;
+  border-radius:10px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  position:relative;
+}
+
+/* ARROW ANIMATION */
+.arrow {
+  width:60px;
+  height:4px;
+  background:linear-gradient(90deg,#00ffcc,#00ff00);
+  animation:move 1s infinite linear;
+}
+
+@keyframes move{
+  0%{opacity:0.2;transform:translateX(-10px);}
+  50%{opacity:1;transform:translateX(10px);}
+  100%{opacity:0.2;transform:translateX(-10px);}
+}
+
+/* GAUGE */
+canvas{
+  max-width:300px;
+  margin:auto;
+}
+
+</style>
 </head>
 
 <body>
 
-<h1>⚡ JNGE SOLAR MONITOR</h1>
+<h1>⚡ SOLAR HYBRID JNGE DASHBOARD</h1>
 
+<!-- FLOW ANIMATION -->
+<div class="flow-container">
+
+  <div class="box">
+    ☀️ PV<br>
+    <span id="pv_p">0</span> W
+  </div>
+
+  <div class="arrow"></div>
+
+  <div class="box">
+    🔋 Battery<br>
+    <span id="bat_v">0</span> V
+  </div>
+
+  <div class="arrow"></div>
+
+  <div class="box">
+    ⚡ Load
+    <br>Live
+  </div>
+
+</div>
+
+<!-- GRID DATA -->
 <div class="grid">
 
   <div class="card">PV Voltage<br><span id="pv_v">0</span> V</div>
   <div class="card">PV Current<br><span id="pv_i">0</span> A</div>
-  <div class="card">PV Power<br><span id="pv_p">0</span> W</div>
-
-  <div class="card">Battery Voltage<br><span id="bat_v">0</span> V</div>
   <div class="card">Battery Current<br><span id="bat_i">0</span> A</div>
-
-  <div class="card">kWh Day<br><span id="kwh_day">0</span></div>
-  <div class="card">kWh Month<br><span id="kwh_month">0</span></div>
 
 </div>
 
-<script src="app.js"></script>
+<!-- GAUGE -->
+<div class="grid">
+
+  <div class="card">
+    PV POWER GAUGE
+    <canvas id="gauge1"></canvas>
+  </div>
+
+  <div class="card">
+    BATTERY GAUGE
+    <canvas id="gauge2"></canvas>
+  </div>
+
+</div>
+
+<!-- CHART -->
+<div class="card" style="margin:10px;">
+  <canvas id="chart"></canvas>
+</div>
+
+<script>
+/* MQTT CONNECT */
+const client = mqtt.connect("wss://broker.hivemq.com:8000/mqtt");
+const topic = "solar/jnge/hybrid";
+
+/* GAUGE INIT */
+let g1, g2, chart;
+
+window.onload = () => {
+
+  /* PV GAUGE */
+  g1 = new Chart(document.getElementById("gauge1"), {
+    type:"doughnut",
+    data:{
+      datasets:[{
+        data:[0,200],
+        backgroundColor:["#00ffcc","#222"]
+      }]
+    },
+    options:{
+      cutout:"75%"
+    }
+  });
+
+  /* BATTERY GAUGE */
+  g2 = new Chart(document.getElementById("gauge2"), {
+    type:"doughnut",
+    data:{
+      datasets:[{
+        data:[0,100],
+        backgroundColor:["#00ff00","#222"]
+      }]
+    },
+    options:{
+      cutout:"75%"
+    }
+  });
+
+  /* CHART */
+  chart = new Chart(document.getElementById("chart"), {
+    type:"line",
+    data:{
+      labels:[],
+      datasets:[
+        {
+          label:"PV Power",
+          data:[],
+          borderColor:"#00ffcc",
+          tension:0.4
+        },
+        {
+          label:"Battery Voltage",
+          data:[],
+          borderColor:"#00ff00",
+          tension:0.4
+        }
+      ]
+    }
+  });
+};
+
+/* MQTT MESSAGE */
+client.on("connect", () => {
+  client.subscribe(topic);
+});
+
+client.on("message", (t,msg)=>{
+
+  const d = JSON.parse(msg.toString());
+
+  /* UPDATE TEXT */
+  document.getElementById("pv_v").innerText = d.pv_v;
+  document.getElementById("pv_i").innerText = d.pv_i;
+  document.getElementById("pv_p").innerText = d.pv_p;
+  document.getElementById("bat_v").innerText = d.bat_v;
+  document.getElementById("bat_i").innerText = d.bat_i;
+
+  /* GAUGE UPDATE */
+  g1.data.datasets[0].data = [d.pv_p, 200 - d.pv_p];
+  g1.update();
+
+  g2.data.datasets[0].data = [d.bat_v, 50 - d.bat_v];
+  g2.update();
+
+  /* CHART UPDATE */
+  let t = new Date().toLocaleTimeString();
+
+  chart.data.labels.push(t);
+  chart.data.datasets[0].data.push(d.pv_p);
+  chart.data.datasets[1].data.push(d.bat_v);
+
+  if(chart.data.labels.length > 20){
+    chart.data.labels.shift();
+    chart.data.datasets[0].data.shift();
+    chart.data.datasets[1].data.shift();
+  }
+
+  chart.update();
+
+});
+</script>
 
 </body>
 </html>
