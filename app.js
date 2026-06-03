@@ -11,16 +11,6 @@ client.on("connect", ()=>{
   client.subscribe(topic);
 });
 
-client.on("reconnect", ()=>{
-
-  console.log("MQTT RECONNECT");
-});
-
-client.on("offline", ()=>{
-
-  console.log("MQTT OFFLINE");
-});
-
 const ctx = document
 .getElementById("chart")
 .getContext("2d");
@@ -68,17 +58,39 @@ const chart = new Chart(ctx, {
   }
 });
 
+function updateArrow(id,power){
+
+  const arrow = document.getElementById(id);
+
+  if(power < 20){
+
+    arrow.className = "arrow green";
+
+    arrow.style.animationDuration = "2s";
+
+  }
+  else if(power < 100){
+
+    arrow.className = "arrow yellow";
+
+    arrow.style.animationDuration = "1s";
+
+  }
+  else{
+
+    arrow.className = "arrow red";
+
+    arrow.style.animationDuration = "0.4s";
+  }
+}
+
 client.on("message",(topic,message)=>{
 
   const data = JSON.parse(
     message.toString()
   );
 
-  localStorage.setItem(
-    "plts_data",
-    JSON.stringify(data)
-  );
-
+  // PV
   document.getElementById("pv_v")
   .innerHTML = data.pv_v.toFixed(1)+" V";
 
@@ -88,6 +100,7 @@ client.on("message",(topic,message)=>{
   document.getElementById("pv_p")
   .innerHTML = data.pv_p.toFixed(1)+" W";
 
+  // BATTERY
   document.getElementById("bat_v")
   .innerHTML = data.bat_v.toFixed(1)+" V";
 
@@ -97,14 +110,9 @@ client.on("message",(topic,message)=>{
   document.getElementById("soc")
   .innerHTML = data.soc.toFixed(1)+" %";
 
+  // MPPT
   document.getElementById("charge_p")
   .innerHTML = data.charge_p.toFixed(1)+" W";
-
-  document.getElementById("load_p")
-  .innerHTML = data.load_p.toFixed(1)+" W";
-
-  document.getElementById("status")
-  .innerHTML = data.status;
 
   document.getElementById("mppt_eff")
   .innerHTML = data.mppt_eff.toFixed(1)+" %";
@@ -112,12 +120,28 @@ client.on("message",(topic,message)=>{
   document.getElementById("eff2")
   .innerHTML = data.mppt_eff.toFixed(1)+" %";
 
+  // LOAD
+  document.getElementById("load_p")
+  .innerHTML = data.load_p.toFixed(1)+" W";
+
+  document.getElementById("status")
+  .innerHTML = data.status;
+
+  // ENERGY
   document.getElementById("kwh_day")
   .innerHTML = data.kwh_day.toFixed(2);
 
   document.getElementById("kwh_month")
   .innerHTML = data.kwh_month.toFixed(2);
 
+  // ANIMATION
+  updateArrow("arrow1", data.pv_p);
+
+  updateArrow("arrow2", data.charge_p);
+
+  updateArrow("arrow3", data.load_p);
+
+  // CHART
   const now = new Date()
   .toLocaleTimeString();
 
@@ -142,15 +166,3 @@ client.on("message",(topic,message)=>{
 
   chart.update();
 });
-
-// RESTORE LAST DATA
-const saved = localStorage.getItem(
-"plts_data"
-);
-
-if(saved){
-
-  const data = JSON.parse(saved);
-
-  console.log("RESTORE",data);
-}

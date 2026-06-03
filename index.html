@@ -5,7 +5,7 @@
 
 <meta charset="UTF-8">
 
-<title>ISOKUIKI</title>
+<title>PLTS INDUSTRIAL</title>
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
@@ -16,11 +16,10 @@
 <style>
 
 body{
-  background:#050b18;
+  background:#040b18;
   color:#00ffd5;
   font-family:'Orbitron',sans-serif;
   margin:0;
-  padding:0;
   text-align:center;
 }
 
@@ -33,32 +32,45 @@ h1{
   justify-content:center;
   align-items:center;
   flex-wrap:wrap;
+  margin-top:20px;
 }
 
 .box{
+  width:180px;
   background:#101b33;
-  width:170px;
+  border-radius:20px;
+  padding:20px;
   margin:10px;
-  padding:15px;
-  border-radius:15px;
-  box-shadow:0 0 15px #00ffd533;
+  box-shadow:0 0 15px rgba(0,255,200,0.2);
+}
+
+.arrow-container{
+  width:100px;
+  height:20px;
+  position:relative;
+  overflow:hidden;
 }
 
 .arrow{
-  width:60px;
-  height:5px;
-  background:linear-gradient(90deg,#00ffd5,#00ff00);
-  animation:move 1s infinite linear;
+  position:absolute;
+  font-size:26px;
+  animation:moveArrow 1s linear infinite;
 }
 
-@keyframes move{
+@keyframes moveArrow{
 
   0%{
-    transform:translateX(-10px);
+    left:-30px;
+    opacity:0;
+  }
+
+  50%{
+    opacity:1;
   }
 
   100%{
-    transform:translateX(10px);
+    left:100px;
+    opacity:0;
   }
 }
 
@@ -66,13 +78,13 @@ h1{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
   gap:10px;
-  padding:10px;
+  padding:15px;
 }
 
 .card{
   background:#101b33;
-  border-radius:15px;
   padding:20px;
+  border-radius:15px;
 }
 
 .value{
@@ -80,15 +92,22 @@ h1{
   margin-top:10px;
 }
 
-.status{
-  font-size:26px;
+canvas{
+  background:#101b33;
+  margin:20px;
+  border-radius:20px;
+}
+
+.green{
   color:#00ff00;
 }
 
-canvas{
-  margin:20px;
-  background:#101b33;
-  border-radius:20px;
+.yellow{
+  color:#ffd000;
+}
+
+.red{
+  color:#ff0033;
 }
 
 </style>
@@ -97,40 +116,70 @@ canvas{
 
 <body>
 
-<h1>ISOKUIKI</h1>
+<h1>⚡ PLTS INDUSTRIAL MONITOR</h1>
 
 <div class="flow">
 
 <div class="box">
-☀️ PV<br><br>
+
+☀️ PV
+
 <div id="pv_v">0 V</div>
 <div id="pv_i">0 A</div>
 <div id="pv_p">0 W</div>
+
 </div>
 
-<div class="arrow"></div>
+<div class="arrow-container">
+
+<div id="arrow1" class="arrow green">
+➜➜➜
+</div>
+
+</div>
 
 <div class="box">
-⚙️ MPPT<br><br>
+
+⚙️ MPPT
+
 <div id="charge_p">0 W</div>
 <div id="mppt_eff">0 %</div>
+
 </div>
 
-<div class="arrow"></div>
+<div class="arrow-container">
+
+<div id="arrow2" class="arrow green">
+➜➜➜
+</div>
+
+</div>
 
 <div class="box">
-🔋 BATTERY<br><br>
+
+🔋 BATTERY
+
 <div id="bat_v">0 V</div>
 <div id="bat_i">0 A</div>
 <div id="soc">0 %</div>
+
 </div>
 
-<div class="arrow"></div>
+<div class="arrow-container">
+
+<div id="arrow3" class="arrow green">
+➜➜➜
+</div>
+
+</div>
 
 <div class="box">
-⚡ LOAD<br><br>
+
+⚡ LOAD
+
 <div id="load_p">0 W</div>
 <div id="status">IDLE</div>
+
 </div>
 
 </div>
