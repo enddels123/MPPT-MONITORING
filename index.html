@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JNGE MPPT 20A - Cloud Monitor</title>
+    
+    <!-- Library Script via CDN Publik (Wajib Ada Internet) -->
+    <script src="https://cloudflare.com"></script>
+    <script src="https://cloudflare.com"></script>
+    <script src="https://cloudflare.com"></script>
+    
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            background: #121216; 
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 { margin-bottom: 5px; color: #00ff88; }
+        .sub-title { color: #8a8a9a; font-size: 14px; margin-bottom: 20px; }
+        .status-box { 
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 30px;
+            background: #22222b;
+            color: #ffaa00;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .container { 
+            display: flex; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+            max-width: 1100px; 
+            margin: auto; 
+        }
+        .card { 
+            background: #1c1c24; 
+            border: 1px solid #2d2d3a;
+            border-radius: 16px; 
+            padding: 15px; 
+            margin: 12px; 
+            width: 220px; 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4); 
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #00ff88;
+        }
+        .gauge-container {
+            height: 160px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>JNGE Mini MPPT 20A</h2>
+    <div class="sub-title">Sistem Monitoring Jarak Jauh Nirkabel via GitHub Pages</div>
+    <div id="status" class="status-box">Menghubungkan ke Server Cloud...</div>
+
+    <div class="container">
+        <!-- BARIS INPUT SOLAR PANEL (PV) -->
+        <div class="card"><div id="g_vin" class="gauge-container"></div></div>
+        <div class="card"><div id="g_iin" class="gauge-container"></div></div>
+        <div class="card"><div id="g_pin" class="gauge-container"></div></div>
+        
+        <!-- BARIS OUTPUT BATERAI -->
+        <div class="card"><div id="g_vout" class="gauge-container"></div></div>
+        <div class="card"><div id="g_iout" class="gauge-container"></div></div>
+        <div class="card"><div id="g_pout" class="gauge-container"></div></div>
+        
+        <!-- BARIS AKUMULASI ENERGI (KWH) -->
+        <div class="card"><div id="g_kwhd" class="gauge-container"></div></div>
+        <div class="card"><div id="g_kwhm" class="gauge-container"></div></div>
+    </div>
+
+<script>
+    var g_vin, g_iin, g_pin, g_vout, g_iout, g_pout, g_kwhd, g_kwhm;
+
+    // Membangun Grafik Gauge Lingkaran saat Website Pertama Kali Dibuka
+    window.onload = function() {
+        var commonConfig = {
+            titleFontColor: "#ffffff",
+            valueFontColor: "#00ff88",
+            labelFontColor: "#a0a0b0",
+            gaugeColor: "#2d2d3a",
+            levelColors: ["#00ff88", "#ffaa00", "#ff3333"],
+            donut: false,
+            pointer: true,
+            shadowOpacity: 0.2
+        };
+
+        g_vin  = new JustGage({id:"g_vin", value:0, min:0, max:100, title:"Tegangan PV", label:"Volt", ...commonConfig});
+        g_iin  = new JustGage({id:"g_iin", value:0, min:0, max:20, title:"Arus PV", label:"Ampere", ...commonConfig});
+        g_pin  = new JustGage({id:"g_pin", value:0, min:0, max:600, title:"Daya Input PV", label:"Watt", ...commonConfig});
+        
+        g_vout = new JustGage({id:"g_vout", value:0, min:0, max:60, title:"Tegangan Batt", label:"Volt", ...commonConfig});
+        g_iout = new JustGage({id:"g_iout", value:0, min:0, max:25, title:"Arus Pengisian", label:"Ampere", ...commonConfig});
+        g_pout = new JustGage({id:"g_pout", value:0, min:0, max:600, title:"Daya Keluar", label:"Watt", ...commonConfig});
+        
+        g_kwhd = new JustGage({id:"g_kwhd", value:0, min:0, max:15, title:"kWh Harian", label:"kWh", decimals:3, ...commonConfig});
+        g_kwhm = new JustGage({id:"g_kwhm", value:0, min:0, max:300, title:"kWh Bulanan", label:"kWh", decimals:3, ...commonConfig});
+
+        // Jalankan koneksi internet internet MQTT via WebSockets
+        initMQTT();
+    };
+
+    function initMQTT() {
+        var statusDiv = document.getElementById("status");
+        
+        // Terhubung ke HiveMQ Broker publik via WebSocket Port 8000
+        var client = new Paho.MQTT.Client("://hivemq.com", Number(8000), "web_mppt_" + Math.floor(Math.random() * 10000));
+        
+        client.onConnectionLost = function(responseObject) {
+            statusDiv.innerHTML = "Koneksi Terputus! Menghubungkan ulang...";
+            statusDiv.style.color = "#ff3333";
+            setTimeout(initMQTT, 5000);
+        };
+
+        client.onMessageArrived = function(message) {
+            try {
+                // Bongkar data string JSON yang dikirim oleh ESP32
+                var data = JSON.parse(message.payloadString);
+                
+                // Perbarui posisi jarum dan angka pada grafik secara Real-time
+                g_vin.refresh(data.v_in);
+                g_iin.refresh(data.i_in);
+                g_pin.refresh(data.p_in);
+                g_vout.refresh(data.v_out);
+                g_iout.refresh(data.i_out);
+                g_pout.refresh(data.p_out);
+                g_kwhd.refresh(data.kwh_hari);
+                g_kwhm.refresh(data.kwh_bulan);
+                
+                statusDiv.innerHTML = "Status: Online (Data Real-time)";
+                statusDiv.style.color = "#00ff88";
+            } catch (e) {
+                console.log("Gagal membaca format JSON: ", e);
+            }
+        };
+
+        client.connect({
+            onSuccess: function() {
+                statusDiv.innerHTML = "Terhubung ke Cloud. Menunggu Data ESP32...";
+                statusDiv.style.color = "#ffaa00";
+                // Berlangganan (Subscribe) ke topik yang sama dengan kode ESP32 Anda
+                client.subscribe("jnge/mppt/data");
+            },
+            onFailure: function(e) {
+                statusDiv.innerHTML = "Gagal Terhubung ke Broker Cloud!";
+                statusDiv.style.color = "#ff3333";
+                setTimeout(initMQTT, 5000);
+            }
+        });
+    }
+</script>
+</body>
+</html>
+
