@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <meta charset="UTF-8">
 
-<title>PLTS INDUSTRIAL MONITOR</title>
+<title>PLTS INDUSTRIAL</title>
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 
 <style>
 
 body{
-  background:#0b1220;
-  color:#00ffcc;
-  font-family:Arial;
+  background:#050b18;
+  color:#00ffd5;
+  font-family:'Orbitron',sans-serif;
   margin:0;
+  padding:0;
   text-align:center;
 }
 
-h2{
-  margin-top:20px;
+h1{
+  margin:20px;
 }
 
 .flow{
@@ -28,22 +33,21 @@ h2{
   justify-content:center;
   align-items:center;
   flex-wrap:wrap;
-  margin:20px;
 }
 
 .box{
-  width:150px;
-  height:100px;
-  background:#111a2e;
-  border-radius:12px;
-  padding:10px;
+  background:#101b33;
+  width:170px;
   margin:10px;
+  padding:15px;
+  border-radius:15px;
+  box-shadow:0 0 15px #00ffd533;
 }
 
 .arrow{
-  width:50px;
+  width:60px;
   height:5px;
-  background:linear-gradient(90deg,#00ffcc,#00ff00);
+  background:linear-gradient(90deg,#00ffd5,#00ff00);
   animation:move 1s infinite linear;
 }
 
@@ -51,16 +55,10 @@ h2{
 
   0%{
     transform:translateX(-10px);
-    opacity:0.2;
-  }
-
-  50%{
-    opacity:1;
   }
 
   100%{
     transform:translateX(10px);
-    opacity:0.2;
   }
 }
 
@@ -72,9 +70,9 @@ h2{
 }
 
 .card{
-  background:#111a2e;
-  padding:15px;
-  border-radius:12px;
+  background:#101b33;
+  border-radius:15px;
+  padding:20px;
 }
 
 .value{
@@ -82,110 +80,77 @@ h2{
   margin-top:10px;
 }
 
+.status{
+  font-size:26px;
+  color:#00ff00;
+}
+
 canvas{
-  background:#111a2e;
   margin:20px;
-  border-radius:12px;
+  background:#101b33;
+  border-radius:20px;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<h2>⚡ PLTS INDUSTRIAL MONITOR</h2>
+<h1>⚡ PLTS INDUSTRIAL MONITOR</h1>
 
 <div class="flow">
 
-  <div class="box">
-    ☀️ PV<br><br>
-    <span id="pv_p">0</span> W
-  </div>
+<div class="box">
+☀️ PV<br><br>
+<div id="pv_v">0 V</div>
+<div id="pv_i">0 A</div>
+<div id="pv_p">0 W</div>
+</div>
 
-  <div class="arrow"></div>
+<div class="arrow"></div>
 
-  <div class="box">
-    ⚙️ MPPT<br><br>
-    <span id="charge_p">0</span> W
-  </div>
+<div class="box">
+⚙️ MPPT<br><br>
+<div id="charge_p">0 W</div>
+<div id="mppt_eff">0 %</div>
+</div>
 
-  <div class="arrow"></div>
+<div class="arrow"></div>
 
-  <div class="box">
-    🔋 BATTERY<br><br>
-    <span id="bat_v">0</span> V
-  </div>
+<div class="box">
+🔋 BATTERY<br><br>
+<div id="bat_v">0 V</div>
+<div id="bat_i">0 A</div>
+<div id="soc">0 %</div>
+</div>
 
-  <div class="arrow"></div>
+<div class="arrow"></div>
 
-  <div class="box">
-    ⚡ LOAD<br><br>
-    <span id="load_p">0</span> W
-  </div>
+<div class="box">
+⚡ LOAD<br><br>
+<div id="load_p">0 W</div>
+<div id="status">IDLE</div>
+</div>
 
 </div>
 
 <div class="grid">
 
-  <div class="card">
-    PV Voltage
-    <div class="value" id="pv_v">0</div>
-  </div>
+<div class="card">
+TODAY
+<div class="value" id="kwh_day">0</div>
+</div>
 
-  <div class="card">
-    PV Current
-    <div class="value" id="pv_i">0</div>
-  </div>
+<div class="card">
+MONTH
+<div class="value" id="kwh_month">0</div>
+</div>
 
-  <div class="card">
-    PV Power
-    <div class="value" id="pv_p2">0</div>
-  </div>
-
-  <div class="card">
-    Battery Voltage
-    <div class="value" id="bat_v2">0</div>
-  </div>
-
-  <div class="card">
-    Battery Current
-    <div class="value" id="bat_i">0</div>
-  </div>
-
-  <div class="card">
-    Charge Power
-    <div class="value" id="charge_p2">0</div>
-  </div>
-
-  <div class="card">
-    Load Power
-    <div class="value" id="load_p2">0</div>
-  </div>
-
-  <div class="card">
-    SOC
-    <div class="value" id="soc">0</div>
-  </div>
-
-  <div class="card">
-    MPPT Efficiency
-    <div class="value" id="mppt_eff">0</div>
-  </div>
-
-  <div class="card">
-    Status
-    <div class="value" id="status">IDLE</div>
-  </div>
-
-  <div class="card">
-    kWh Today
-    <div class="value" id="kwh_day">0</div>
-  </div>
-
-  <div class="card">
-    kWh Month
-    <div class="value" id="kwh_month">0</div>
-  </div>
+<div class="card">
+EFFICIENCY
+<div class="value" id="eff2">0</div>
+</div>
 
 </div>
 
