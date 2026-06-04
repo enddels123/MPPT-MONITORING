@@ -18,6 +18,8 @@ content="width=device-width, initial-scale=1.0">
 
 <style>
 
+/* ================= GLOBAL ================= */
+
 *{
   box-sizing:border-box;
 }
@@ -33,15 +35,20 @@ body{
   font-family:'Orbitron',sans-serif;
 
   overflow-x:hidden;
+
+  font-size:clamp(10px,1vw,16px);
 }
+
+/* ================= TITLE ================= */
 
 h1{
 
   text-align:center;
 
-  margin:15px;
+  margin:10px;
 
-  font-size:32px;
+  font-size:
+  clamp(18px,3vw,34px);
 }
 
 /* ================= FLOW ================= */
@@ -56,55 +63,65 @@ h1{
 
   flex-wrap:wrap;
 
-  gap:10px;
+  gap:8px;
 
-  padding:10px;
+  padding:8px;
 }
+
+/* ================= BOX ================= */
 
 .box{
 
-  width:200px;
+  flex:1 1 180px;
 
-  min-height:180px;
+  max-width:220px;
+
+  min-width:140px;
+
+  min-height:130px;
 
   background:#101b33;
 
-  border-radius:20px;
+  border-radius:16px;
 
-  padding:20px;
+  padding:12px;
 
   box-shadow:
-  0 0 20px rgba(0,255,200,0.15);
+  0 0 12px rgba(0,255,200,0.15);
 
   transition:0.3s;
 }
 
 .box:hover{
 
-  transform:translateY(-3px);
+  transform:translateY(-2px);
 }
 
 .box h2{
 
   margin:0;
 
-  margin-bottom:15px;
+  margin-bottom:10px;
+
+  font-size:
+  clamp(14px,2vw,22px);
 }
 
 .box div{
 
-  margin-top:10px;
+  margin-top:6px;
 
-  font-size:20px;
+  font-size:
+  clamp(11px,1.5vw,18px);
 }
 
 /* ================= ARROW ================= */
 
 .arrow-container{
 
-  width:80px;
+  width:50px;
 
-  height:40px;
+  height:35px;
 
   position:relative;
 
@@ -115,11 +132,12 @@ h1{
 
   position:absolute;
 
-  left:-30px;
+  left:-20px;
 
   top:0;
 
-  font-size:34px;
+  font-size:
+  clamp(18px,2vw,30px);
 
   animation:
   moveArrowHorizontal 1s linear infinite;
@@ -131,7 +149,7 @@ h1{
 
   0%{
 
-    left:-30px;
+    left:-20px;
 
     opacity:0;
   }
@@ -143,7 +161,7 @@ h1{
 
   100%{
 
-    left:80px;
+    left:50px;
 
     opacity:0;
   }
@@ -155,7 +173,7 @@ h1{
 
   0%{
 
-    top:-30px;
+    top:-20px;
 
     opacity:0;
   }
@@ -167,7 +185,7 @@ h1{
 
   100%{
 
-    top:40px;
+    top:35px;
 
     opacity:0;
   }
@@ -194,278 +212,34 @@ h1{
   display:grid;
 
   grid-template-columns:
-  repeat(auto-fit,minmax(200px,1fr));
+  repeat(auto-fit,minmax(140px,1fr));
 
-  gap:15px;
+  gap:10px;
 
-  padding:15px;
+  padding:10px;
 }
 
 .card{
 
   background:#101b33;
 
-  border-radius:20px;
+  border-radius:16px;
 
-  padding:20px;
+  padding:14px;
 
   box-shadow:
-  0 0 20px rgba(0,255,200,0.15);
+  0 0 12px rgba(0,255,200,0.15);
 }
 
 .card-title{
 
-  font-size:18px;
+  font-size:
+  clamp(12px,1.5vw,18px);
 }
 
 .value{
 
-  font-size:28px;
+  font-size:
+  clamp(16px,2vw,28px);
 
-  margin-top:10px;
-}
-
-/* ================= CHART ================= */
-
-.chart-container{
-
-  width:95%;
-
-  margin:auto;
-
-  margin-top:20px;
-
-  background:#101b33;
-
-  border-radius:20px;
-
-  padding:20px;
-}
-
-canvas{
-
-  width:100% !important;
-
-  height:420px !important;
-}
-
-/* ================= MOBILE ================= */
-
-@media(max-width:768px){
-
-  h1{
-
-    font-size:24px;
-  }
-
-  .flow{
-
-    flex-direction:column;
-  }
-
-  .box{
-
-    width:95%;
-
-    min-height:auto;
-  }
-
-  .arrow-container{
-
-    width:40px;
-
-    height:60px;
-  }
-
-  .arrow{
-
-    left:0;
-
-    top:-30px;
-
-    animation:
-    moveArrowVertical 1s linear infinite;
-
-    font-size:28px;
-  }
-
-  .grid{
-
-    grid-template-columns:1fr;
-  }
-
-  canvas{
-
-    height:260px !important;
-  }
-}
-
-</style>
-
-</head>
-
-<body>
-
-<h1>
-⚡ PLTS INDUSTRIAL MONITOR
-</h1>
-
-<!-- ================= FLOW ================= -->
-
-<div class="flow">
-
-  <!-- PV -->
-  <div class="box">
-
-    <h2>☀️ PV</h2>
-
-    <div id="pv_v">0 V</div>
-
-    <div id="pv_i">0 A</div>
-
-    <div id="pv_p">0 W</div>
-
-  </div>
-
-  <!-- ARROW -->
-  <div class="arrow-container">
-
-    <div id="arrow1"
-    class="arrow green">
-
-      <span class="arrow-symbol">
-        ➜
-      </span>
-
-    </div>
-
-  </div>
-
-  <!-- MPPT -->
-  <div class="box">
-
-    <h2>⚙️ MPPT</h2>
-
-    <div id="charge_p">0 W</div>
-
-    <div id="mppt_eff">0 %</div>
-
-  </div>
-
-  <!-- ARROW -->
-  <div class="arrow-container">
-
-    <div id="arrow2"
-    class="arrow green">
-
-      <span class="arrow-symbol">
-        ➜
-      </span>
-
-    </div>
-
-  </div>
-
-  <!-- BATTERY -->
-  <div class="box">
-
-    <h2>🔋 BATTERY</h2>
-
-    <div id="bat_v">0 V</div>
-
-    <div id="bat_i">0 A</div>
-
-    <div id="soc">0 %</div>
-
-  </div>
-
-  <!-- ARROW -->
-  <div class="arrow-container">
-
-    <div id="arrow3"
-    class="arrow green">
-
-      <span class="arrow-symbol">
-        ➜
-      </span>
-
-    </div>
-
-  </div>
-
-  <!-- LOAD -->
-  <div class="box">
-
-    <h2>⚡ LOAD</h2>
-
-    <div id="load_p">0 W</div>
-
-    <div id="status">IDLE</div>
-
-  </div>
-
-</div>
-
-<!-- ================= GRID ================= -->
-
-<div class="grid">
-
-  <div class="card">
-
-    <div class="card-title">
-      TODAY
-    </div>
-
-    <div class="value"
-    id="kwh_day">
-
-      0 kWh
-
-    </div>
-
-  </div>
-
-  <div class="card">
-
-    <div class="card-title">
-      MONTH
-    </div>
-
-    <div class="value"
-    id="kwh_month">
-
-      0 kWh
-
-    </div>
-
-  </div>
-
-  <div class="card">
-
-    <div class="card-title">
-      EFFICIENCY
-    </div>
-
-    <div class="value"
-    id="mppt_eff2">
-
-      0 %
-
-    </div>
-
-  </div>
-
-</div>
-
-<!-- ================= CHART ================= -->
-
-<div class="chart-container">
-
-  <canvas id="chart"></canvas>
-
-</div>
-
-<script src="app.js"></script>
-
-</body>
-</html>
+  margin
