@@ -1,36 +1,21 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width,
-initial-scale=1.0">
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0"
+/>
 
-<title>
-ISOKUIKI SMART MONITORING
-</title>
+<title>ISOKUIKI SMART MONITORING</title>
 
-<link rel="preconnect"
-href="https://fonts.googleapis.com">
+<link
+href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap"
+rel="stylesheet"
+/>
 
-<link href=
-"https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap"
-rel="stylesheet">
-
-<script src=
-"https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script src=
-"https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-
-<script src=
-"https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-
-<script src=
-"https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
 <style>
 
@@ -41,356 +26,246 @@ box-sizing:border-box;
 }
 
 body{
-
-background:
-linear-gradient(
-180deg,
-#000814,
-#00152d
-);
-
-font-family:
-Orbitron,sans-serif;
-
+font-family:'Orbitron',sans-serif;
+background:#020b1f;
+color:#fff;
 overflow:hidden;
-
-color:white;
+height:100vh;
+width:100vw;
 }
 
-/* ================================= */
+/* MAIN */
 
 .dashboard{
-
-width:100vw;
 height:100vh;
-
+width:100vw;
 display:flex;
 flex-direction:column;
-
-padding:.5vw;
-
-gap:.5vw;
+padding:.4vw;
+gap:.4vw;
+overflow:hidden;
 }
 
-/* ================================= */
+/* HEADER */
 
 .header{
-
-height:9vh;
-
+text-align:center;
+height:10vh;
 display:flex;
 flex-direction:column;
-
 justify-content:center;
 align-items:center;
 }
 
 .title{
-
-font-size:
-clamp(20px,2vw,40px);
-
+font-size:clamp(18px,2vw,38px);
+font-weight:800;
 color:#00ffe1;
-
 text-shadow:
-0 0 12px #00ffe1;
+0 0 8px #00ffe1,
+0 0 20px #00ffe1;
 }
 
 .online{
-
-font-size:
-clamp(10px,.8vw,14px);
-
+font-size:clamp(8px,.7vw,14px);
 color:#00ff88;
+margin-top:.2vh;
 }
 
-/* ================================= */
-
-.deviceBox{
-
-height:4.5vh;
-
-width:38vw;
-
-margin:auto;
-
+.device{
+margin-top:.5vh;
+width:min(40vw,500px);
+height:4vh;
+min-height:34px;
+border:2px solid #00ffae;
+border-radius:30px;
 display:flex;
 justify-content:center;
 align-items:center;
-
-border:
-2px solid #00ffcc;
-
-border-radius:20px;
-
-background:
-rgba(0,20,40,.5);
-
-font-size:
-clamp(12px,1vw,18px);
-
-font-weight:bold;
+font-size:clamp(11px,.9vw,18px);
+font-weight:700;
+background:#03132e;
+box-shadow:
+0 0 8px #00ffae,
+0 0 20px rgba(0,255,174,.4);
 }
 
-/* ================================= */
+/* BODY */
 
 .main{
-
 flex:1;
-
 display:grid;
-
-grid-template-columns:
-28% 72%;
-
-gap:.6vw;
-
-min-height:0;
-}
-
-/* ================================= */
-
-.scada{
-
-background:
-rgba(0,20,40,.45);
-
-border-radius:18px;
-
-position:relative;
-
+grid-template-columns:22% 78%;
+gap:.5vw;
+height:90vh;
 overflow:hidden;
 }
 
-/* ================================= */
+/* SCADA */
 
-.scada svg{
+.scada-panel{
+background:#04132c;
+border-radius:16px;
+padding:.5vw;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+}
 
+.scada-svg{
 width:100%;
 height:100%;
+max-height:58vh;
 }
 
-/* ================================= */
+/* FLOW */
 
-.widgetsArea{
-
-display:grid;
-
-grid-template-rows:
-38% 28% 34%;
-
-gap:.6vw;
-
-min-height:0;
+.flow-line{
+stroke:#2b7cff;
+stroke-width:4;
+fill:none;
+stroke-linecap:round;
 }
 
-/* ================================= */
+.node{
+fill:#00ff88;
+filter:drop-shadow(0 0 6px #00ff88);
+}
+
+/* DEVICE */
+
+.device-circle{
+fill:#071d3d;
+stroke:#00ffe1;
+stroke-width:3;
+filter:drop-shadow(0 0 10px #00ffe1);
+}
+
+.circle-label{
+fill:#00ffe1;
+font-size:10px;
+font-weight:700;
+text-anchor:middle;
+}
+
+.circle-data{
+fill:#ffffff;
+font-size:8px;
+text-anchor:middle;
+}
+
+/* RIGHT */
+
+.right-panel{
+display:flex;
+flex-direction:column;
+gap:.5vw;
+overflow:hidden;
+}
+
+/* WIDGET */
 
 .widgets{
-
 display:grid;
-
-grid-template-columns:
-1fr 1fr;
-
-grid-template-rows:
-1fr 1fr;
-
-gap:.6vw;
+grid-template-columns:repeat(2,1fr);
+grid-template-rows:repeat(2,1fr);
+gap:.4vw;
+height:34%;
 }
 
-/* ================================= */
-
 .card{
-
-background:
-rgba(0,20,50,.55);
-
-border-radius:16px;
-
-padding:.6vw;
-
+background:#04132c;
+border-radius:14px;
+padding:.45vw;
+display:flex;
+flex-direction:column;
+justify-content:flex-start;
 overflow:hidden;
-
 box-shadow:
 0 0 10px rgba(0,255,255,.08);
 }
 
-.card h2{
-
+.card-title{
 text-align:center;
-
 color:#00ffe1;
-
-font-size:
-clamp(12px,1vw,18px);
-
-margin-bottom:.5vw;
+font-size:clamp(11px,.8vw,18px);
+font-weight:700;
+margin-bottom:.3vh;
 }
-
-/* ================================= */
 
 .row{
-
 display:flex;
 justify-content:space-between;
-
 padding:.22vw 0;
-
-font-size:
-clamp(10px,.8vw,14px);
-
-border-bottom:
-1px solid rgba(255,255,255,.05);
+font-size:clamp(9px,.72vw,15px);
+border-bottom:1px solid rgba(255,255,255,.08);
 }
 
-/* ================================= */
+/* CHARTS */
 
-.gauges{
-
+.charts{
+height:66%;
 display:grid;
-
-grid-template-columns:
-1fr 1fr 1fr;
-
-gap:.6vw;
+grid-template-columns:repeat(3,1fr);
+gap:.4vw;
 }
 
-/* ================================= */
+.chart-card{
+background:#04132c;
+border-radius:14px;
+padding:.4vw;
+display:flex;
+flex-direction:column;
+overflow:hidden;
+}
 
-.gaugeCard{
+.chart-title{
+text-align:center;
+font-size:clamp(10px,.8vw,16px);
+color:#00ffe1;
+margin-bottom:.2vh;
+}
 
-background:
-rgba(0,20,50,.55);
-
-border-radius:16px;
-
-padding:.5vw;
-
+.chart-wrap{
+flex:1;
 position:relative;
 }
 
-/* ================================= */
-
-.gaugeCard canvas{
-
-width:100% !important;
-height:100% !important;
-}
-
-/* ================================= */
-
-.chartRow{
-
-display:grid;
-
-grid-template-columns:
-1fr 1fr;
-
-gap:.6vw;
-}
-
-/* ================================= */
-
-.chartCard{
-
-background:
-rgba(0,20,50,.55);
-
-border-radius:16px;
-
-padding:.5vw;
-}
-
-/* ================================= */
-
-.chartCard canvas{
-
-width:100% !important;
-height:100% !important;
-}
-
-/* ================================= */
-
-.flowLine{
-
-stroke:#2d7dff;
-
-stroke-width:5;
-
-fill:none;
-
-stroke-linecap:round;
-}
-
-/* ================================= */
-
-.circle{
-
-fill:#03152d;
-
-stroke:#00ffe1;
-
-stroke-width:3;
-
-filter:
-drop-shadow(0 0 10px #00ffe1);
-}
-
-/* ================================= */
-
-.node{
-
-fill:#00ff99;
-
-filter:
-drop-shadow(0 0 8px #00ff99);
-}
-
-/* ================================= */
-
-.label{
-
-fill:#00ffe1;
-
-font-size:12px;
-
-text-anchor:middle;
-}
-
-.dataTxt{
-
-fill:white;
-
-font-size:10px;
-
-text-anchor:middle;
-}
-
-/* ================================= */
+/* MOBILE */
 
 @media(max-width:900px){
 
+.dashboard{
+padding:1vw;
+gap:1vw;
+}
+
 .main{
-
-grid-template-columns:
-34% 66%;
+grid-template-columns:34% 66%;
+gap:1vw;
 }
 
-.deviceBox{
-
-width:70vw;
+.widgets{
+gap:1vw;
 }
 
-.title{
+.charts{
+gap:1vw;
+}
 
-font-size:24px;
+.scada-svg{
+max-height:48vh;
+}
+
+.device{
+width:75vw;
+font-size:12px;
 }
 
 }
 
 </style>
-
 </head>
 
 <body>
@@ -405,19 +280,19 @@ font-size:24px;
 ISOKUIKI SMART ENERGY
 </div>
 
-<div class="online"
-id="onlineText">
-OFFLINE
+<div
+class="online"
+id="onlineText"
+>
+ONLINE
 </div>
 
+<div
+class="device"
+id="deviceStatus"
+>
+DEVICE WORKING
 </div>
-
-<!-- DEVICE -->
-
-<div class="deviceBox"
-id="deviceStatus">
-
-DEVICE SHUTDOWN
 
 </div>
 
@@ -427,189 +302,174 @@ DEVICE SHUTDOWN
 
 <!-- SCADA -->
 
-<div class="scada">
+<div class="scada-panel">
 
-<svg viewBox="0 0 300 520">
+<svg
+viewBox="0 0 300 500"
+class="scada-svg"
+>
 
-<!-- FLOW -->
+<!-- LINE -->
 
-<path class="flowLine"
-d="M150 90 L150 190" />
+<path
+class="flow-line"
+d="
+M150 60
+L150 150
+M150 230
+L150 310
+M150 310
+L80 310
+L80 410
+M150 310
+L220 310
+L220 410
+"
+/>
 
-<path class="flowLine"
-d="M150 260 L80 260 L80 390" />
+<!-- NODE -->
 
-<path class="flowLine"
-d="M150 260 L220 260 L220 390" />
-
-<!-- NODES -->
-
-<circle id="node1"
-class="node"
-cx="150"
-cy="110"
-r="5"/>
-
-<circle id="node2"
-class="node"
-cx="120"
-cy="260"
-r="5"/>
-
-<circle id="node3"
-class="node"
-cx="180"
-cy="260"
-r="5"/>
+<circle id="node1" class="node" r="5"/>
+<circle id="node2" class="node" r="5"/>
+<circle id="node3" class="node" r="5"/>
 
 <!-- PV -->
 
-<circle class="circle"
+<circle
 cx="150"
-cy="60"
-r="42"/>
+cy="50"
+r="42"
+class="device-circle"
+/>
 
-<text class="label"
+<text
 x="150"
-y="132">
-
-PHOTOVOLTAIC
-
-</text>
-
-<text class="dataTxt"
+y="30"
+class="circle-data"
 id="pvVolt"
+>0V</text>
+
+<text
 x="150"
-y="66">
-
-0V
-
-</text>
-
-<text class="dataTxt"
+y="46"
+class="circle-data"
 id="pvAmp"
+>0A</text>
+
+<text
 x="150"
-y="82">
-
-0A
-
-</text>
-
-<text class="dataTxt"
+y="62"
+class="circle-data"
 id="pvPower"
+>0W</text>
+
+<text
 x="150"
-y="98">
-
-0W
-
+y="110"
+class="circle-label"
+>
+PHOTOVOLTAIC
 </text>
 
 <!-- MPPT -->
 
-<circle class="circle"
+<circle
 cx="150"
-cy="210"
-r="42"/>
+cy="190"
+r="42"
+class="device-circle"
+/>
 
-<text class="label"
+<text
 x="150"
-y="282">
-
-MPPT
-
-</text>
-
-<text class="dataTxt"
+y="180"
+class="circle-data"
 id="mpptW"
+>0W</text>
+
+<text
 x="150"
-y="218">
-
-0W
-
-</text>
-
-<text class="dataTxt"
+y="200"
+class="circle-data"
 id="mpptEff"
+>0%</text>
+
+<text
 x="150"
-y="236">
-
-0%
-
+y="250"
+class="circle-label"
+>
+MPPT
 </text>
 
-<!-- BAT -->
+<!-- BATTERY -->
 
-<circle class="circle"
+<circle
 cx="80"
-cy="430"
-r="42"/>
+cy="450"
+r="42"
+class="device-circle"
+/>
 
-<text class="label"
+<text
 x="80"
-y="502">
-
-BATTERY
-
-</text>
-
-<text class="dataTxt"
+y="440"
+class="circle-data"
 id="batVolt"
+>0V</text>
+
+<text
 x="80"
-y="438">
-
-0V
-
-</text>
-
-<text class="dataTxt"
+y="458"
+class="circle-data"
 id="batAmp"
+>0A</text>
+
+<text
 x="80"
-y="456">
-
-0A
-
-</text>
-
-<text class="dataTxt"
+y="474"
+class="circle-data"
 id="batSoc"
+>0%</text>
+
+<text
 x="80"
-y="474">
-
-0%
-
+y="505"
+class="circle-label"
+>
+BATTERY
 </text>
 
 <!-- ENERGY -->
 
-<circle class="circle"
+<circle
 cx="220"
-cy="430"
-r="42"/>
+cy="450"
+r="42"
+class="device-circle"
+/>
 
-<text class="label"
+<text
 x="220"
-y="502">
-
-ENERGY
-
-</text>
-
-<text class="dataTxt"
+y="450"
+class="circle-data"
 id="kwhDay"
+>0</text>
+
+<text
 x="220"
-y="448">
-
-0
-
+y="468"
+class="circle-data"
+>
+KWH
 </text>
 
-<text class="dataTxt"
-id="kwhMonth"
+<text
 x="220"
-y="468">
-
-0
-
+y="505"
+class="circle-label"
+>
+ENERGY
 </text>
 
 </svg>
@@ -618,15 +478,14 @@ y="468">
 
 <!-- RIGHT -->
 
-<div class="widgetsArea">
+<div class="right-panel">
 
-<!-- WIDGETS -->
+<!-- BOX -->
 
 <div class="widgets">
 
 <div class="card">
-
-<h2>PHOTOVOLTAIC</h2>
+<div class="card-title">PHOTOVOLTAIC</div>
 
 <div class="row">
 <span>Voltage</span>
@@ -647,7 +506,7 @@ y="468">
 
 <div class="card">
 
-<h2>MPPT</h2>
+<div class="card-title">MPPT</div>
 
 <div class="row">
 <span>Charge</span>
@@ -663,7 +522,7 @@ y="468">
 
 <div class="card">
 
-<h2>BATTERY</h2>
+<div class="card-title">BATTERY</div>
 
 <div class="row">
 <span>Voltage</span>
@@ -684,7 +543,7 @@ y="468">
 
 <div class="card">
 
-<h2>ENERGY</h2>
+<div class="card-title">ENERGY</div>
 
 <div class="row">
 <span>Daily</span>
@@ -700,34 +559,35 @@ y="468">
 
 </div>
 
-<!-- GAUGES -->
+<!-- CHART -->
 
-<div class="gauges">
+<div class="charts">
 
-<div class="gaugeCard">
-<canvas id="gaugePV"></canvas>
+<div class="chart-card">
+<div class="chart-title">
+PV V / A / W
+</div>
+<div class="chart-wrap">
+<canvas id="chart1"></canvas>
+</div>
 </div>
 
-<div class="gaugeCard">
-<canvas id="gaugeBattery"></canvas>
+<div class="chart-card">
+<div class="chart-title">
+Daily kWh
+</div>
+<div class="chart-wrap">
+<canvas id="chart2"></canvas>
+</div>
 </div>
 
-<div class="gaugeCard">
-<canvas id="gaugeMPPT"></canvas>
+<div class="chart-card">
+<div class="chart-title">
+Monthly kWh
 </div>
-
+<div class="chart-wrap">
+<canvas id="chart3"></canvas>
 </div>
-
-<!-- CHARTS -->
-
-<div class="chartRow">
-
-<div class="chartCard">
-<canvas id="chartPV"></canvas>
-</div>
-
-<div class="chartCard">
-<canvas id="chartDay"></canvas>
 </div>
 
 </div>
@@ -742,4 +602,3 @@ y="468">
 
 </body>
 </html>
-```
