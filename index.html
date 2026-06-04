@@ -26,7 +26,12 @@ padding:0;
 box-sizing:border-box;
 }
 
-body{
+html,body{
+
+width:100%;
+height:100%;
+
+overflow:hidden;
 
 font-family:'Orbitron',sans-serif;
 
@@ -38,8 +43,19 @@ linear-gradient(
 );
 
 color:white;
+}
 
-overflow:hidden;
+/* =========================================
+FULL SCREEN
+========================================= */
+
+.main{
+
+width:100vw;
+height:100vh;
+
+display:flex;
+flex-direction:column;
 }
 
 /* =========================================
@@ -48,34 +64,31 @@ HEADER
 
 .header{
 
-text-align:center;
+height:7vh;
 
-padding:8px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
 }
 
 .header h1{
 
 font-size:
-clamp(18px,2vw,34px);
+clamp(15px,1.4vw,28px);
 
 color:#00ffd5;
 
 text-shadow:
-0 0 20px #00ffd5;
+0 0 15px #00ffd5;
 }
-
-/* =========================================
-NETWORK
-========================================= */
 
 .network{
 
-text-align:center;
-
 font-size:
-clamp(10px,1vw,14px);
+clamp(9px,0.7vw,12px);
 
-margin-bottom:5px;
+margin-top:2px;
 }
 
 .online{
@@ -87,69 +100,52 @@ color:#ff4444;
 }
 
 /* =========================================
-CENTER DEVICE STATUS
+DEVICE
 ========================================= */
 
 .status-center{
 
-display:flex;
+height:10vh;
 
+display:flex;
 justify-content:center;
-
 align-items:center;
-
-margin-bottom:10px;
-}
-
-.status-widget{
-
-display:flex;
-
-flex-direction:column;
-
-align-items:center;
-}
-
-.status-icon{
-
-font-size:
-clamp(28px,3vw,55px);
-
-margin-bottom:5px;
 }
 
 .device-box{
 
 width:
-min(90%,420px);
+min(70vw,420px);
 
 padding:
-clamp(10px,1vw,18px);
+clamp(6px,0.7vw,14px);
 
-border-radius:20px;
+border-radius:18px;
 
 background:
 rgba(10,20,40,0.95);
 
 border:
-3px solid #00ff88;
+2px solid #00ff88;
 
 text-align:center;
 
 font-size:
-clamp(14px,1.5vw,24px);
+clamp(12px,1vw,22px);
 
 font-weight:bold;
 
 box-shadow:
-0 0 25px rgba(0,255,140,0.3);
+0 0 18px rgba(0,255,140,0.28);
 }
 
 /* =========================================
-LAYOUT
+CONTENT
 ========================================= */
 
-.dashboard-grid{
+.content{
+
+flex:1;
 
 display:grid;
 
@@ -158,10 +154,9 @@ grid-template-columns:
 
 gap:10px;
 
-height:
-calc(100vh - 120px);
+padding:8px;
 
-padding:10px;
+overflow:hidden;
 }
 
 /* =========================================
@@ -171,9 +166,7 @@ LEFT PANEL
 .left-panel{
 
 display:flex;
-
 justify-content:center;
-
 align-items:center;
 }
 
@@ -184,30 +177,29 @@ POWER FLOW
 .power-wrapper{
 
 display:flex;
-
 flex-direction:column;
-
 align-items:center;
-
 justify-content:center;
+
+transform:scale(0.90);
 }
+
+/* NODE */
 
 .node-wrap{
 
 display:flex;
-
 flex-direction:column;
-
 align-items:center;
 }
 
 .circle-node{
 
 width:
-clamp(70px,7vw,120px);
+clamp(60px,5vw,100px);
 
 height:
-clamp(70px,7vw,120px);
+clamp(60px,5vw,100px);
 
 border-radius:50%;
 
@@ -218,52 +210,43 @@ border:
 2px solid rgba(0,255,200,0.4);
 
 display:flex;
-
 flex-direction:column;
-
 align-items:center;
-
 justify-content:center;
 
 box-shadow:
-0 0 20px rgba(0,255,200,0.25);
+0 0 15px rgba(0,255,200,0.22);
 }
 
 .circle-node img{
 
 width:
-clamp(22px,2vw,42px);
+clamp(18px,1.8vw,35px);
 
 height:
-clamp(22px,2vw,42px);
-
-object-fit:contain;
+clamp(18px,1.8vw,35px);
 
 margin-bottom:3px;
 }
 
 .node-title{
 
-margin-top:5px;
+margin-top:4px;
 
 font-size:
-clamp(9px,0.8vw,14px);
+clamp(7px,0.6vw,11px);
 
 color:#00ffd5;
 }
 
 .node-value{
 
-display:flex;
-
-flex-direction:column;
-
-align-items:center;
-
 font-size:
-clamp(7px,0.7vw,11px);
+clamp(6px,0.55vw,10px);
 
-line-height:1.2;
+display:flex;
+flex-direction:column;
+align-items:center;
 }
 
 /* =========================================
@@ -275,7 +258,7 @@ LINE
 width:3px;
 
 height:
-clamp(40px,4vw,70px);
+clamp(35px,3vw,55px);
 
 background:#355b8c;
 
@@ -287,10 +270,10 @@ position:relative;
 position:relative;
 
 width:
-clamp(130px,16vw,250px);
+clamp(120px,11vw,220px);
 
 height:
-clamp(50px,4vw,70px);
+clamp(45px,4vw,70px);
 }
 
 .line-horizontal{
@@ -302,7 +285,6 @@ top:0;
 left:0;
 
 width:100%;
-
 height:3px;
 
 background:#355b8c;
@@ -313,11 +295,9 @@ background:#355b8c;
 position:absolute;
 
 left:0;
-
 top:0;
 
 width:3px;
-
 height:100%;
 
 background:#355b8c;
@@ -328,11 +308,9 @@ background:#355b8c;
 position:absolute;
 
 right:0;
-
 top:0;
 
 width:3px;
-
 height:100%;
 
 background:#355b8c;
@@ -345,7 +323,7 @@ display:flex;
 justify-content:space-between;
 
 width:
-clamp(130px,16vw,250px);
+clamp(120px,11vw,220px);
 }
 
 /* =========================================
@@ -355,10 +333,10 @@ FLOW NODE
 .flow-node{
 
 width:
-clamp(7px,0.7vw,12px);
+clamp(5px,0.5vw,10px);
 
 height:
-clamp(7px,0.7vw,12px);
+clamp(5px,0.5vw,10px);
 
 border-radius:50%;
 
@@ -367,12 +345,12 @@ background:#00ff88;
 position:absolute;
 
 box-shadow:
-0 0 15px #00ff88;
+0 0 10px #00ff88;
 }
 
 .flow-pv{
 
-left:-2px;
+left:-1px;
 
 animation:
 flowPV 1s linear infinite;
@@ -380,7 +358,7 @@ flowPV 1s linear infinite;
 
 .flow-battery{
 
-left:-2px;
+left:-1px;
 
 animation:
 flowBattery 1s linear infinite;
@@ -388,7 +366,7 @@ flowBattery 1s linear infinite;
 
 .flow-energy{
 
-left:-2px;
+left:-1px;
 
 animation:
 flowEnergy 1s linear infinite;
@@ -452,10 +430,11 @@ RIGHT PANEL
 .right-panel{
 
 display:flex;
-
 flex-direction:column;
 
 gap:8px;
+
+overflow:hidden;
 }
 
 /* =========================================
@@ -477,24 +456,24 @@ gap:8px;
 background:
 rgba(16,25,43,0.88);
 
-border-radius:14px;
+border-radius:12px;
 
-padding:10px;
+padding:8px;
 
 box-shadow:
-0 0 14px rgba(0,255,200,0.08);
+0 0 10px rgba(0,255,200,0.08);
 }
 
 .box h2{
 
 text-align:center;
 
-margin-bottom:8px;
+margin-bottom:6px;
 
 color:#00ffd5;
 
 font-size:
-clamp(11px,1vw,16px);
+clamp(9px,0.75vw,13px);
 }
 
 .data{
@@ -503,16 +482,16 @@ display:flex;
 
 justify-content:space-between;
 
-padding:7px;
+padding:5px;
 
-margin-top:6px;
+margin-top:5px;
 
 background:#111b2d;
 
-border-radius:8px;
+border-radius:6px;
 
 font-size:
-clamp(9px,0.8vw,12px);
+clamp(7px,0.65vw,11px);
 }
 
 /* SOC */
@@ -520,8 +499,7 @@ clamp(9px,0.8vw,12px);
 .soc-bar{
 
 width:100%;
-
-height:10px;
+height:8px;
 
 background:#1c2740;
 
@@ -529,13 +507,12 @@ border-radius:10px;
 
 overflow:hidden;
 
-margin-top:10px;
+margin-top:8px;
 }
 
 .soc-fill{
 
 height:100%;
-
 width:0%;
 
 background:
@@ -544,8 +521,6 @@ linear-gradient(
 #00ff88,
 #00ffd5
 );
-
-transition:1s;
 }
 
 /* =========================================
@@ -560,19 +535,20 @@ grid-template-columns:
 repeat(3,1fr);
 
 gap:8px;
+
+height:28vh;
 }
 
 .chart-box{
 
-height:
-clamp(120px,12vw,180px);
-
 background:
 rgba(16,25,43,0.88);
 
-border-radius:14px;
+border-radius:12px;
 
-padding:8px;
+padding:6px;
+
+position:relative;
 }
 
 /* =========================================
@@ -581,55 +557,79 @@ MOBILE
 
 @media(max-width:900px){
 
-body{
-overflow:auto;
-}
-
-.dashboard-grid{
-
-grid-template-columns:1fr;
-
-height:auto;
-}
-
-.flow{
+.content{
 
 grid-template-columns:
-1fr 1fr;
+0.9fr 1.1fr;
+
+gap:6px;
+}
+
+.power-wrapper{
+
+transform:scale(0.72);
 }
 
 .chart-grid{
 
-grid-template-columns:1fr;
+height:22vh;
 }
 }
 
 @media(max-width:600px){
 
+.header{
+
+height:6vh;
+}
+
+.status-center{
+
+height:8vh;
+}
+
+.content{
+
+grid-template-columns:
+0.8fr 1.2fr;
+
+gap:4px;
+
+padding:4px;
+}
+
+.power-wrapper{
+
+transform:scale(0.62);
+}
+
 .flow{
 
-grid-template-columns:1fr 1fr;
+gap:4px;
+}
+
+.box{
+
+padding:5px;
+}
+
+.chart-grid{
+
+gap:4px;
+
+height:20vh;
 }
 
 .chart-box{
 
-height:140px;
+padding:3px;
 }
 
-.circle-node{
+.device-box{
 
-width:80px;
-height:80px;
-}
+font-size:11px;
 
-.bottom-nodes{
-
-width:180px;
-}
-
-.split-system{
-
-width:180px;
+padding:6px;
 }
 }
 
@@ -639,6 +639,8 @@ width:180px;
 
 <body>
 
+<div class="main">
+
 <!-- HEADER -->
 
 <div class="header">
@@ -646,10 +648,6 @@ width:180px;
 <h1>
 ISOKUIKI SMART ENERGY
 </h1>
-
-</div>
-
-<!-- NETWORK -->
 
 <div class="network">
 
@@ -662,15 +660,11 @@ OFFLINE
 
 </div>
 
+</div>
+
 <!-- DEVICE -->
 
 <div class="status-center">
-
-<div class="status-widget">
-
-<div class="status-icon">
-⚡
-</div>
 
 <div class="device-box"
 id="device_box">
@@ -681,11 +675,9 @@ DEVICE SHUTDOWN
 
 </div>
 
-</div>
+<!-- CONTENT -->
 
-<!-- DASHBOARD -->
-
-<div class="dashboard-grid">
+<div class="content">
 
 <!-- LEFT -->
 
@@ -804,7 +796,7 @@ BATTERY
 
 <div style="
 font-size:
-clamp(20px,2vw,35px)
+clamp(16px,1.5vw,28px)
 ">
 ⚡
 </div>
@@ -816,7 +808,7 @@ clamp(20px,2vw,35px)
 </span>
 
 <span>
-KWH DAY
+KWH
 </span>
 
 </div>
@@ -845,20 +837,20 @@ ENERGY
 
 <div class="box">
 
-<h2>☀️ PHOTOVOLTAIC</h2>
+<h2>PHOTOVOLTAIC</h2>
 
 <div class="data">
-<span>Voltage</span>
+<span>V</span>
 <span id="pv_v">0</span>
 </div>
 
 <div class="data">
-<span>Current</span>
+<span>A</span>
 <span id="pv_i">0</span>
 </div>
 
 <div class="data">
-<span>Power</span>
+<span>W</span>
 <span id="pv_p">0</span>
 </div>
 
@@ -866,7 +858,7 @@ ENERGY
 
 <div class="box">
 
-<h2>⚙️ MPPT</h2>
+<h2>MPPT</h2>
 
 <div class="data">
 <span>Charge</span>
@@ -874,7 +866,7 @@ ENERGY
 </div>
 
 <div class="data">
-<span>Efficiency</span>
+<span>Eff</span>
 <span id="mppt_eff">0</span>
 </div>
 
@@ -882,15 +874,15 @@ ENERGY
 
 <div class="box">
 
-<h2>🔋 BATTERY</h2>
+<h2>BATTERY</h2>
 
 <div class="data">
-<span>Voltage</span>
+<span>V</span>
 <span id="bat_v">0</span>
 </div>
 
 <div class="data">
-<span>Current</span>
+<span>A</span>
 <span id="bat_i">0</span>
 </div>
 
@@ -901,15 +893,15 @@ ENERGY
 
 <div class="soc-bar">
 
-<div class="soc_fill"
+<div class="soc-fill"
 id="soc_fill"></div>
 
 </div>
 
 <div style="
 text-align:center;
-margin-top:8px;
-font-size:11px;
+margin-top:5px;
+font-size:9px;
 "
 id="battery_status">
 
@@ -921,15 +913,15 @@ STANDBY
 
 <div class="box">
 
-<h2>⚡ ENERGY</h2>
+<h2>ENERGY</h2>
 
 <div class="data">
-<span>Daily</span>
+<span>DAY</span>
 <span id="kwh_day">0</span>
 </div>
 
 <div class="data">
-<span>Monthly</span>
+<span>MONTH</span>
 <span id="kwh_month">0</span>
 </div>
 
@@ -942,20 +934,16 @@ STANDBY
 <div class="chart-grid">
 
 <div class="chart-box">
-
 <canvas id="powerChart"></canvas>
-
 </div>
 
 <div class="chart-box">
-
 <canvas id="energyDayChart"></canvas>
-
 </div>
 
 <div class="chart-box">
-
 <canvas id="energyMonthChart"></canvas>
+</div>
 
 </div>
 
