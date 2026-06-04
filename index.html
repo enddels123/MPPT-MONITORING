@@ -33,9 +33,10 @@ linear-gradient(
 #071426
 );
 
-color:white;
+font-family:
+'Orbitron',sans-serif;
 
-font-family:'Orbitron',sans-serif;
+color:white;
 
 overflow-x:hidden;
 }
@@ -44,19 +45,20 @@ overflow-x:hidden;
 
 .header{
 
-text-align:center;
+padding:15px;
 
-padding:20px;
+text-align:center;
 }
 
 .header h1{
 
-font-size:34px;
+font-size:
+clamp(20px,4vw,34px);
 
 color:#00ffd5;
 
 text-shadow:
-0 0 25px #00ffd5;
+0 0 15px #00ffd5;
 }
 
 /* NETWORK */
@@ -65,9 +67,10 @@ text-shadow:
 
 text-align:center;
 
-margin-bottom:20px;
+font-size:
+clamp(11px,2vw,14px);
 
-font-size:14px;
+margin-bottom:15px;
 }
 
 .online{
@@ -75,10 +78,10 @@ color:#00ff88;
 }
 
 .offline{
-color:red;
+color:#ff4444;
 }
 
-/* STATUS */
+/* DEVICE STATUS */
 
 .status-widget{
 
@@ -88,26 +91,42 @@ flex-direction:column;
 
 align-items:center;
 
+justify-content:center;
+
 margin-bottom:25px;
 }
 
 .status-icon{
 
-font-size:90px;
+font-size:
+clamp(55px,8vw,90px);
 
 color:#00ff88;
 
 text-shadow:
-0 0 30px #00ff88;
+0 0 25px #00ff88;
 }
 
 .device-box{
 
-margin-top:15px;
+margin-top:10px;
 
-padding:15px 40px;
+width:
+min(90%,420px);
 
-border-radius:15px;
+min-height:70px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+text-align:center;
+
+padding:15px;
+
+border-radius:18px;
 
 background:
 rgba(16,25,43,0.9);
@@ -115,14 +134,15 @@ rgba(16,25,43,0.9);
 border:
 2px solid #00ff88;
 
-font-size:24px;
+font-size:
+clamp(16px,3vw,28px);
 
 font-weight:bold;
 
 box-shadow:
 0 0 25px rgba(0,255,150,0.3);
 
-backdrop-filter:blur(12px);
+backdrop-filter:blur(10px);
 }
 
 /* FLOW */
@@ -135,20 +155,28 @@ flex-direction:column;
 
 align-items:center;
 
-margin-top:20px;
+justify-content:center;
 
 margin-bottom:40px;
+
+padding:10px;
 }
 
 .power-node{
 
-width:100px;
-height:100px;
+width:
+clamp(70px,12vw,100px);
+
+height:
+clamp(70px,12vw,100px);
 
 border-radius:50%;
 
 background:
-rgba(16,25,43,0.8);
+rgba(16,25,43,0.85);
+
+border:
+2px solid rgba(0,255,200,0.3);
 
 display:flex;
 
@@ -158,22 +186,23 @@ justify-content:center;
 
 align-items:center;
 
-font-size:40px;
-
-border:
-2px solid rgba(0,255,200,0.3);
+font-size:
+clamp(26px,4vw,40px);
 
 box-shadow:
-0 0 30px rgba(0,255,200,0.25);
+0 0 20px rgba(0,255,200,0.25);
 
 backdrop-filter:blur(10px);
+
+z-index:2;
 }
 
 .power-node span{
 
-font-size:12px;
+font-size:
+clamp(9px,1.5vw,12px);
 
-margin-top:5px;
+margin-top:4px;
 
 color:#00ffd5;
 }
@@ -182,54 +211,68 @@ color:#00ffd5;
 
 position:relative;
 
-overflow:hidden;
+background:#1f3554;
 
-background:#23304d;
+overflow:hidden;
 }
 
 .vertical{
 
-width:6px;
-height:80px;
+width:5px;
+
+height:
+clamp(60px,8vw,90px);
 }
 
 .horizontal{
 
-width:140px;
-height:6px;
+height:5px;
 
-margin-top:50px;
+width:
+clamp(90px,14vw,160px);
 }
 
 .split-container{
 
 display:flex;
 
-gap:120px;
+justify-content:center;
+
+align-items:flex-start;
+
+gap:
+clamp(30px,8vw,120px);
+
+margin-top:0;
 }
 
-.split-side{
+.connector-wrap{
 
 display:flex;
 
-flex-direction:column;
-
 align-items:center;
+
+justify-content:center;
 }
+
+/* PARTICLE */
 
 .particle{
 
 position:absolute;
 
-width:20px;
-height:20px;
+width:
+clamp(12px,2vw,18px);
+
+height:
+clamp(12px,2vw,18px);
 
 border-radius:50%;
 
 background:#00ff88;
 
 box-shadow:
-0 0 20px #00ff88;
+0 0 15px #00ff88;
 
 animation:
 flowAnim 1.2s linear infinite;
@@ -237,19 +280,20 @@ flowAnim 1.2s linear infinite;
 
 .vertical .particle{
 
-left:-7px;
+left:-6px;
 }
 
 .horizontal .particle{
 
-top:-7px;
+top:-6px;
 }
 
 @keyframes flowAnim{
 
 0%{
+
 transform:
-translate(-20px,-20px);
+translate(-15px,-15px);
 
 opacity:0;
 }
@@ -259,8 +303,9 @@ opacity:1;
 }
 
 100%{
+
 transform:
-translate(150px,90px);
+translate(180px,90px);
 
 opacity:0;
 }
@@ -270,32 +315,37 @@ opacity:0;
 
 .flow{
 
-display:flex;
+display:grid;
 
-flex-wrap:wrap;
+grid-template-columns:
+repeat(auto-fit,minmax(240px,1fr));
 
-justify-content:center;
+gap:18px;
 
-gap:20px;
+padding:18px;
 
-padding:20px;
+width:100%;
+
+max-width:1400px;
+
+margin:auto;
 }
 
 .box{
-
-width:260px;
 
 background:
 rgba(16,25,43,0.85);
 
 border-radius:20px;
 
-padding:20px;
+padding:18px;
 
 backdrop-filter:blur(10px);
 
 box-shadow:
-0 0 25px rgba(0,255,200,0.12);
+0 0 20px rgba(0,255,200,0.12);
+
+min-width:0;
 }
 
 .box h2{
@@ -304,7 +354,10 @@ text-align:center;
 
 color:#00ffd5;
 
-margin-bottom:20px;
+font-size:
+clamp(15px,2vw,22px);
+
+margin-bottom:15px;
 }
 
 .data{
@@ -313,13 +366,20 @@ display:flex;
 
 justify-content:space-between;
 
-background:#151f34;
+align-items:center;
 
 padding:12px;
 
+margin-top:10px;
+
 border-radius:12px;
 
-margin-top:10px;
+background:#151f34;
+
+font-size:
+clamp(11px,1.8vw,15px);
+
+gap:10px;
 }
 
 /* SOC */
@@ -328,7 +388,7 @@ margin-top:10px;
 
 width:100%;
 
-height:24px;
+height:20px;
 
 background:#1c2740;
 
@@ -341,9 +401,9 @@ margin-top:15px;
 
 .soc-fill{
 
-width:0%;
-
 height:100%;
+
+width:0%;
 
 background:
 linear-gradient(
@@ -359,69 +419,73 @@ transition:1s;
 
 .alarm{
 
-width:95%;
+width:min(95%,900px);
 
 margin:auto;
 
-margin-top:20px;
+margin-bottom:20px;
 
-background:#3b0a0a;
-
-color:#ffaaaa;
-
-padding:15px;
-
-border-radius:15px;
+padding:14px;
 
 text-align:center;
 
+background:#441111;
+
+color:#ffaaaa;
+
+border-radius:15px;
+
 display:none;
+
+font-size:
+clamp(12px,2vw,15px);
 }
 
 /* CHART */
 
 .chart-area{
 
-width:95%;
+width:min(95%,1400px);
 
 margin:auto;
 
-margin-top:30px;
+padding:20px;
 
 background:
-rgba(16,25,43,0.9);
+rgba(16,25,43,0.85);
 
 border-radius:20px;
-
-padding:20px;
 }
 
 .chart-box{
 
-height:300px;
+position:relative;
 
-margin-bottom:40px;
+width:100%;
+
+height:
+clamp(220px,35vw,320px);
+
+margin-bottom:35px;
 }
 
-/* MOBILE */
-
-@media(max-width:900px){
-
-.flow{
-flex-direction:column;
-align-items:center;
-}
-
-.box{
-width:95%;
-}
+@media(max-width:768px){
 
 .split-container{
-gap:40px;
+gap:25px;
 }
 
 .horizontal{
 width:90px;
+}
+
+.flow{
+padding:12px;
+gap:14px;
+}
+
+.box{
+padding:15px;
 }
 }
 
@@ -434,7 +498,7 @@ width:90px;
 <div class="header">
 
 <h1>
-ISOKUIKI SMART ENERGY 
+ISOKUIKI SMART ENERGY
 </h1>
 
 </div>
@@ -453,9 +517,7 @@ OFFLINE
 <div class="status-widget">
 
 <div class="status-icon">
-
 ⚡
-
 </div>
 
 <div class="device-box"
@@ -472,47 +534,82 @@ DEVICE SHUTDOWN
 <div class="power-container">
 
 <div class="power-node">
+
 ☀️
-<span>PV</span>
+
+<span>
+PHOTOVOLTAIC
+</span>
+
 </div>
 
 <div class="line vertical">
+
 <div class="particle"
 id="pv_flow"></div>
+
 </div>
 
 <div class="power-node">
+
 ⚙️
-<span>MPPT</span>
+
+<span>
+MPPT
+</span>
+
+</div>
+
+<div class="connector-wrap">
+
+<div class="line horizontal">
+
+<div class="particle"
+id="split_flow"></div>
+
+</div>
+
 </div>
 
 <div class="split-container">
 
-<div class="split-side">
+<div style="display:flex;flex-direction:column;align-items:center;">
 
-<div class="line horizontal">
+<div class="line vertical">
+
 <div class="particle"
 id="bat_flow"></div>
+
 </div>
 
 <div class="power-node">
+
 🔋
-<span>BATTERY</span>
-</div>
+
+<span>
+BATTERY
+</span>
 
 </div>
 
-<div class="split-side">
+</div>
 
-<div class="line horizontal">
+<div style="display:flex;flex-direction:column;align-items:center;">
+
+<div class="line vertical">
+
 <div class="particle"
 id="load_flow"></div>
+
 </div>
 
 <div class="power-node">
+
 ⚡
-<span>ENERGY</span>
-</div>
+
+<span>
+ENERGY
+</span>
 
 </div>
 
@@ -520,7 +617,7 @@ id="load_flow"></div>
 
 </div>
 
-<!-- ALARM -->
+</div>
 
 <div class="alarm"
 id="alarm_box">
@@ -528,8 +625,6 @@ id="alarm_box">
 LOW BATTERY WARNING
 
 </div>
-
-<!-- WIDGET -->
 
 <div class="flow">
 
@@ -539,17 +634,17 @@ LOW BATTERY WARNING
 
 <div class="data">
 <span>Voltage</span>
-<span id="pv_v">0</span>
+<span id="pv_v">0 V</span>
 </div>
 
 <div class="data">
 <span>Current</span>
-<span id="pv_i">0</span>
+<span id="pv_i">0 A</span>
 </div>
 
 <div class="data">
 <span>Power</span>
-<span id="pv_p">0</span>
+<span id="pv_p">0 W</span>
 </div>
 
 </div>
@@ -560,12 +655,12 @@ LOW BATTERY WARNING
 
 <div class="data">
 <span>Charge Power</span>
-<span id="charge_p">0</span>
+<span id="charge_p">0 W</span>
 </div>
 
 <div class="data">
 <span>Efficiency</span>
-<span id="mppt_eff">0</span>
+<span id="mppt_eff">0 %</span>
 </div>
 
 </div>
@@ -576,25 +671,31 @@ LOW BATTERY WARNING
 
 <div class="data">
 <span>Voltage</span>
-<span id="bat_v">0</span>
+<span id="bat_v">0 V</span>
 </div>
 
 <div class="data">
 <span>Current</span>
-<span id="bat_i">0</span>
+<span id="bat_i">0 A</span>
 </div>
 
 <div class="data">
 <span>SOC</span>
-<span id="soc">0</span>
+<span id="soc">0 %</span>
 </div>
 
 <div class="soc-bar">
+
 <div class="soc-fill"
 id="soc_fill"></div>
+
 </div>
 
-<div style="margin-top:15px;text-align:center"
+<div style="
+margin-top:15px;
+text-align:center;
+font-size:14px;
+"
 id="battery_status">
 
 STANDBY
@@ -609,17 +710,17 @@ STANDBY
 
 <div class="data">
 <span>Total Power</span>
-<span id="total_power">0</span>
+<span id="total_power">0 W</span>
 </div>
 
 <div class="data">
 <span>Daily kWh</span>
-<span id="kwh_day">0</span>
+<span id="kwh_day">0 kWh</span>
 </div>
 
 <div class="data">
 <span>Monthly kWh</span>
-<span id="kwh_month">0</span>
+<span id="kwh_month">0 kWh</span>
 </div>
 
 </div>
@@ -645,4 +746,5 @@ STANDBY
 <script src="app.js"></script>
 
 </body>
+
 </html>

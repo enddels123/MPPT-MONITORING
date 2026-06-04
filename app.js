@@ -9,8 +9,6 @@ connectTimeout:5000
 const topic =
 "solar/jnge/hybrid";
 
-/* NETWORK */
-
 const network =
 document.getElementById(
 'network_status'
@@ -66,8 +64,31 @@ tension:0.4
 },
 
 options:{
+
 responsive:true,
-maintainAspectRatio:false
+
+maintainAspectRatio:false,
+
+plugins:{
+legend:{
+labels:{
+color:'white'
+}
+}
+},
+
+scales:{
+x:{
+ticks:{
+color:'white'
+}
+},
+y:{
+ticks:{
+color:'white'
+}
+}
+}
 }
 });
 }
@@ -117,7 +138,7 @@ chart.data.datasets[0]
 chart.update();
 }
 
-/* MQTT MESSAGE */
+/* MQTT DATA */
 
 client.on(
 'message',
@@ -128,7 +149,7 @@ JSON.parse(
 message.toString()
 );
 
-/* LOCAL STORAGE */
+/* SAVE LOCAL */
 
 localStorage.setItem(
 "solarData",
@@ -165,32 +186,33 @@ data.device;
 /* FLOW */
 
 const pvFlow =
-document.getElementById(
-'pv_flow'
-);
+document.getElementById('pv_flow');
+
+const splitFlow =
+document.getElementById('split_flow');
 
 const batFlow =
-document.getElementById(
-'bat_flow'
-);
+document.getElementById('bat_flow');
 
 const loadFlow =
-document.getElementById(
-'load_flow'
-);
+document.getElementById('load_flow');
 
 if(data.device=="SHUTDOWN"){
 
 pvFlow.style.display="none";
+splitFlow.style.display="none";
 batFlow.style.display="none";
 loadFlow.style.display="none";
 
 } else {
 
 pvFlow.style.display="block";
+splitFlow.style.display="block";
 batFlow.style.display="block";
 loadFlow.style.display="block";
 }
+
+/* BATTERY FLOW */
 
 if(
 data.battery_status==
@@ -262,6 +284,8 @@ document.getElementById(
 ).style.width =
 data.soc + "%";
 
+/* CHART */
+
 const time =
 new Date()
 .toLocaleTimeString();
@@ -283,4 +307,5 @@ energyMonthChart,
 time,
 data.kwh_month
 );
+
 });
