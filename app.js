@@ -7,7 +7,7 @@ const topic =
 "solar/jnge/hybrid";
 
 /* =====================================================
-   CONNECT
+   MQTT CONNECT
 ===================================================== */
 
 client.on('connect',()=>{
@@ -19,7 +19,7 @@ client.on('connect',()=>{
 });
 
 /* =====================================================
-   CHART CONFIG
+   CREATE CHART
 ===================================================== */
 
 function createChart(
@@ -49,7 +49,11 @@ type='line'
 
         backgroundColor:color,
 
-        tension:0.4
+        borderWidth:2,
+
+        tension:0.4,
+
+        fill:false
       }]
     },
 
@@ -57,9 +61,12 @@ type='line'
 
       responsive:true,
 
+      maintainAspectRatio:false,
+
       plugins:{
 
         legend:{
+
           labels:{
             color:'white'
           }
@@ -69,14 +76,24 @@ type='line'
       scales:{
 
         x:{
+
           ticks:{
             color:'white'
+          },
+
+          grid:{
+            color:'#23304d'
           }
         },
 
         y:{
+
           ticks:{
             color:'white'
+          },
+
+          grid:{
+            color:'#23304d'
           }
         }
       }
@@ -85,27 +102,28 @@ type='line'
 }
 
 /* =====================================================
-   CHART
+   CHART INIT
 ===================================================== */
 
-const hourChart =
+const powerChart =
 createChart(
-'hourChart',
-'Load Power',
+'powerChart',
+'PV Power',
 '#00ff88',
+'line'
+);
+
+const energyDayChart =
+createChart(
+'energyDayChart',
+'Daily Energy',
+'#00ffd5',
 'bar'
 );
 
-const dayChart =
+const energyMonthChart =
 createChart(
-'dayChart',
-'Daily Energy',
-'#00ffd5'
-);
-
-const monthChart =
-createChart(
-'monthChart',
+'energyMonthChart',
 'Monthly Energy',
 '#00aaff',
 'bar'
@@ -127,7 +145,7 @@ value
   .data.push(value);
 
   if(
-  chart.data.labels.length > 10
+  chart.data.labels.length > 15
   ){
 
     chart.data.labels.shift();
@@ -152,7 +170,9 @@ client.on(
   message.toString()
   );
 
-  /* PV */
+  /* =====================================================
+     PV
+  ===================================================== */
 
   document.getElementById(
   'pv_v'
@@ -163,7 +183,7 @@ client.on(
   document.getElementById(
   'pv_i'
   ).innerHTML =
-  data.pv_i.toFixed(1)
+  data.pv_i.toFixed(2)
   + " A";
 
   document.getElementById(
@@ -172,7 +192,9 @@ client.on(
   data.pv_p.toFixed(1)
   + " W";
 
-  /* BATTERY */
+  /* =====================================================
+     BATTERY
+  ===================================================== */
 
   document.getElementById(
   'bat_v'
@@ -183,7 +205,7 @@ client.on(
   document.getElementById(
   'bat_i'
   ).innerHTML =
-  data.bat_i.toFixed(1)
+  data.bat_i.toFixed(2)
   + " A";
 
   document.getElementById(
@@ -192,7 +214,41 @@ client.on(
   data.soc.toFixed(0)
   + " %";
 
-  /* MPPT */
+  /* =====================================================
+     SOC BAR
+  ===================================================== */
+
+  document.getElementById(
+  'soc_fill'
+  ).style.width =
+  data.soc + "%";
+
+  /* =====================================================
+     BATTERY STATUS
+  ===================================================== */
+
+  let status =
+  "STANDBY";
+
+  if(data.bat_i > 0){
+
+    status =
+    "CHARGING";
+
+  } else if(data.bat_i < 0){
+
+    status =
+    "DISCHARGING";
+  }
+
+  document.getElementById(
+  'battery_status'
+  ).innerHTML =
+  status;
+
+  /* =====================================================
+     MPPT
+  ===================================================== */
 
   document.getElementById(
   'charge_p'
@@ -206,74 +262,50 @@ client.on(
   data.mppt_eff.toFixed(0)
   + " %";
 
-  /* LOAD */
+  /* =====================================================
+     ENERGY
+  ===================================================== */
 
   document.getElementById(
-  'load_p'
+  'total_power'
   ).innerHTML =
-  data.load_p.toFixed(1)
+  data.pv_p.toFixed(1)
   + " W";
 
   document.getElementById(
   'kwh_day'
   ).innerHTML =
-  data.kwh_day.toFixed(2)
+  data.kwh_day.toFixed(3)
   + " kWh";
 
   document.getElementById(
   'kwh_month'
   ).innerHTML =
-  data.kwh_month.toFixed(2)
+  data.kwh_month.toFixed(3)
   + " kWh";
 
-  /* STATUS */
-
-  let batteryStatus =
-  "IDLE";
-
-  if(data.bat_i > 0){
-
-    batteryStatus =
-    "CHARGING";
-
-  } else if(data.bat_i < 0){
-
-    batteryStatus =
-    "DISCHARGING";
-  }
-
-  document.getElementById(
-  'battery_status'
-  ).innerHTML =
-  batteryStatus;
-
-  /* SOC BAR */
-
-  document.getElementById(
-  'soc_fill'
-  ).style.width =
-  data.soc + "%";
-
-  /* CHART */
+  /* =====================================================
+     CHART
+  ===================================================== */
 
   const time =
   new Date()
   .toLocaleTimeString();
 
   updateChart(
-  hourChart,
+  powerChart,
   time,
-  data.load_p
+  data.pv_p
   );
 
   updateChart(
-  dayChart,
+  energyDayChart,
   time,
   data.kwh_day
   );
 
   updateChart(
-  monthChart,
+  energyMonthChart,
   time,
   data.kwh_month
   );

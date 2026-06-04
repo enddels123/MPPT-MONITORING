@@ -35,6 +35,10 @@ body{
   overflow-x:hidden;
 }
 
+/* =====================================================
+   HEADER
+===================================================== */
+
 .header{
 
   text-align:center;
@@ -62,11 +66,11 @@ body{
 
   justify-content:center;
 
-  align-items:center;
+  align-items:flex-start;
 
   flex-wrap:wrap;
 
-  gap:15px;
+  gap:20px;
 
   padding:20px;
 }
@@ -77,7 +81,7 @@ body{
 
 .box{
 
-  width:250px;
+  width:260px;
 
   background:#10192b;
 
@@ -85,12 +89,8 @@ body{
 
   padding:20px;
 
-  position:relative;
-
-  overflow:hidden;
-
   box-shadow:
-  0 0 25px rgba(0,255,200,0.15);
+  0 0 20px rgba(0,255,200,0.15);
 
   transition:0.3s;
 }
@@ -98,83 +98,18 @@ body{
 .box:hover{
 
   transform:translateY(-5px);
+
+  box-shadow:
+  0 0 30px rgba(0,255,200,0.3);
 }
 
 .box h2{
 
   text-align:center;
 
-  margin-bottom:20px;
-
   color:#00ffd5;
-}
 
-/* =====================================================
-   ANIMATION
-===================================================== */
-
-.energy-flow{
-
-  position:absolute;
-
-  width:100%;
-
-  height:100%;
-
-  top:0;
-  left:0;
-
-  pointer-events:none;
-}
-
-.dot{
-
-  width:8px;
-
-  height:8px;
-
-  background:#00ff88;
-
-  border-radius:50%;
-
-  position:absolute;
-
-  animation:moveDot 3s linear infinite;
-}
-
-.dot:nth-child(1){
-
-  top:20%;
-  animation-delay:0s;
-}
-
-.dot:nth-child(2){
-
-  top:50%;
-  animation-delay:1s;
-}
-
-.dot:nth-child(3){
-
-  top:80%;
-  animation-delay:2s;
-}
-
-@keyframes moveDot{
-
-  0%{
-    left:-10%;
-    opacity:0;
-  }
-
-  20%{
-    opacity:1;
-  }
-
-  100%{
-    left:110%;
-    opacity:0;
-  }
+  margin-bottom:20px;
 }
 
 /* =====================================================
@@ -207,7 +142,7 @@ body{
 }
 
 /* =====================================================
-   SOC
+   SOC BAR
 ===================================================== */
 
 .soc-container{
@@ -219,9 +154,9 @@ body{
 
   width:100%;
 
-  height:20px;
+  height:24px;
 
-  background:#1b2436;
+  background:#1d2740;
 
   border-radius:20px;
 
@@ -250,34 +185,19 @@ body{
 
 .status{
 
-  margin-top:15px;
-
   text-align:center;
+
+  margin-top:15px;
 
   font-size:18px;
 
   font-weight:bold;
 
-  animation:pulse 1s infinite;
-}
-
-@keyframes pulse{
-
-  0%{
-    opacity:0.5;
-  }
-
-  50%{
-    opacity:1;
-  }
-
-  100%{
-    opacity:0.5;
-  }
+  color:#00ff88;
 }
 
 /* =====================================================
-   CHART
+   CHART AREA
 ===================================================== */
 
 .chart-area{
@@ -295,21 +215,23 @@ body{
   padding:20px;
 
   box-shadow:
-  0 0 25px rgba(0,255,200,0.15);
+  0 0 20px rgba(0,255,200,0.15);
 }
 
 .chart-title{
 
   text-align:center;
 
-  margin-bottom:20px;
-
   color:#00ffd5;
+
+  margin-bottom:20px;
 }
 
 .chart-box{
 
-  margin-bottom:30px;
+  height:300px;
+
+  margin-bottom:40px;
 }
 
 /* =====================================================
@@ -321,6 +243,8 @@ body{
   .flow{
 
     flex-direction:column;
+
+    align-items:center;
   }
 
   .box{
@@ -338,7 +262,7 @@ body{
 <div class="header">
 
   <h1>
-    ISOKUIKI SMART MONITOR ⚡
+    ISOKUIKI SMART MONITOR 
   </h1>
 
 </div>
@@ -348,14 +272,6 @@ body{
   <!-- PV -->
 
   <div class="box">
-
-    <div class="energy-flow">
-
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-
-    </div>
 
     <h2>☀️ PV PANEL</h2>
 
@@ -410,14 +326,6 @@ body{
 
   <div class="box">
 
-    <div class="energy-flow">
-
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-
-    </div>
-
     <h2>⚙️ MPPT</h2>
 
     <div class="data">
@@ -455,14 +363,6 @@ body{
   <!-- BATTERY -->
 
   <div class="box">
-
-    <div class="energy-flow">
-
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-
-    </div>
 
     <h2>🔋 BATTERY</h2>
 
@@ -511,11 +411,14 @@ body{
 
     </div>
 
+    <!-- SOC BAR -->
+
     <div class="soc-container">
 
       <div class="soc-bar">
 
-        <div class="soc-fill"
+        <div
+        class="soc-fill"
         id="soc_fill">
 
         </div>
@@ -524,37 +427,31 @@ body{
 
     </div>
 
+    <!-- STATUS -->
+
     <div class="status"
     id="battery_status">
 
-      IDLE
+      STANDBY
 
     </div>
 
   </div>
 
-  <!-- LOAD -->
+  <!-- ENERGY -->
 
   <div class="box">
 
-    <div class="energy-flow">
-
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-
-    </div>
-
-    <h2>⚡ LOAD</h2>
+    <h2>⚡ ENERGY</h2>
 
     <div class="data">
 
       <span class="label">
-        Power
+        Total Power
       </span>
 
       <span class="value"
-      id="load_p">
+      id="total_power">
 
         0 W
 
@@ -565,7 +462,7 @@ body{
     <div class="data">
 
       <span class="label">
-        Daily
+        Daily kWh
       </span>
 
       <span class="value"
@@ -580,7 +477,7 @@ body{
     <div class="data">
 
       <span class="label">
-        Monthly
+        Monthly kWh
       </span>
 
       <span class="value"
@@ -596,29 +493,33 @@ body{
 
 </div>
 
+<!-- =====================================================
+     CHART
+===================================================== -->
+
 <div class="chart-area">
 
   <h2 class="chart-title">
 
-    Hourly / Daily / Monthly Consumption
+    ENERGY ANALYTICS
 
   </h2>
 
   <div class="chart-box">
 
-    <canvas id="hourChart"></canvas>
+    <canvas id="powerChart"></canvas>
 
   </div>
 
   <div class="chart-box">
 
-    <canvas id="dayChart"></canvas>
+    <canvas id="energyDayChart"></canvas>
 
   </div>
 
   <div class="chart-box">
 
-    <canvas id="monthChart"></canvas>
+    <canvas id="energyMonthChart"></canvas>
 
   </div>
 
