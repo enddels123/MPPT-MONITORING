@@ -26,6 +26,8 @@ box-sizing:border-box;
 
 body{
 
+font-family:'Orbitron',sans-serif;
+
 background:
 linear-gradient(
 180deg,
@@ -33,29 +35,26 @@ linear-gradient(
 #02142d
 );
 
-font-family:
-'Orbitron',sans-serif;
-
 color:white;
 
 overflow-x:hidden;
 }
 
-/* ======================================
+/* =========================================
 HEADER
-====================================== */
+========================================= */
 
 .header{
 
 text-align:center;
 
-padding:20px 10px;
+padding:20px;
 }
 
 .header h1{
 
 font-size:
-clamp(22px,4vw,52px);
+clamp(24px,4vw,52px);
 
 color:#00ffd5;
 
@@ -63,9 +62,9 @@ text-shadow:
 0 0 25px #00ffd5;
 }
 
-/* ======================================
+/* =========================================
 NETWORK
-====================================== */
+========================================= */
 
 .network{
 
@@ -74,7 +73,7 @@ text-align:center;
 margin-bottom:20px;
 
 font-size:
-clamp(12px,2vw,18px);
+clamp(14px,2vw,20px);
 }
 
 .online{
@@ -82,12 +81,12 @@ color:#00ff88;
 }
 
 .offline{
-color:#ff5555;
+color:#ff4444;
 }
 
-/* ======================================
+/* =========================================
 DEVICE
-====================================== */
+========================================= */
 
 .status-widget{
 
@@ -99,7 +98,7 @@ align-items:center;
 
 justify-content:center;
 
-margin-bottom:35px;
+margin-bottom:30px;
 }
 
 .status-icon{
@@ -121,7 +120,7 @@ clamp(18px,3vw,35px);
 border-radius:30px;
 
 background:
-rgba(8,20,40,0.95);
+rgba(10,20,40,0.95);
 
 border:
 4px solid #00ff88;
@@ -129,21 +128,19 @@ border:
 text-align:center;
 
 font-size:
-clamp(20px,3vw,44px);
+clamp(22px,3vw,46px);
 
 font-weight:bold;
 
 box-shadow:
-0 0 40px rgba(0,255,150,0.35);
-
-backdrop-filter:blur(10px);
+0 0 40px rgba(0,255,180,0.35);
 }
 
-/* ======================================
-POWER FLOW
-====================================== */
+/* =========================================
+PERFECT FLOW
+========================================= */
 
-.power-flow{
+.power-wrapper{
 
 display:flex;
 
@@ -153,20 +150,28 @@ align-items:center;
 
 justify-content:center;
 
-padding:20px;
-
 width:100%;
+
+padding:
+clamp(10px,2vw,30px);
 }
 
-/* NODE */
+.node-wrap{
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+}
 
 .circle-node{
 
 width:
-clamp(95px,13vw,170px);
+clamp(95px,12vw,170px);
 
 height:
-clamp(95px,13vw,170px);
+clamp(95px,12vw,170px);
 
 border-radius:50%;
 
@@ -174,38 +179,34 @@ background:
 rgba(10,20,35,0.95);
 
 border:
-3px solid rgba(0,255,200,0.4);
+2px solid rgba(0,255,200,0.45);
 
 display:flex;
 
 flex-direction:column;
 
-justify-content:center;
-
 align-items:center;
 
+justify-content:center;
+
 box-shadow:
-0 0 30px rgba(0,255,200,0.3);
+0 0 30px rgba(0,255,200,0.28);
 
-position:relative;
-
-z-index:2;
+backdrop-filter:blur(12px);
 }
 
 .circle-node img{
 
 width:
-clamp(35px,5vw,70px);
+clamp(34px,5vw,70px);
 
 height:
-clamp(35px,5vw,70px);
+clamp(34px,5vw,70px);
 
 object-fit:contain;
 
-margin-bottom:6px;
+margin-bottom:5px;
 }
-
-/* TITLE */
 
 .node-title{
 
@@ -218,8 +219,6 @@ color:#00ffd5;
 
 text-align:center;
 }
-
-/* VALUE */
 
 .node-value{
 
@@ -234,49 +233,89 @@ justify-content:center;
 gap:2px;
 
 font-size:
-clamp(9px,1vw,15px);
-
-color:white;
+clamp(9px,1vw,14px);
 }
 
-/* LINES */
+/* LINE */
 
-.line-v{
+.line-vertical{
 
-width:6px;
+width:5px;
 
 height:
-clamp(70px,10vw,130px);
+clamp(70px,8vw,120px);
 
 background:#355b8c;
 
 position:relative;
 }
 
-.line-h{
+.split-system{
+
+position:relative;
 
 width:
-clamp(160px,22vw,360px);
+clamp(180px,28vw,420px);
 
-height:6px;
-
-background:#355b8c;
-
-position:relative;
+height:
+clamp(80px,8vw,120px);
 }
 
-/* SPLIT */
+.line-horizontal{
 
-.split-wrapper{
+position:absolute;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:5px;
+
+background:#355b8c;
+}
+
+.line-left{
+
+position:absolute;
+
+left:0;
+
+top:0;
+
+width:5px;
+
+height:100%;
+
+background:#355b8c;
+}
+
+.line-right{
+
+position:absolute;
+
+right:0;
+
+top:0;
+
+width:5px;
+
+height:100%;
+
+background:#355b8c;
+}
+
+.bottom-nodes{
 
 display:flex;
 
-justify-content:center;
+justify-content:space-between;
 
 align-items:flex-start;
 
-gap:
-clamp(60px,14vw,280px);
+width:
+clamp(180px,28vw,420px);
 }
 
 /* FLOW DOT */
@@ -284,10 +323,10 @@ clamp(60px,14vw,280px);
 .flow-dot{
 
 width:
-clamp(10px,1.8vw,18px);
+clamp(10px,1.5vw,18px);
 
 height:
-clamp(10px,1.8vw,18px);
+clamp(10px,1.5vw,18px);
 
 border-radius:50%;
 
@@ -299,38 +338,20 @@ box-shadow:
 0 0 20px #00ff88;
 }
 
-/* FLOW */
+.vertical-dot{
 
-#pv_flow{
-
-left:-4px;
+left:-3px;
 
 animation:
-flowVertical 1.1s linear infinite;
+flowVertical 1.2s linear infinite;
 }
 
-#bat_flow{
+.horizontal-dot{
 
-left:-4px;
-
-animation:
-flowVertical 1.1s linear infinite;
-}
-
-#load_flow{
-
-left:-4px;
+top:-3px;
 
 animation:
-flowVertical 1.1s linear infinite;
-}
-
-#split_flow{
-
-top:-5px;
-
-animation:
-flowHorizontal 1.1s linear infinite;
+flowHorizontal 1.4s linear infinite;
 }
 
 @keyframes flowVertical{
@@ -340,12 +361,12 @@ transform:translateY(0px);
 opacity:0;
 }
 
-30%{
+25%{
 opacity:1;
 }
 
 100%{
-transform:translateY(110px);
+transform:translateY(100%);
 opacity:0;
 }
 }
@@ -357,19 +378,19 @@ transform:translateX(0px);
 opacity:0;
 }
 
-30%{
+25%{
 opacity:1;
 }
 
 100%{
-transform:translateX(300px);
+transform:translateX(100%);
 opacity:0;
 }
 }
 
-/* ======================================
+/* =========================================
 WIDGET
-====================================== */
+========================================= */
 
 .flow{
 
@@ -380,13 +401,11 @@ repeat(auto-fit,minmax(260px,1fr));
 
 gap:20px;
 
-padding:20px;
-
-width:100%;
-
-max-width:1500px;
+width:min(96%,1600px);
 
 margin:auto;
+
+padding:20px;
 }
 
 .box{
@@ -400,8 +419,6 @@ padding:20px;
 
 box-shadow:
 0 0 25px rgba(0,255,200,0.12);
-
-backdrop-filter:blur(10px);
 }
 
 .box h2{
@@ -411,9 +428,6 @@ text-align:center;
 margin-bottom:15px;
 
 color:#00ffd5;
-
-font-size:
-clamp(16px,2vw,26px);
 }
 
 .data{
@@ -431,7 +445,7 @@ background:#111b2d;
 border-radius:12px;
 
 font-size:
-clamp(12px,1.3vw,16px);
+clamp(12px,1.2vw,16px);
 }
 
 /* SOC */
@@ -467,57 +481,67 @@ linear-gradient(
 transition:1s;
 }
 
-/* ======================================
+/* =========================================
 CHART
-====================================== */
+========================================= */
 
 .chart-area{
 
-width:min(96%,1500px);
+width:min(96%,1600px);
 
 margin:auto;
 
 padding:20px;
+}
+
+.chart-box{
+
+width:100%;
+
+height:
+clamp(240px,35vw,420px);
+
+margin-bottom:35px;
 
 background:
 rgba(16,25,43,0.85);
 
 border-radius:20px;
 
-margin-bottom:30px;
+padding:20px;
+}
+
+/* =========================================
+MOBILE
+========================================= */
+
+@media(max-width:768px){
+
+.bottom-nodes{
+
+width:220px;
+}
+
+.split-system{
+
+width:220px;
+}
+
+.circle-node{
+
+width:100px;
+height:100px;
+}
+
+.flow{
+
+grid-template-columns:1fr;
 }
 
 .chart-box{
 
-position:relative;
-
-height:
-clamp(240px,35vw,400px);
-
-margin-bottom:40px;
+height:260px;
 }
-
-/* ======================================
-MOBILE
-====================================== */
-
-@media(max-width:768px){
-
-.split-wrapper{
-
-gap:60px;
-}
-
-.line-h{
-
-width:170px;
-}
-
-.device-box{
-
-font-size:28px;
-}
-
 }
 
 </style>
@@ -560,15 +584,13 @@ DEVICE SHUTDOWN
 
 </div>
 
-<!-- =====================================
-POWER FLOW
-===================================== -->
+<!-- POWER FLOW -->
 
-<div class="power-flow">
+<div class="power-wrapper">
 
 <!-- PV -->
 
-<div class="flow-col">
+<div class="node-wrap">
 
 <div class="circle-node">
 
@@ -590,13 +612,13 @@ PHOTOVOLTAIC
 
 </div>
 
-<div class="line-v">
-<div class="flow-dot" id="pv_flow"></div>
+<div class="line-vertical">
+<div class="flow-dot vertical-dot" id="pv_flow"></div>
 </div>
 
 <!-- MPPT -->
 
-<div class="flow-col">
+<div class="node-wrap">
 
 <div class="circle-node">
 
@@ -617,21 +639,31 @@ MPPT
 
 </div>
 
-<div class="line-h">
-<div class="flow-dot" id="split_flow"></div>
-</div>
-
 <!-- SPLIT -->
 
-<div class="split-wrapper">
+<div class="split-system">
+
+<div class="line-horizontal">
+<div class="flow-dot horizontal-dot" id="split_flow"></div>
+</div>
+
+<div class="line-left">
+<div class="flow-dot vertical-dot" id="bat_flow"></div>
+</div>
+
+<div class="line-right">
+<div class="flow-dot vertical-dot" id="load_flow"></div>
+</div>
+
+</div>
+
+<!-- BOTTOM -->
+
+<div class="bottom-nodes">
 
 <!-- BATTERY -->
 
-<div class="flow-col">
-
-<div class="line-v">
-<div class="flow-dot" id="bat_flow"></div>
-</div>
+<div class="node-wrap">
 
 <div class="circle-node">
 
@@ -655,15 +687,11 @@ BATTERY
 
 <!-- ENERGY -->
 
-<div class="flow-col">
-
-<div class="line-v">
-<div class="flow-dot" id="load_flow"></div>
-</div>
+<div class="node-wrap">
 
 <div class="circle-node">
 
-<div style="font-size:40px;">
+<div style="font-size:clamp(26px,4vw,60px)">
 ⚡
 </div>
 
@@ -684,79 +712,69 @@ ENERGY
 
 </div>
 
-</div>
-
-<!-- =====================================
-WIDGET
-===================================== -->
+<!-- WIDGET -->
 
 <div class="flow">
 
 <div class="box">
 
-<h2>
-☀️ PHOTOVOLTAIC
-</h2>
+<h2>☀️ PHOTOVOLTAIC</h2>
 
 <div class="data">
 <span>Voltage</span>
-<span id="pv_v">0V</span>
+<span id="pv_v">0</span>
 </div>
 
 <div class="data">
 <span>Current</span>
-<span id="pv_i">0A</span>
+<span id="pv_i">0</span>
 </div>
 
 <div class="data">
 <span>Power</span>
-<span id="pv_p">0W</span>
+<span id="pv_p">0</span>
 </div>
 
 </div>
 
 <div class="box">
 
-<h2>
-⚙️ MPPT
-</h2>
+<h2>⚙️ MPPT</h2>
 
 <div class="data">
 <span>Charge Power</span>
-<span id="charge_p">0W</span>
+<span id="charge_p">0</span>
 </div>
 
 <div class="data">
 <span>Efficiency</span>
-<span id="mppt_eff">0%</span>
+<span id="mppt_eff">0</span>
 </div>
 
 </div>
 
 <div class="box">
 
-<h2>
-🔋 BATTERY
-</h2>
+<h2>🔋 BATTERY</h2>
 
 <div class="data">
 <span>Voltage</span>
-<span id="bat_v">0V</span>
+<span id="bat_v">0</span>
 </div>
 
 <div class="data">
 <span>Current</span>
-<span id="bat_i">0A</span>
+<span id="bat_i">0</span>
 </div>
 
 <div class="data">
 <span>SOC</span>
-<span id="soc">0%</span>
+<span id="soc">0</span>
 </div>
 
 <div class="soc-bar">
 
-<div class="soc_fill"
+<div class="soc-fill"
 id="soc_fill"></div>
 
 </div>
@@ -775,9 +793,7 @@ STANDBY
 
 <div class="box">
 
-<h2>
-⚡ ENERGY
-</h2>
+<h2>⚡ ENERGY</h2>
 
 <div class="data">
 <span>Daily kWh</span>
@@ -793,9 +809,7 @@ STANDBY
 
 </div>
 
-<!-- =====================================
-CHART
-===================================== -->
+<!-- CHART -->
 
 <div class="chart-area">
 
