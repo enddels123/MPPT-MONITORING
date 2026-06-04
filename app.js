@@ -1,15 +1,29 @@
 const client = mqtt.connect(
-"wss://broker.hivemq.com:8884/mqtt"
+  "wss://broker.hivemq.com:8884/mqtt"
 );
 
 const topic = "solar/jnge/hybrid";
 
-client.on("connect", ()=>{
+// ================= MQTT =================
 
-  console.log("MQTT CONNECT");
+client.on("connect", () => {
+
+  console.log("MQTT CONNECTED");
 
   client.subscribe(topic);
 });
+
+client.on("reconnect", () => {
+
+  console.log("MQTT RECONNECT");
+});
+
+client.on("error", (err) => {
+
+  console.log("MQTT ERROR", err);
+});
+
+// ================= CHART =================
 
 const ctx = document
 .getElementById("chart")
@@ -18,9 +32,7 @@ const ctx = document
 const labels = [];
 
 const pvData = [];
-
 const loadData = [];
-
 const batData = [];
 
 const chart = new Chart(ctx, {
@@ -34,48 +46,97 @@ const chart = new Chart(ctx, {
     datasets:[
 
       {
-        label:'PV Power',
+        label:'PV Power (W)',
         data:pvData,
-        borderWidth:2
+        borderWidth:2,
+        tension:0.3
       },
 
       {
-        label:'Load Power',
+        label:'Load Power (W)',
         data:loadData,
-        borderWidth:2
+        borderWidth:2,
+        tension:0.3
       },
 
       {
-        label:'Battery Voltage',
+        label:'Battery Voltage (V)',
         data:batData,
-        borderWidth:2
+        borderWidth:2,
+        tension:0.3
       }
     ]
   },
 
   options:{
-    responsive:true
+
+    responsive:true,
+
+    maintainAspectRatio:false,
+
+    animation:false,
+
+    plugins:{
+
+      legend:{
+        labels:{
+          color:'#00ffd5'
+        }
+      }
+    },
+
+    scales:{
+
+      x:{
+        ticks:{
+          color:'#00ffd5'
+        }
+      },
+
+      y:{
+        ticks:{
+          color:'#00ffd5'
+        }
+      }
+    }
   }
 });
+
+// ================= SAFE NUMBER =================
+
+function safe(v){
+
+  if(isNaN(v))
+    return 0;
+
+  return Number(v);
+}
+
+// ================= ARROW =================
 
 function updateArrow(id,power){
 
   const arrow = document.getElementById(id);
 
+  power = safe(power);
+
+  // LOW POWER
   if(power < 20){
 
     arrow.className = "arrow green";
 
     arrow.style.animationDuration = "2s";
-
   }
+
+  // MEDIUM
   else if(power < 100){
 
     arrow.className = "arrow yellow";
 
     arrow.style.animationDuration = "1s";
-
   }
+
+  // HIGH
   else{
 
     arrow.className = "arrow red";
@@ -84,85 +145,130 @@ function updateArrow(id,power){
   }
 }
 
+// ================= MQTT MESSAGE =================
+
 client.on("message",(topic,message)=>{
 
-  const data = JSON.parse(
-    message.toString()
-  );
+  try{
 
-  // PV
-  document.getElementById("pv_v")
-  .innerHTML = data.pv_v.toFixed(1)+" V";
+    const data = JSON.parse(
+      message.toString()
+    );
 
-  document.getElementById("pv_i")
-  .innerHTML = data.pv_i.toFixed(1)+" A";
+    // ================= PV =================
 
-  document.getElementById("pv_p")
-  .innerHTML = data.pv_p.toFixed(1)+" W";
+    document.getElementById("pv_v")
+    .innerHTML =
+      safe(data.pv_v).toFixed(1)+" V";
 
-  // BATTERY
-  document.getElementById("bat_v")
-  .innerHTML = data.bat_v.toFixed(1)+" V";
+    document.getElementById("pv_i")
+    .innerHTML =
+      safe(data.pv_i).toFixed(2)+" A";
 
-  document.getElementById("bat_i")
-  .innerHTML = data.bat_i.toFixed(1)+" A";
+    document.getElementById("pv_p")
+    .innerHTML =
+      safe(data.pv_p).toFixed(1)+" W";
 
-  document.getElementById("soc")
-  .innerHTML = data.soc.toFixed(1)+" %";
+    // ================= BATTERY =================
 
-  // MPPT
-  document.getElementById("charge_p")
-  .innerHTML = data.charge_p.toFixed(1)+" W";
+    document.getElementById("bat_v")
+    .innerHTML =
+      safe(data.bat_v).toFixed(1)+" V";
 
-  document.getElementById("mppt_eff")
-  .innerHTML = data.mppt_eff.toFixed(1)+" %";
+    document.getElementById("bat_i")
+    .innerHTML =
+      safe(data.bat_i).toFixed(2)+" A";
 
-  document.getElementById("eff2")
-  .innerHTML = data.mppt_eff.toFixed(1)+" %";
+    document.getElementById("soc")
+    .innerHTML =
+      safe(data.soc).toFixed(1)+" %";
 
-  // LOAD
-  document.getElementById("load_p")
-  .innerHTML = data.load_p.toFixed(1)+" W";
+    // ================= MPPT =================
 
-  document.getElementById("status")
-  .innerHTML = data.status;
+    document.getElementById("charge_p")
+    .innerHTML =
+      safe(data.charge_p).toFixed(1)+" W";
 
-  // ENERGY
-  document.getElementById("kwh_day")
-  .innerHTML = data.kwh_day.toFixed(2);
+    document.getElementById("mppt_eff")
+    .innerHTML =
+      safe(data.mppt_eff).toFixed(1)+" %";
 
-  document.getElementById("kwh_month")
-  .innerHTML = data.kwh_month.toFixed(2);
+    document.getElementById("mppt_eff2")
+    .innerHTML =
+      safe(data.mppt_eff).toFixed(1)+" %";
 
-  // ANIMATION
-  updateArrow("arrow1", data.pv_p);
+    // ================= LOAD =================
 
-  updateArrow("arrow2", data.charge_p);
+    document.getElementById("load_p")
+    .innerHTML =
+      safe(data.load_p).toFixed(1)+" W";
 
-  updateArrow("arrow3", data.load_p);
+    document.getElementById("status")
+    .innerHTML =
+      data.status || "IDLE";
 
-  // CHART
-  const now = new Date()
-  .toLocaleTimeString();
+    // ================= ENERGY =================
 
-  labels.push(now);
+    document.getElementById("kwh_day")
+    .innerHTML =
+      safe(data.kwh_day).toFixed(2)+" kWh";
 
-  pvData.push(data.pv_p);
+    document.getElementById("kwh_month")
+    .innerHTML =
+      safe(data.kwh_month).toFixed(2)+" kWh";
 
-  loadData.push(data.load_p);
+    // ================= ARROW =================
 
-  batData.push(data.bat_v);
+    updateArrow(
+      "arrow1",
+      data.pv_p
+    );
 
-  if(labels.length > 30){
+    updateArrow(
+      "arrow2",
+      data.charge_p
+    );
 
-    labels.shift();
+    updateArrow(
+      "arrow3",
+      data.load_p
+    );
 
-    pvData.shift();
+    // ================= CHART =================
 
-    loadData.shift();
+    const now = new Date()
+    .toLocaleTimeString();
 
-    batData.shift();
+    labels.push(now);
+
+    pvData.push(
+      safe(data.pv_p)
+    );
+
+    loadData.push(
+      safe(data.load_p)
+    );
+
+    batData.push(
+      safe(data.bat_v)
+    );
+
+    // LIMIT DATA
+    if(labels.length > 30){
+
+      labels.shift();
+
+      pvData.shift();
+
+      loadData.shift();
+
+      batData.shift();
+    }
+
+    chart.update();
+
+  }catch(err){
+
+    console.log("JSON ERROR",err);
   }
-
-  chart.update();
 });
