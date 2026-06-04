@@ -1,584 +1,374 @@
-/* =========================================
-MQTT CONFIG
-========================================= */
-
-const broker =
-"wss://broker.hivemq.com:8884/mqtt";
+const client =
+mqtt.connect(
+'wss://broker.hivemq.com:8884/mqtt'
+);
 
 const topic =
-"solar/jnge/hybrid";
+'solar/jnge/hybrid';
 
 /* =========================================
-MQTT CONNECT
+MQTT
 ========================================= */
 
-const client =
-mqtt.connect(broker);
+client.on('connect', ()=>{
 
-/* =========================================
-DATA STORAGE
-========================================= */
-
-let powerData = [];
-let powerLabel = [];
-
-let dayData = [];
-let monthData = [];
-let energyLabel = [];
-
-/* =========================================
-CHART POWER
-========================================= */
-
-const powerChart =
-new Chart(
-
-document.getElementById(
-"powerChart"
-),
-
-{
-type:"line",
-
-data:{
-
-labels:powerLabel,
-
-datasets:[{
-
-label:"PV Power",
-
-data:powerData,
-
-borderColor:"#00ffd5",
-
-backgroundColor:
-"rgba(0,255,200,0.12)",
-
-fill:true,
-
-tension:0.45
-
-}]
-},
-
-options:{
-
-responsive:true,
-
-maintainAspectRatio:false,
-
-plugins:{
-
-legend:{
-
-labels:{
-color:"white"
-}
-}
-},
-
-scales:{
-
-x:{
-ticks:{
-color:"white"
-}
-},
-
-y:{
-ticks:{
-color:"white"
-}
-}
-}
-}
-});
-
-/* =========================================
-CHART DAILY
-========================================= */
-
-const energyDayChart =
-new Chart(
-
-document.getElementById(
-"energyDayChart"
-),
-
-{
-type:"bar",
-
-data:{
-
-labels:energyLabel,
-
-datasets:[{
-
-label:"Daily kWh",
-
-data:dayData,
-
-backgroundColor:
-"rgba(0,255,120,0.5)"
-
-}]
-},
-
-options:{
-
-responsive:true,
-
-maintainAspectRatio:false,
-
-plugins:{
-
-legend:{
-
-labels:{
-color:"white"
-}
-}
-},
-
-scales:{
-
-x:{
-ticks:{
-color:"white"
-}
-},
-
-y:{
-ticks:{
-color:"white"
-}
-}
-}
-}
-});
-
-/* =========================================
-CHART MONTHLY
-========================================= */
-
-const energyMonthChart =
-new Chart(
-
-document.getElementById(
-"energyMonthChart"
-),
-
-{
-type:"bar",
-
-data:{
-
-labels:energyLabel,
-
-datasets:[{
-
-label:"Monthly kWh",
-
-data:monthData,
-
-backgroundColor:
-"rgba(0,180,255,0.55)"
-
-}]
-},
-
-options:{
-
-responsive:true,
-
-maintainAspectRatio:false,
-
-plugins:{
-
-legend:{
-
-labels:{
-color:"white"
-}
-}
-},
-
-scales:{
-
-x:{
-ticks:{
-color:"white"
-}
-},
-
-y:{
-ticks:{
-color:"white"
-}
-}
-}
-}
-});
-
-/* =========================================
-HELPER
-========================================= */
-
-function setText(id,val){
-
-document
-.getElementById(id)
-.innerHTML = val;
-}
-
-/* =========================================
-FLOW CONTROL
-========================================= */
-
-function setFlow(state){
-
-const nodes = [
-
-".flow-pv",
-".flow-battery",
-".flow-energy"
-
-];
-
-nodes.forEach(cls=>{
-
-document
-.querySelectorAll(cls)
-.forEach(el=>{
-
-el.style.display =
-state ? "block" : "none";
-
-});
-});
-}
-
-/* =========================================
-MQTT CONNECTED
-========================================= */
-
-client.on(
-"connect",
-
-()=>{
-
-console.log(
-"MQTT CONNECTED"
-);
-
-setText(
-"network_status",
-"ONLINE"
-);
-
-document
-.getElementById(
-"network_status"
-)
-.className =
-"online";
+console.log('MQTT Connected');
 
 client.subscribe(topic);
 
-}
-);
-
-/* =========================================
-MQTT OFFLINE
-========================================= */
-
-client.on(
-"offline",
-
-()=>{
-
-setText(
-"network_status",
-"OFFLINE"
-);
+document
+.getElementById(
+'network_status'
+)
+.innerHTML='ONLINE';
 
 document
 .getElementById(
-"network_status"
+'network_status'
 )
-.className =
-"offline";
+.className='online';
+});
 
-}
-);
+/* ========================================= */
 
-/* =========================================
-MQTT MESSAGE
-========================================= */
-
-client.on(
-"message",
-
+client.on('message',
 (topic,message)=>{
 
-const data =
+const d =
 JSON.parse(
 message.toString()
 );
 
 /* =========================================
-PV
+TEXT DATA
 ========================================= */
 
-setText(
-"pv_v",
-data.pv_v.toFixed(1)+" V"
-);
+setText('pv_v',
+d.pv_v.toFixed(1)+' V');
 
-setText(
-"pv_i",
-data.pv_i.toFixed(1)+" A"
-);
+setText('pv_i',
+d.pv_i.toFixed(1)+' A');
 
-setText(
-"pv_p",
-data.pv_p.toFixed(0)+" W"
-);
+setText('pv_p',
+d.pv_p.toFixed(1)+' W');
 
-setText(
-"pv_v_circle",
-data.pv_v.toFixed(0)+"V"
-);
+setText('bat_v',
+d.bat_v.toFixed(1)+' V');
 
-setText(
-"pv_i_circle",
-data.pv_i.toFixed(0)+"A"
-);
+setText('bat_i',
+d.bat_i.toFixed(1)+' A');
 
-setText(
-"pv_p_circle",
-data.pv_p.toFixed(0)+"W"
-);
+setText('soc',
+d.soc.toFixed(0)+' %');
+
+setText('charge_p',
+d.charge_p.toFixed(1)+' W');
+
+setText('mppt_eff',
+d.mppt_eff.toFixed(1)+' %');
+
+setText('kwh_day',
+d.kwh_day.toFixed(2));
+
+setText('kwh_month',
+d.kwh_month.toFixed(2));
+
+setText('battery_status',
+d.status);
 
 /* =========================================
-MPPT
+SCADA CIRCLE
 ========================================= */
 
-setText(
-"charge_p",
-data.charge_p.toFixed(0)+" W"
-);
+setText('pv_v_circle',
+d.pv_v.toFixed(0)+'V');
 
-setText(
-"mppt_eff",
-data.mppt_eff.toFixed(0)+" %"
-);
+setText('pv_i_circle',
+d.pv_i.toFixed(0)+'A');
 
-setText(
-"mppt_power_circle",
-data.charge_p.toFixed(0)+"W"
-);
+setText('pv_p_circle',
+d.pv_p.toFixed(0)+'W');
 
-setText(
-"mppt_eff_circle",
-data.mppt_eff.toFixed(0)+"%"
-);
+setText('bat_v_circle',
+d.bat_v.toFixed(0)+'V');
+
+setText('bat_i_circle',
+d.bat_i.toFixed(0)+'A');
+
+setText('soc_circle',
+d.soc.toFixed(0)+'%');
+
+setText('mppt_power_circle',
+d.charge_p.toFixed(0)+'W');
+
+setText('mppt_eff_circle',
+d.mppt_eff.toFixed(0)+'%');
+
+setText('energy_day_circle',
+d.kwh_day.toFixed(1));
 
 /* =========================================
-BATTERY
+SOC BAR
 ========================================= */
-
-setText(
-"bat_v",
-data.bat_v.toFixed(1)+" V"
-);
-
-setText(
-"bat_i",
-data.bat_i.toFixed(1)+" A"
-);
-
-setText(
-"soc",
-data.soc.toFixed(0)+" %"
-);
-
-setText(
-"bat_v_circle",
-data.bat_v.toFixed(0)+"V"
-);
-
-setText(
-"bat_i_circle",
-data.bat_i.toFixed(0)+"A"
-);
-
-setText(
-"soc_circle",
-data.soc.toFixed(0)+"%"
-);
 
 document
 .getElementById(
-"soc_fill"
+'soc_fill'
 )
-.style.width =
-data.soc+"%";
-
-/* BATTERY STATUS */
-
-setText(
-"battery_status",
-data.battery_status
-);
-
-/* =========================================
-ENERGY
-========================================= */
-
-setText(
-"kwh_day",
-data.kwh_day.toFixed(2)
-);
-
-setText(
-"kwh_month",
-data.kwh_month.toFixed(2)
-);
-
-setText(
-"energy_day_circle",
-data.kwh_day.toFixed(1)
-);
+.style.width=
+d.soc+'%';
 
 /* =========================================
 DEVICE STATUS
 ========================================= */
 
-const deviceBox =
+const box =
 document.getElementById(
-"device_box"
+'device_box'
 );
 
-if(
-data.device ==
-"WORKING"
-){
+if(d.pv_p > 5){
 
-deviceBox.innerHTML =
-"DEVICE WORKING";
+box.innerHTML =
+'DEVICE WORKING';
 
-deviceBox.style.border =
-"4px solid #00ff88";
+box.style.borderColor =
+'#00ff88';
 
-deviceBox.style.boxShadow =
-"0 0 35px rgba(0,255,120,0.4)";
+}else{
 
-setFlow(true);
+box.innerHTML =
+'DEVICE SHUTDOWN';
 
-}
-else{
-
-deviceBox.innerHTML =
-"DEVICE SHUTDOWN";
-
-deviceBox.style.border =
-"4px solid #ff4444";
-
-deviceBox.style.boxShadow =
-"0 0 35px rgba(255,0,0,0.35)";
-
-setFlow(false);
+box.style.borderColor =
+'#ff4444';
 }
 
 /* =========================================
-BATTERY FLOW DIRECTION
+CHART
 ========================================= */
 
-const batteryNode =
-document.querySelector(
-".flow-battery"
-);
+updateCharts(d);
 
-if(
-data.battery_status ==
-"DISCHARGING"
-){
+});
 
-batteryNode.style.animationDirection =
-"reverse";
+/* ========================================= */
 
-}
-else{
+function setText(id,val){
 
-batteryNode.style.animationDirection =
-"normal";
+document
+.getElementById(id)
+.innerHTML=val;
 }
 
 /* =========================================
-CHART UPDATE
+CHART
 ========================================= */
+
+const powerCtx =
+document
+.getElementById(
+'powerChart'
+);
+
+const powerChart =
+new Chart(powerCtx,{
+
+type:'line',
+
+data:{
+labels:[],
+datasets:[{
+label:'PV Power',
+data:[],
+borderColor:'#00ffd5',
+borderWidth:2,
+tension:0.4
+}]
+},
+
+options:{
+responsive:true,
+maintainAspectRatio:false,
+plugins:{
+legend:{
+labels:{
+color:'white'
+}
+}
+},
+scales:{
+x:{
+ticks:{
+color:'white'
+}
+},
+y:{
+ticks:{
+color:'white'
+}
+}
+}
+}
+});
+
+/* ========================================= */
+
+const dayCtx =
+document
+.getElementById(
+'energyDayChart'
+);
+
+const dayChart =
+new Chart(dayCtx,{
+
+type:'bar',
+
+data:{
+labels:['DAY'],
+datasets:[{
+label:'Daily kWh',
+data:[0],
+backgroundColor:'#00aa66'
+}]
+},
+
+options:{
+responsive:true,
+maintainAspectRatio:false,
+plugins:{
+legend:{
+labels:{
+color:'white'
+}
+}
+},
+scales:{
+x:{
+ticks:{
+color:'white'
+}
+},
+y:{
+ticks:{
+color:'white'
+}
+}
+}
+}
+});
+
+/* ========================================= */
+
+const monthCtx =
+document
+.getElementById(
+'energyMonthChart'
+);
+
+const monthChart =
+new Chart(monthCtx,{
+
+type:'bar',
+
+data:{
+labels:['MONTH'],
+datasets:[{
+label:'Monthly kWh',
+data:[0],
+backgroundColor:'#0088cc'
+}]
+},
+
+options:{
+responsive:true,
+maintainAspectRatio:false,
+plugins:{
+legend:{
+labels:{
+color:'white'
+}
+}
+},
+scales:{
+x:{
+ticks:{
+color:'white'
+}
+},
+y:{
+ticks:{
+color:'white'
+}
+}
+}
+}
+});
+
+/* ========================================= */
+
+function updateCharts(d){
 
 const now =
-new Date()
-.toLocaleTimeString();
+new Date();
+
+const time =
+now.getHours()+
+':'+
+now.getMinutes();
 
 /* POWER */
 
-powerLabel.push(now);
+powerChart
+.data
+.labels
+.push(time);
 
-powerData.push(
-data.pv_p
-);
+powerChart
+.data
+.datasets[0]
+.data
+.push(d.pv_p);
 
-if(powerLabel.length > 15){
+if(
+powerChart.data.labels.length
+> 20
+){
 
-powerLabel.shift();
-powerData.shift();
+powerChart
+.data
+.labels
+.shift();
+
+powerChart
+.data
+.datasets[0]
+.data
+.shift();
 }
 
 powerChart.update();
 
-/* ENERGY */
+/* DAY */
 
-energyLabel.push(now);
+dayChart
+.data
+.datasets[0]
+.data[0]
+=
+d.kwh_day;
 
-dayData.push(
-data.kwh_day
-);
+dayChart.update();
 
-monthData.push(
-data.kwh_month
-);
+/* MONTH */
 
-if(energyLabel.length > 15){
+monthChart
+.data
+.datasets[0]
+.data[0]
+=
+d.kwh_month;
 
-energyLabel.shift();
-
-dayData.shift();
-
-monthData.shift();
+monthChart.update();
 }
-
-energyDayChart.update();
-
-energyMonthChart.update();
-
-}
-);
-
-/* =========================================
-AUTO RECONNECT
-========================================= */
-
-setInterval(()=>{
-
-if(
-!client.connected
-){
-
-location.reload();
-}
-
-},30000);
