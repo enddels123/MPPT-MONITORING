@@ -45,9 +45,7 @@ linear-gradient(
 color:white;
 }
 
-/* =========================================
-FULL SCREEN
-========================================= */
+/* ========================================= */
 
 .main{
 
@@ -58,9 +56,7 @@ display:flex;
 flex-direction:column;
 }
 
-/* =========================================
-HEADER
-========================================= */
+/* ========================================= */
 
 .header{
 
@@ -68,6 +64,7 @@ height:7vh;
 
 display:flex;
 flex-direction:column;
+
 justify-content:center;
 align-items:center;
 }
@@ -99,15 +96,14 @@ color:#00ff88;
 color:#ff4444;
 }
 
-/* =========================================
-DEVICE
-========================================= */
+/* ========================================= */
 
 .status-center{
 
-height:10vh;
+height:9vh;
 
 display:flex;
+
 justify-content:center;
 align-items:center;
 }
@@ -139,9 +135,7 @@ box-shadow:
 0 0 18px rgba(0,255,140,0.28);
 }
 
-/* =========================================
-CONTENT
-========================================= */
+/* ========================================= */
 
 .content{
 
@@ -150,41 +144,63 @@ flex:1;
 display:grid;
 
 grid-template-columns:
-0.8fr 1.2fr;
+minmax(180px,28%)
+1fr;
 
 gap:10px;
 
 padding:8px;
 
+width:100%;
+height:100%;
+
 overflow:hidden;
-}
 
-/* =========================================
-LEFT PANEL
-========================================= */
-
-.left-panel{
-
-display:flex;
-justify-content:center;
 align-items:center;
 }
 
-/* =========================================
-POWER FLOW
-========================================= */
+/* ========================================= */
+
+.left-panel{
+
+width:100%;
+height:100%;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+overflow:hidden;
+}
+
+/* ========================================= */
 
 .power-wrapper{
 
 display:flex;
+
 flex-direction:column;
+
 align-items:center;
+
 justify-content:center;
 
-transform:scale(0.90);
+width:100%;
+
+height:100%;
+
+transform-origin:center center;
+
+scale:min(
+1,
+calc(100vw / 900),
+calc(100vh / 700)
+);
 }
 
-/* NODE */
+/* ========================================= */
 
 .node-wrap{
 
@@ -192,6 +208,8 @@ display:flex;
 flex-direction:column;
 align-items:center;
 }
+
+/* ========================================= */
 
 .circle-node{
 
@@ -211,6 +229,7 @@ border:
 
 display:flex;
 flex-direction:column;
+
 align-items:center;
 justify-content:center;
 
@@ -246,12 +265,11 @@ clamp(6px,0.55vw,10px);
 
 display:flex;
 flex-direction:column;
+
 align-items:center;
 }
 
-/* =========================================
-LINE
-========================================= */
+/* ========================================= */
 
 .line-vertical{
 
@@ -316,6 +334,8 @@ height:100%;
 background:#355b8c;
 }
 
+/* ========================================= */
+
 .bottom-nodes{
 
 display:flex;
@@ -326,9 +346,7 @@ width:
 clamp(120px,11vw,220px);
 }
 
-/* =========================================
-FLOW NODE
-========================================= */
+/* ========================================= */
 
 .flow-node{
 
@@ -347,6 +365,8 @@ position:absolute;
 box-shadow:
 0 0 10px #00ff88;
 }
+
+/* ========================================= */
 
 .flow-pv{
 
@@ -371,6 +391,8 @@ left:-1px;
 animation:
 flowEnergy 1s linear infinite;
 }
+
+/* ========================================= */
 
 @keyframes flowPV{
 
@@ -423,33 +445,41 @@ opacity:0;
 }
 }
 
-/* =========================================
-RIGHT PANEL
-========================================= */
+/* ========================================= */
 
 .right-panel{
 
 display:flex;
+
 flex-direction:column;
 
+justify-content:space-between;
+
 gap:8px;
+
+height:100%;
 
 overflow:hidden;
 }
 
-/* =========================================
-WIDGET
-========================================= */
+/* ========================================= */
 
 .flow{
 
 display:grid;
 
 grid-template-columns:
-repeat(2,1fr);
+repeat(
+auto-fit,
+minmax(140px,1fr)
+);
 
 gap:8px;
+
+width:100%;
 }
+
+/* ========================================= */
 
 .box{
 
@@ -476,6 +506,8 @@ font-size:
 clamp(9px,0.75vw,13px);
 }
 
+/* ========================================= */
+
 .data{
 
 display:flex;
@@ -494,7 +526,7 @@ font-size:
 clamp(7px,0.65vw,11px);
 }
 
-/* SOC */
+/* ========================================= */
 
 .soc-bar{
 
@@ -523,21 +555,26 @@ linear-gradient(
 );
 }
 
-/* =========================================
-CHART
-========================================= */
+/* ========================================= */
 
 .chart-grid{
 
 display:grid;
 
 grid-template-columns:
-repeat(3,1fr);
+repeat(
+auto-fit,
+minmax(180px,1fr)
+);
 
 gap:8px;
 
-height:28vh;
+width:100%;
+
+height:32%;
 }
+
+/* ========================================= */
 
 .chart-box{
 
@@ -549,49 +586,45 @@ border-radius:12px;
 padding:6px;
 
 position:relative;
+
+width:100%;
+
+height:100%;
+
+min-height:120px;
+
+overflow:hidden;
 }
 
-/* =========================================
-MOBILE
-========================================= */
+/* ========================================= */
 
-@media(max-width:900px){
+@media(max-width:1000px){
 
 .content{
 
 grid-template-columns:
-0.9fr 1.1fr;
-
-gap:6px;
+35% 65%;
 }
 
 .power-wrapper{
 
-transform:scale(0.72);
+scale:0.78;
 }
 
 .chart-grid{
 
-height:22vh;
+height:28%;
 }
 }
 
-@media(max-width:600px){
+/* ========================================= */
 
-.header{
-
-height:6vh;
-}
-
-.status-center{
-
-height:8vh;
-}
+@media(max-width:700px){
 
 .content{
 
 grid-template-columns:
-0.8fr 1.2fr;
+32% 68%;
 
 gap:4px;
 
@@ -600,12 +633,27 @@ padding:4px;
 
 .power-wrapper{
 
-transform:scale(0.62);
+scale:0.58;
 }
 
 .flow{
 
+grid-template-columns:
+repeat(2,1fr);
+
 gap:4px;
+}
+
+.chart-grid{
+
+grid-template-columns:1fr;
+
+height:22%;
+}
+
+.chart-box{
+
+min-height:95px;
 }
 
 .box{
@@ -613,23 +661,33 @@ gap:4px;
 padding:5px;
 }
 
-.chart-grid{
+.data{
 
-gap:4px;
+padding:4px;
 
-height:20vh;
+font-size:9px;
+}
 }
 
-.chart-box{
+/* ========================================= */
 
-padding:3px;
+@media(max-width:430px){
+
+.power-wrapper{
+
+scale:0.50;
 }
 
 .device-box{
 
 font-size:11px;
 
-padding:6px;
+padding:5px;
+}
+
+.chart-box{
+
+min-height:85px;
 }
 }
 
@@ -640,8 +698,6 @@ padding:6px;
 <body>
 
 <div class="main">
-
-<!-- HEADER -->
 
 <div class="header">
 
@@ -662,8 +718,6 @@ OFFLINE
 
 </div>
 
-<!-- DEVICE -->
-
 <div class="status-center">
 
 <div class="device-box"
@@ -675,17 +729,11 @@ DEVICE SHUTDOWN
 
 </div>
 
-<!-- CONTENT -->
-
 <div class="content">
-
-<!-- LEFT -->
 
 <div class="left-panel">
 
 <div class="power-wrapper">
-
-<!-- PV -->
 
 <div class="node-wrap">
 
@@ -709,15 +757,11 @@ PHOTOVOLTAIC
 
 </div>
 
-<!-- FLOW -->
-
 <div class="line-vertical">
 
 <div class="flow-node flow-pv"></div>
 
 </div>
-
-<!-- MPPT -->
 
 <div class="node-wrap">
 
@@ -740,8 +784,6 @@ MPPT
 
 </div>
 
-<!-- SPLIT -->
-
 <div class="split-system">
 
 <div class="line-horizontal"></div>
@@ -760,11 +802,7 @@ MPPT
 
 </div>
 
-<!-- BOTTOM -->
-
 <div class="bottom-nodes">
-
-<!-- BATTERY -->
 
 <div class="node-wrap">
 
@@ -788,16 +826,11 @@ BATTERY
 
 </div>
 
-<!-- ENERGY -->
-
 <div class="node-wrap">
 
 <div class="circle-node">
 
-<div style="
-font-size:
-clamp(16px,1.5vw,28px)
-">
+<div style="font-size:24px">
 ⚡
 </div>
 
@@ -827,11 +860,7 @@ ENERGY
 
 </div>
 
-<!-- RIGHT -->
-
 <div class="right-panel">
-
-<!-- WIDGET -->
 
 <div class="flow">
 
@@ -928,8 +957,6 @@ STANDBY
 </div>
 
 </div>
-
-<!-- CHART -->
 
 <div class="chart-grid">
 
