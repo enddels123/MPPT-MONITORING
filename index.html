@@ -40,11 +40,11 @@ body{
 .header{
 
   font-size:
-  clamp(18px,2vw,32px);
+  clamp(20px,2vw,32px);
 
   font-weight:bold;
 
-  margin-bottom:12px;
+  margin-bottom:15px;
 }
 
 /* ================= MAIN ================= */
@@ -56,7 +56,7 @@ body{
   grid-template-columns:
   1fr 1fr;
 
-  gap:12px;
+  gap:14px;
 }
 
 /* ================= LEFT ================= */
@@ -67,7 +67,7 @@ body{
 
   flex-direction:column;
 
-  gap:14px;
+  gap:15px;
 }
 
 /* ================= CENTER ICONS ================= */
@@ -89,10 +89,10 @@ body{
 .circle-box{
 
   width:
-  clamp(100px,15vw,155px);
+  clamp(110px,15vw,160px);
 
   height:
-  clamp(100px,15vw,155px);
+  clamp(110px,15vw,160px);
 
   border-radius:50%;
 
@@ -145,8 +145,6 @@ body{
   font-size:
   clamp(24px,4vw,48px);
 
-  z-index:2;
-
   margin-bottom:5px;
 }
 
@@ -156,8 +154,6 @@ body{
   clamp(10px,1vw,15px);
 
   opacity:.85;
-
-  z-index:2;
 }
 
 .circle-value{
@@ -167,9 +163,7 @@ body{
 
   font-weight:bold;
 
-  margin-top:4px;
-
-  z-index:2;
+  margin-top:5px;
 }
 
 /* ================= RIGHT PANEL ================= */
@@ -179,9 +173,9 @@ body{
   display:grid;
 
   grid-template-columns:
-  repeat(2,minmax(140px,1fr));
+  repeat(2,minmax(150px,1fr));
 
-  gap:10px;
+  gap:12px;
 }
 
 .section{
@@ -196,7 +190,7 @@ body{
 .section-title{
 
   font-size:
-  clamp(16px,2vw,26px);
+  clamp(18px,2vw,28px);
 
   font-weight:bold;
 }
@@ -209,11 +203,10 @@ body{
 
   border-radius:12px;
 
-  padding:
-  clamp(8px,1vw,14px);
+  padding:12px;
 
   height:
-  clamp(72px,11vw,105px);
+  clamp(80px,11vw,110px);
 
   box-shadow:
   0 0 10px rgba(0,0,0,.25);
@@ -223,12 +216,16 @@ body{
   flex-direction:column;
 
   justify-content:center;
+
+  align-items:center;
+
+  text-align:center;
 }
 
 .card-title{
 
   font-size:
-  clamp(11px,1vw,17px);
+  clamp(12px,1vw,16px);
 
   opacity:.85;
 }
@@ -240,7 +237,7 @@ body{
 
   font-weight:bold;
 
-  margin-top:5px;
+  margin-top:6px;
 }
 
 /* ================= CHART ================= */
@@ -251,7 +248,7 @@ body{
 
   border-radius:12px;
 
-  padding:10px;
+  padding:12px;
 }
 
 canvas{
@@ -265,13 +262,13 @@ canvas{
 
 .statistics{
 
-  margin-top:14px;
+  margin-top:15px;
 
   background:#0f7f93;
 
   border-radius:12px;
 
-  padding:14px;
+  padding:15px;
 }
 
 .stats-title{
@@ -309,6 +306,10 @@ canvas{
   flex-direction:column;
 
   justify-content:center;
+
+  align-items:center;
+
+  text-align:center;
 }
 
 .stats-name{
@@ -374,76 +375,31 @@ Isokuiki Dashboard
     <div class="center-icons">
 
       <div class="circle-box">
-
         <div class="circle-icon">☀️</div>
-
-        <div class="circle-label">
-          PV POWER
-        </div>
-
-        <div class="circle-value"
-        id="pv_p">
-
-          0 W
-
-        </div>
-
+        <div class="circle-label">PV POWER</div>
+        <div class="circle-value" id="pv_p">0 W</div>
       </div>
 
       <div class="circle-box">
-
         <div class="circle-icon">🔋</div>
-
-        <div class="circle-label">
-          BATTERY
-        </div>
-
-        <div class="circle-value"
-        id="soc">
-
-          0 %
-
-        </div>
-
+        <div class="circle-label">BATTERY</div>
+        <div class="circle-value" id="soc">0 %</div>
       </div>
 
       <div class="circle-box">
-
         <div class="circle-icon">🏠</div>
-
-        <div class="circle-label">
-          LOAD
-        </div>
-
-        <div class="circle-value"
-        id="load_p">
-
-          0 W
-
-        </div>
-
+        <div class="circle-label">LOAD</div>
+        <div class="circle-value" id="load_p">0 W</div>
       </div>
 
       <div class="circle-box">
-
         <div class="circle-icon">⚡</div>
-
-        <div class="circle-label">
-          STATUS
-        </div>
-
-        <div class="circle-value"
-        id="status">
-
-          IDLE
-
-        </div>
-
+        <div class="circle-label">STATUS</div>
+        <div class="circle-value" id="status">IDLE</div>
       </div>
 
     </div>
 
-    <!-- CHART -->
     <div class="chart-container">
 
       <canvas id="chart"></canvas>
@@ -470,6 +426,11 @@ Isokuiki Dashboard
       <div class="card">
         <div class="card-title">PV Current</div>
         <div class="card-value" id="pv_i">0 A</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">PV Power</div>
+        <div class="card-value" id="pv_power_card">0 W</div>
       </div>
 
     </div>
@@ -526,7 +487,7 @@ Isokuiki Dashboard
 
 </div>
 
-<!-- ================= STATS ================= -->
+<!-- ================= STATISTICS ================= -->
 
 <div class="statistics">
 
@@ -539,6 +500,11 @@ Isokuiki Dashboard
     <div class="stats-card">
       <div class="stats-name">Today Energy</div>
       <div class="stats-value" id="kwh_day">0 kWh</div>
+    </div>
+
+    <div class="stats-card">
+      <div class="stats-name">Month Energy</div>
+      <div class="stats-value" id="kwh_month">0 kWh</div>
     </div>
 
     <div class="stats-card">
