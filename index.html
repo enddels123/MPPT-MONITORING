@@ -1,40 +1,28 @@
-<!-- =========================================================
-INDEX.HTML
-ISOKUIKI SMART ENERGY
-FINAL INDUSTRIAL SCADA UI
-========================================================= -->
-
+```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+/>
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<title>ISOKUIKI SMART ENERGY</title>
 
-<title>
-ISOKUIKI SMART ENERGY
-</title>
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
 
-<!-- MQTT -->
+<link
+href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap"
+rel="stylesheet">
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
-<!-- CHART -->
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- FONT -->
-
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
-
 <style>
-
-/* =========================================================
-GLOBAL
-========================================================= */
 
 *{
 margin:0;
@@ -42,172 +30,142 @@ padding:0;
 box-sizing:border-box;
 }
 
-html,body{
-
-width:100%;
-height:100%;
-
-overflow:hidden;
+body{
 
 font-family:'Orbitron',sans-serif;
 
 background:
 linear-gradient(
 180deg,
-#01091a,
-#00142f
+#000814,
+#001233
 );
 
 color:#fff;
+
+overflow:hidden;
+
+height:100vh;
 }
 
-/* =========================================================
-APP
-========================================================= */
+/* =========================================
+MAIN
+========================================= */
 
-.app{
+.dashboard{
 
-width:100vw;
+width:100%;
 height:100vh;
 
-display:flex;
-flex-direction:column;
+display:grid;
 
-padding:8px;
-gap:8px;
+grid-template-rows:
+auto auto 1fr auto;
+
+gap:1vh;
+
+padding:1vh;
 }
 
-/* =========================================================
+/* =========================================
 HEADER
-========================================================= */
+========================================= */
 
 .header{
 
-display:flex;
-flex-direction:column;
-
-justify-content:center;
-align-items:center;
-
-gap:2px;
+text-align:center;
 }
 
 .title{
 
-font-size:clamp(18px,2vw,38px);
-
-font-weight:700;
+font-size:
+clamp(22px,2vw,42px);
 
 color:#00ffe1;
 
 text-shadow:
 0 0 10px #00ffe1,
-0 0 25px #00ffe1;
+0 0 20px #00ffe1;
+}
+
+#network{
+
+font-size:
+clamp(10px,1vw,16px);
+
+margin-top:.3vh;
 }
 
 .online{
-
 color:#00ff88;
-font-size:12px;
 }
 
 .offline{
-
 color:#ff4444;
-font-size:12px;
 }
 
-/* =========================================================
-DEVICE STATUS
-========================================================= */
+/* =========================================
+STATUS
+========================================= */
 
-.device-box{
+.status-box{
 
-width:min(500px,90vw);
-
-height:48px;
-
-border-radius:50px;
-
-border:3px solid #00ff99;
-
-display:flex;
-
-justify-content:center;
-align-items:center;
-
-font-size:clamp(14px,1.2vw,22px);
-
-font-weight:700;
+width:min(60vw,500px);
 
 margin:auto;
+
+padding:1vh;
+
+border-radius:40px;
+
+border:
+3px solid #00ff99;
+
+text-align:center;
+
+font-size:
+clamp(14px,1.2vw,22px);
 
 background:
 rgba(0,20,40,.7);
 
 box-shadow:
-0 0 10px #00ff99,
-0 0 25px #00ff99;
+0 0 15px #00ff99;
 }
 
-/* =========================================================
+/* =========================================
 CONTENT
-========================================================= */
+========================================= */
 
 .content{
-
-flex:1;
-
-display:grid;
-
-grid-template-rows:
-52% 48%;
-
-gap:8px;
-
-overflow:hidden;
-}
-
-/* =========================================================
-TOP
-========================================================= */
-
-.top{
 
 display:grid;
 
 grid-template-columns:
-34% 66%;
+1fr 1.4fr;
 
-gap:8px;
+gap:1vh;
 
-overflow:hidden;
+height:100%;
 }
 
-/* =========================================================
+/* =========================================
 SCADA
-========================================================= */
+========================================= */
 
-.scada{
-
-position:relative;
-
-background:
-rgba(0,10,25,.8);
-
-border-radius:18px;
-
-overflow:hidden;
+.scada-panel{
 
 display:flex;
-
-justify-content:center;
 align-items:center;
-}
+justify-content:center;
 
-/* =========================================================
-FLOW SVG
-========================================================= */
+background:
+rgba(0,10,30,.55);
+
+border-radius:20px;
+
+position:relative;
+}
 
 svg{
 
@@ -215,16 +173,23 @@ width:100%;
 height:100%;
 }
 
-/* =========================================================
-NODE
-========================================================= */
+/* =========================================
+FLOW
+========================================= */
+
+.flow-line{
+
+stroke:#3b82f6;
+stroke-width:5;
+fill:none;
+}
 
 .flow-dot{
 
-fill:#00ff99;
+fill:#00ff88;
 
 filter:
-drop-shadow(0 0 8px #00ff99);
+drop-shadow(0 0 10px #00ff88);
 
 animation:
 pulse 1s infinite;
@@ -233,7 +198,7 @@ pulse 1s infinite;
 @keyframes pulse{
 
 0%{
-opacity:.3;
+opacity:.2;
 }
 
 50%{
@@ -241,137 +206,72 @@ opacity:1;
 }
 
 100%{
-opacity:.3;
+opacity:.2;
 }
 }
 
-/* =========================================================
-FLOW MOVE
-========================================================= */
+/* =========================================
+RIGHT
+========================================= */
 
-.move1{
+.right-panel{
 
-animation:
-move1 3s linear infinite;
+display:grid;
+
+grid-template-rows:
+1fr auto;
+
+gap:1vh;
 }
 
-.move2{
+/* =========================================
+WIDGETS
+========================================= */
 
-animation:
-move2 3s linear infinite;
-}
-
-.move3{
-
-animation:
-move3 3s linear infinite;
-}
-
-@keyframes move1{
-
-0%{
-transform:translateY(-120px);
-}
-
-100%{
-transform:translateY(0px);
-}
-}
-
-@keyframes move2{
-
-0%{
-transform:translate(0,0);
-}
-
-100%{
-transform:translate(-70px,120px);
-}
-}
-
-@keyframes move3{
-
-0%{
-transform:translate(0,0);
-}
-
-100%{
-transform:translate(70px,120px);
-}
-}
-
-/* =========================================================
-RIGHT PANEL
-========================================================= */
-
-.right{
+.widgets{
 
 display:grid;
 
 grid-template-columns:
-repeat(2,1fr);
+1fr 1fr;
 
-grid-template-rows:
-repeat(2,1fr);
-
-gap:8px;
+gap:1vh;
 }
 
-/* =========================================================
-CARD
-========================================================= */
-
-.card{
+.widget{
 
 background:
-rgba(8,20,45,.9);
+rgba(0,15,40,.8);
 
 border-radius:18px;
 
-padding:10px;
-
-display:flex;
-flex-direction:column;
-
-justify-content:flex-start;
-
-overflow:hidden;
+padding:1vh;
 
 box-shadow:
-0 0 10px rgba(0,255,200,.15);
+0 0 10px rgba(0,255,255,.15);
 }
 
-/* =========================================================
-CARD TITLE
-========================================================= */
-
-.card-title{
+.widget h3{
 
 text-align:center;
 
-font-size:clamp(12px,.9vw,18px);
+margin-bottom:1vh;
 
-font-weight:700;
-
-margin-bottom:8px;
+font-size:
+clamp(12px,1vw,20px);
 
 color:#00ffe1;
 }
 
-/* =========================================================
-STAT
-========================================================= */
-
-.stat{
+.row{
 
 display:flex;
 
 justify-content:space-between;
-align-items:center;
 
-padding:6px 8px;
+padding:.5vh;
 
-margin-bottom:6px;
+margin-bottom:.5vh;
 
 background:
 rgba(255,255,255,.03);
@@ -379,32 +279,29 @@ rgba(255,255,255,.03);
 border-radius:10px;
 
 font-size:
-clamp(10px,.9vw,15px);
+clamp(10px,.9vw,16px);
 }
 
-/* =========================================================
-GAUGE
-========================================================= */
+/* =========================================
+SOC
+========================================= */
 
-.gauge{
+.soc-bar{
 
-width:100%;
-height:14px;
+height:12px;
 
-background:
-rgba(255,255,255,.08);
+background:#1e293b;
 
 border-radius:20px;
 
 overflow:hidden;
 
-margin-top:6px;
+margin-top:1vh;
 }
 
-.gauge-fill{
+.soc-fill{
 
 height:100%;
-
 width:0%;
 
 background:
@@ -414,261 +311,228 @@ linear-gradient(
 #00ffd5
 );
 
-box-shadow:
-0 0 10px #00ff88;
+transition:.5s;
 }
 
-/* =========================================================
-BOTTOM
-========================================================= */
+/* =========================================
+CHARTS
+========================================= */
 
-.bottom{
+.charts{
 
 display:grid;
 
 grid-template-columns:
-repeat(3,1fr);
+1fr 1fr 1fr;
 
-gap:8px;
-
-overflow:hidden;
+gap:1vh;
 }
 
-/* =========================================================
-CHART
-========================================================= */
-
-.chart-card{
+.chart-box{
 
 background:
-rgba(8,20,45,.9);
+rgba(0,15,40,.8);
 
 border-radius:18px;
 
-padding:8px;
+padding:1vh;
 
-overflow:hidden;
+height:24vh;
 }
 
-.chart-card canvas{
-
-width:100% !important;
-height:100% !important;
-}
-
-/* =========================================================
+/* =========================================
 RESPONSIVE
-========================================================= */
+========================================= */
 
 @media(max-width:900px){
 
 .content{
 
-grid-template-rows:
-48% 52%;
+grid-template-columns:
+1fr;
+
 }
 
-.top{
+.scada-panel{
+
+height:28vh;
+}
+
+.charts{
 
 grid-template-columns:
-38% 62%;
-}
-}
-
-@media(max-width:700px){
-
-.app{
-
-padding:5px;
-gap:5px;
+1fr 1fr 1fr;
 }
 
-.top{
+.chart-box{
 
-grid-template-columns:
-40% 60%;
-
-gap:5px;
-}
-
-.right{
-
-gap:5px;
-}
-
-.bottom{
-
-gap:5px;
-}
-
-.card{
-
-padding:5px;
-}
-
-.chart-card{
-
-padding:4px;
-}
-}
-
-@media(max-width:500px){
-
-.content{
-
-grid-template-rows:
-50% 50%;
-}
-
-.top{
-
-grid-template-columns:
-42% 58%;
-}
-
-.device-box{
-
-height:42px;
-
-font-size:14px;
-}
-
-.title{
-
-font-size:22px;
+height:18vh;
 }
 }
 
 </style>
-
 </head>
 
 <body>
 
-<div class="app">
-
-<!-- =========================================================
-HEADER
-========================================================= -->
+<div class="dashboard">
 
 <div class="header">
 
-<div class="title">
+<h1 class="title">
 ISOKUIKI SMART ENERGY
-</div>
+</h1>
 
 <div id="network"
 class="offline">
-
 OFFLINE
-
 </div>
 
 </div>
 
-<!-- =========================================================
-DEVICE
-========================================================= -->
-
-<div class="device-box"
-id="deviceStatus">
+<div
+id="deviceStatus"
+class="status-box">
 
 DEVICE SHUTDOWN
 
 </div>
 
-<!-- =========================================================
-CONTENT
-========================================================= -->
-
 <div class="content">
 
-<!-- =========================================================
-TOP
-========================================================= -->
+<div class="scada-panel">
 
-<div class="top">
-
-<!-- =========================================================
-SCADA
-========================================================= -->
-
-<div class="scada">
-
-<svg viewBox="0 0 300 500">
+<svg viewBox="0 0 400 500">
 
 <!-- LINE -->
 
-<line x1="150" y1="70"
-x2="150" y2="170"
-stroke="#3b6ea8"
-stroke-width="4"/>
+<line
+x1="200"
+y1="90"
+x2="200"
+y2="180"
+class="flow-line"
+/>
 
-<line x1="150" y1="230"
-x2="150" y2="260"
-stroke="#3b6ea8"
-stroke-width="4"/>
+<line
+x1="200"
+y1="240"
+x2="100"
+y2="240"
+class="flow-line"
+/>
 
-<line x1="80" y1="260"
-x2="220" y2="260"
-stroke="#3b6ea8"
-stroke-width="4"/>
+<line
+x1="100"
+y1="240"
+x2="100"
+y2="340"
+class="flow-line"
+/>
 
-<line x1="80" y1="260"
-x2="80" y2="380"
-stroke="#3b6ea8"
-stroke-width="4"/>
+<line
+x1="200"
+y1="240"
+x2="300"
+y2="240"
+class="flow-line"
+/>
 
-<line x1="220" y1="260"
-x2="220" y2="380"
-stroke="#3b6ea8"
-stroke-width="4"/>
+<line
+x1="300"
+y1="240"
+x2="300"
+y2="340"
+class="flow-line"
+/>
 
-<!-- MOVING NODES -->
+<!-- NODE -->
 
-<circle cx="150" cy="100"
-r="5"
-class="flow-dot move1"/>
+<circle
+cx="200"
+cy="130"
+r="6"
+class="flow-dot"
+/>
 
-<circle cx="150" cy="260"
-r="5"
-class="flow-dot move2"/>
+<circle
+cx="150"
+cy="240"
+r="6"
+class="flow-dot"
+/>
 
-<circle cx="150" cy="260"
-r="5"
-class="flow-dot move3"/>
+<circle
+cx="250"
+cy="240"
+r="6"
+class="flow-dot"
+/>
 
 <!-- PV -->
 
-<circle cx="150"
-cy="50"
-r="42"
+<circle
+cx="200"
+cy="60"
+r="55"
+fill="#001b33"
+stroke="#00ffe1"
+stroke-width="3"
+/>
 
-fill="#062038"
-stroke="#00ffd5"
-stroke-width="3"/>
-
-<text x="150"
+<text
+x="200"
 y="45"
-
-text-anchor="middle"
-
-fill="#fff"
-
-font-size="20">
+fill="#00ffe1"
+font-size="18"
+text-anchor="middle">
 
 ☀
 
 </text>
 
-<text x="150"
-y="78"
-
+<text
+x="200"
+y="70"
+fill="#fff"
+font-size="12"
 text-anchor="middle"
+id="pv_v">
 
-fill="#00ffd5"
+0V
 
-font-size="11">
+</text>
+
+<text
+x="200"
+y="90"
+fill="#fff"
+font-size="12"
+text-anchor="middle"
+id="pv_i">
+
+0A
+
+</text>
+
+<text
+x="200"
+y="110"
+fill="#fff"
+font-size="12"
+text-anchor="middle"
+id="pv_p">
+
+0W
+
+</text>
+
+<text
+x="200"
+y="145"
+fill="#00ffe1"
+font-size="14"
+text-anchor="middle">
 
 PHOTOVOLTAIC
 
@@ -676,71 +540,125 @@ PHOTOVOLTAIC
 
 <!-- MPPT -->
 
-<circle cx="150"
-cy="210"
-r="42"
+<circle
+cx="200"
+cy="200"
+r="55"
+fill="#001b33"
+stroke="#00ffe1"
+stroke-width="3"
+/>
 
-fill="#062038"
-stroke="#00ffd5"
-stroke-width="3"/>
-
-<text x="150"
-y="205"
-
-text-anchor="middle"
-
-fill="#fff"
-
-font-size="20">
+<text
+x="200"
+y="190"
+fill="#00ffe1"
+font-size="18"
+text-anchor="middle">
 
 ⚙
 
 </text>
 
-<text x="150"
-y="238"
-
+<text
+x="200"
+y="215"
+fill="#fff"
+font-size="12"
 text-anchor="middle"
+id="charge_p">
 
-fill="#00ffd5"
+0W
 
-font-size="11">
+</text>
+
+<text
+x="200"
+y="235"
+fill="#fff"
+font-size="12"
+text-anchor="middle"
+id="mppt_eff">
+
+0%
+
+</text>
+
+<text
+x="200"
+y="270"
+fill="#00ffe1"
+font-size="14"
+text-anchor="middle">
 
 MPPT
 
 </text>
 
-<!-- BATTERY -->
+<!-- BAT -->
 
-<circle cx="80"
-cy="420"
-r="40"
+<circle
+cx="100"
+cy="390"
+r="55"
+fill="#001b33"
+stroke="#00ffe1"
+stroke-width="3"
+/>
 
-fill="#062038"
-stroke="#00ffd5"
-stroke-width="3"/>
-
-<text x="80"
-y="415"
-
-text-anchor="middle"
-
-fill="#fff"
-
-font-size="20">
+<text
+x="100"
+y="375"
+fill="#00ffe1"
+font-size="18"
+text-anchor="middle">
 
 🔋
 
 </text>
 
-<text x="80"
-y="448"
-
+<text
+x="100"
+y="395"
+fill="#fff"
+font-size="12"
 text-anchor="middle"
+id="bat_v">
 
-fill="#00ffd5"
+0V
 
-font-size="11">
+</text>
+
+<text
+x="100"
+y="415"
+fill="#fff"
+font-size="12"
+text-anchor="middle"
+id="bat_i">
+
+0A
+
+</text>
+
+<text
+x="100"
+y="435"
+fill="#fff"
+font-size="12"
+text-anchor="middle"
+id="soc">
+
+0%
+
+</text>
+
+<text
+x="100"
+y="465"
+fill="#00ffe1"
+font-size="14"
+text-anchor="middle">
 
 BATTERY
 
@@ -748,35 +666,56 @@ BATTERY
 
 <!-- ENERGY -->
 
-<circle cx="220"
-cy="420"
-r="40"
+<circle
+cx="300"
+cy="390"
+r="55"
+fill="#001b33"
+stroke="#00ffe1"
+stroke-width="3"
+/>
 
-fill="#062038"
-stroke="#00ffd5"
-stroke-width="3"/>
-
-<text x="220"
-y="415"
-
-text-anchor="middle"
-
-fill="#fff"
-
-font-size="20">
+<text
+x="300"
+y="375"
+fill="#00ffe1"
+font-size="18"
+text-anchor="middle">
 
 ⚡
 
 </text>
 
-<text x="220"
-y="448"
-
+<text
+x="300"
+y="395"
+fill="#fff"
+font-size="12"
 text-anchor="middle"
+id="kwh_day">
 
-fill="#00ffd5"
+0
 
-font-size="11">
+</text>
+
+<text
+x="300"
+y="415"
+fill="#fff"
+font-size="12"
+text-anchor="middle"
+id="kwh_month">
+
+0
+
+</text>
+
+<text
+x="300"
+y="465"
+fill="#00ffe1"
+font-size="14"
+text-anchor="middle">
 
 ENERGY
 
@@ -786,131 +725,107 @@ ENERGY
 
 </div>
 
-<!-- =========================================================
-RIGHT PANEL
-========================================================= -->
+<div class="right-panel">
 
-<div class="right">
+<div class="widgets">
 
-<!-- PV -->
+<div class="widget">
 
-<div class="card">
+<h3>PHOTOVOLTAIC</h3>
 
-<div class="card-title">
-PHOTOVOLTAIC
-</div>
-
-<div class="stat">
+<div class="row">
 <span>Voltage</span>
-<span id="pv_v">0V</span>
+<span id="pvv">0V</span>
 </div>
 
-<div class="stat">
+<div class="row">
 <span>Current</span>
-<span id="pv_i">0A</span>
+<span id="pvi">0A</span>
 </div>
 
-<div class="stat">
+<div class="row">
 <span>Power</span>
-<span id="pv_p">0W</span>
+<span id="pvp">0W</span>
 </div>
 
 </div>
 
-<!-- MPPT -->
+<div class="widget">
 
-<div class="card">
+<h3>MPPT</h3>
 
-<div class="card-title">
-MPPT
-</div>
-
-<div class="stat">
+<div class="row">
 <span>Charge</span>
-<span id="charge_p">0W</span>
+<span id="cpp">0W</span>
 </div>
 
-<div class="stat">
+<div class="row">
 <span>Efficiency</span>
-<span id="mppt_eff">0%</span>
+<span id="mpe">0%</span>
 </div>
 
 </div>
 
-<!-- BATTERY -->
+<div class="widget">
 
-<div class="card">
+<h3>BATTERY</h3>
 
-<div class="card-title">
-BATTERY
-</div>
-
-<div class="stat">
+<div class="row">
 <span>Voltage</span>
-<span id="bat_v">0V</span>
+<span id="bvv">0V</span>
 </div>
 
-<div class="stat">
+<div class="row">
 <span>Current</span>
-<span id="bat_i">0A</span>
+<span id="bii">0A</span>
 </div>
 
-<div class="stat">
+<div class="row">
 <span>SOC</span>
-<span id="soc">0%</span>
+<span id="socc">0%</span>
 </div>
 
-<div class="gauge">
-
-<div class="gauge-fill"
+<div class="soc-bar">
+<div
+class="soc-fill"
 id="soc_fill">
-
+</div>
 </div>
 
 </div>
 
-</div>
+<div class="widget">
 
-<!-- ENERGY -->
+<h3>ENERGY</h3>
 
-<div class="card">
-
-<div class="card-title">
-ENERGY
-</div>
-
-<div class="stat">
+<div class="row">
 <span>Daily</span>
-<span id="kwh_day">0</span>
+<span id="dayy">0</span>
 </div>
 
-<div class="stat">
+<div class="row">
 <span>Monthly</span>
-<span id="kwh_month">0</span>
+<span id="monthh">0</span>
 </div>
 
 </div>
 
 </div>
 
-</div>
+<div class="charts">
 
-<!-- =========================================================
-BOTTOM
-========================================================= -->
-
-<div class="bottom">
-
-<div class="chart-card">
+<div class="chart-box">
 <canvas id="powerChart"></canvas>
 </div>
 
-<div class="chart-card">
+<div class="chart-box">
 <canvas id="dayChart"></canvas>
 </div>
 
-<div class="chart-card">
+<div class="chart-box">
 <canvas id="monthChart"></canvas>
+</div>
+
 </div>
 
 </div>
@@ -923,3 +838,4 @@ BOTTOM
 
 </body>
 </html>
+```
