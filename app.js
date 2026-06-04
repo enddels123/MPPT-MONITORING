@@ -43,20 +43,14 @@ const chart = new Chart(ctx,{
     datasets:[
 
       {
-
         label:'PV Power',
-
         data:pvData,
-
         borderWidth:2
       },
 
       {
-
         label:'Load Power',
-
         data:loadData,
-
         borderWidth:2
       }
     ]
@@ -119,15 +113,38 @@ client.on("message",
   .innerHTML =
   data.status || "IDLE";
 
+  // MPPT
+  document.getElementById("mppt_v")
+  .innerHTML =
+  safe(data.mppt_v).toFixed(1)+" V";
+
+  document.getElementById("mppt_i")
+  .innerHTML =
+  safe(data.mppt_i).toFixed(1)+" A";
+
+  document.getElementById("mppt_p")
+  .innerHTML =
+  safe(data.mppt_p).toFixed(1)+" W";
+
   // STATS
   document.getElementById("kwh_day")
   .innerHTML =
   safe(data.kwh_day).toFixed(2)
   +" kWh";
 
-  document.getElementById("kwh_month")
+  document.getElementById("storage_prod")
   .innerHTML =
-  safe(data.kwh_month).toFixed(2)
+  safe(data.storage_prod).toFixed(2)
+  +" kWh";
+
+  document.getElementById("charged")
+  .innerHTML =
+  safe(data.charged).toFixed(2)
+  +" kWh";
+
+  document.getElementById("load_cons")
+  .innerHTML =
+  safe(data.load_cons).toFixed(2)
   +" kWh";
 
   document.getElementById("mppt_eff")
