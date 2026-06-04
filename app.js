@@ -20,7 +20,7 @@ client.on("connect",()=>{
 });
 
 /* =====================================================
-   SAFE NUMBER
+   SAFE VALUE
 ===================================================== */
 
 function safe(v){
@@ -32,7 +32,7 @@ function safe(v){
 }
 
 /* =====================================================
-   UPDATE TEXT
+   UPDATE ELEMENT
 ===================================================== */
 
 function setText(id,val){
@@ -45,6 +45,87 @@ function setText(id,val){
     el.innerHTML = val;
   }
 }
+
+/* =====================================================
+   CHART
+===================================================== */
+
+const ctx =
+document.getElementById(
+  "powerChart"
+).getContext("2d");
+
+const labels = [];
+
+const pvData = [];
+
+const loadData = [];
+
+const chart =
+new Chart(ctx,{
+
+  type:'line',
+
+  data:{
+
+    labels:labels,
+
+    datasets:[
+
+      {
+        label:'PV Power',
+
+        data:pvData,
+
+        borderWidth:3,
+
+        tension:0.4
+      },
+
+      {
+        label:'Load Power',
+
+        data:loadData,
+
+        borderWidth:3,
+
+        tension:0.4
+      }
+    ]
+  },
+
+  options:{
+
+    responsive:true,
+
+    maintainAspectRatio:false,
+
+    plugins:{
+
+      legend:{
+
+        labels:{
+          color:'white'
+        }
+      }
+    },
+
+    scales:{
+
+      x:{
+        ticks:{
+          color:'white'
+        }
+      },
+
+      y:{
+        ticks:{
+          color:'white'
+        }
+      }
+    }
+  }
+});
 
 /* =====================================================
    MQTT MESSAGE
@@ -87,7 +168,9 @@ client.on(
     "#ff5500";
   }
 
-  /* SVG LINE */
+  /* =================================================
+     LINE COLOR
+  ================================================= */
 
   document
   .querySelectorAll(
@@ -99,7 +182,9 @@ client.on(
     color;
   });
 
-  /* NODE */
+  /* =================================================
+     NODE COLOR
+  ================================================= */
 
   document
   .querySelectorAll(
@@ -133,6 +218,23 @@ client.on(
     safe(data.pv_p).toFixed(1)+" W"
   );
 
+  /* CARD */
+
+  setText(
+    "pv_voltage_card",
+    safe(data.pv_v).toFixed(1)+" V"
+  );
+
+  setText(
+    "pv_current_card",
+    safe(data.pv_i).toFixed(1)+" A"
+  );
+
+  setText(
+    "pv_power_card",
+    safe(data.pv_p).toFixed(1)+" W"
+  );
+
   /* =================================================
      BATTERY
   ================================================= */
@@ -154,6 +256,23 @@ client.on(
 
   setText(
     "soc",
+    safe(data.soc).toFixed(0)+" %"
+  );
+
+  /* CARD */
+
+  setText(
+    "bat_voltage_card",
+    safe(data.bat_v).toFixed(1)+" V"
+  );
+
+  setText(
+    "bat_current_card",
+    safe(data.bat_i).toFixed(1)+" A"
+  );
+
+  setText(
+    "soc_card",
     safe(data.soc).toFixed(0)+" %"
   );
 
@@ -213,4 +332,55 @@ client.on(
     "idle_p",
     safe(data.idle_p).toFixed(1)+" W"
   );
+
+  /* =================================================
+     ELECTRICITY STAT
+  ================================================= */
+
+  setText(
+    "today_energy",
+    safe(data.today_energy)
+    .toFixed(2)+" kWh"
+  );
+
+  setText(
+    "month_energy",
+    safe(data.month_energy)
+    .toFixed(2)+" kWh"
+  );
+
+  setText(
+    "load_energy",
+    safe(data.load_energy)
+    .toFixed(2)+" kWh"
+  );
+
+  /* =================================================
+     CHART
+  ================================================= */
+
+  const now =
+  new Date()
+  .toLocaleTimeString();
+
+  labels.push(now);
+
+  pvData.push(
+    safe(data.pv_p)
+  );
+
+  loadData.push(
+    safe(data.load_p)
+  );
+
+  if(labels.length > 20){
+
+    labels.shift();
+
+    pvData.shift();
+
+    loadData.shift();
+  }
+
+  chart.update();
 });
