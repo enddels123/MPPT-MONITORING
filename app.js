@@ -5,8 +5,6 @@ const client = mqtt.connect(
 const topic =
 "solar/jnge/hybrid";
 
-// ================= MQTT =================
-
 client.on("connect",()=>{
 
   console.log("MQTT CONNECTED");
@@ -14,17 +12,15 @@ client.on("connect",()=>{
   client.subscribe(topic);
 });
 
-client.on("reconnect",()=>{
+function safe(v){
 
-  console.log("MQTT RECONNECT");
-});
+  if(isNaN(v))
+    return 0;
 
-client.on("error",(err)=>{
+  return Number(v);
+}
 
-  console.log(err);
-});
-
-// ================= CHART =================
+/* ================= CHART ================= */
 
 const ctx =
 document.getElementById("chart")
@@ -35,8 +31,6 @@ const labels = [];
 const pvData = [];
 
 const loadData = [];
-
-const batData = [];
 
 const chart = new Chart(ctx,{
 
@@ -50,35 +44,20 @@ const chart = new Chart(ctx,{
 
       {
 
-        label:'PV W',
+        label:'PV Power',
 
         data:pvData,
 
-        borderWidth:1,
-
-        tension:0.3
+        borderWidth:2
       },
 
       {
 
-        label:'LOAD W',
+        label:'Load Power',
 
         data:loadData,
 
-        borderWidth:1,
-
-        tension:0.3
-      },
-
-      {
-
-        label:'BAT V',
-
-        data:batData,
-
-        borderWidth:1,
-
-        tension:0.3
+        borderWidth:2
       }
     ]
   },
@@ -87,327 +66,105 @@ const chart = new Chart(ctx,{
 
     responsive:true,
 
-    maintainAspectRatio:false,
-
-    animation:false,
-
-    plugins:{
-
-      legend:{
-
-        labels:{
-
-          color:'#00ffd5',
-
-          font:{
-            size:9
-          }
-        }
-      }
-    },
-
-    scales:{
-
-      x:{
-
-        ticks:{
-
-          color:'#00ffd5',
-
-          font:{
-            size:8
-          }
-        }
-      },
-
-      y:{
-
-        ticks:{
-
-          color:'#00ffd5',
-
-          font:{
-            size:8
-          }
-        }
-      }
-    }
+    maintainAspectRatio:false
   }
 });
 
-// ================= SAFE =================
+/* ================= MQTT ================= */
 
-function safe(v){
+client.on("message",
+(topic,message)=>{
 
-  if(isNaN(v))
-    return 0;
+  const data =
+  JSON.parse(message.toString());
 
-  return Number(v);
-}
+  /* ================= PV ================= */
 
-// ================= ARROW =================
+  document.getElementById("pv_v")
+  .innerHTML =
+  safe(data.pv_v).toFixed(1)+" V";
 
-function updateArrow(id,power){
+  document.getElementById("pv_i")
+  .innerHTML =
+  safe(data.pv_i).toFixed(1)+" A";
 
-  const arrow =
-  document.getElementById(id);
+  document.getElementById("pv_p")
+  .innerHTML =
+  safe(data.pv_p).toFixed(1)+" W";
 
-  power = safe(power);
+  /* ================= BATTERY ================= */
 
-  if(power < 20){
+  document.getElementById("bat_v")
+  .innerHTML =
+  safe(data.bat_v).toFixed(1)+" V";
 
-    arrow.className =
-    "arrow green";
+  document.getElementById("bat_i")
+  .innerHTML =
+  safe(data.bat_i).toFixed(1)+" A";
 
-    arrow.style.animationDuration =
-    "2s";
-  }
+  document.getElementById("soc")
+  .innerHTML =
+  safe(data.soc).toFixed(0)+" %";
 
-  else if(power < 100){
+  /* ================= LOAD ================= */
 
-    arrow.className =
-    "arrow yellow";
+  document.getElementById("load_p")
+  .innerHTML =
+  safe(data.load_p).toFixed(1)+" W";
 
-    arrow.style.animationDuration =
-    "1s";
-  }
+  /* ================= CHARGE ================= */
 
-  else{
+  document.getElementById("charge_p")
+  .innerHTML =
+  safe(data.charge_p).toFixed(1)+" W";
 
-    arrow.className =
-    "arrow red";
+  /* ================= STATUS ================= */
 
-    arrow.style.animationDuration =
-    "0.4s";
-  }
-}
+  document.getElementById("status")
+  .innerHTML =
+  data.status || "IDLE";
 
-// ================= STATUS =================
+  /* ================= STATISTICS ================= */
 
-function updateStatus(status){
+  document.getElementById("kwh_day")
+  .innerHTML =
+  safe(data.kwh_day).toFixed(2)
+  +" kWh";
 
-  const el =
-  document.getElementById("status");
+  document.getElementById("kwh_month")
+  .innerHTML =
+  safe(data.kwh_month).toFixed(2)
+  +" kWh";
 
-  el.innerHTML = status;
+  document.getElementById("mppt_eff")
+  .innerHTML =
+  safe(data.mppt_eff).toFixed(1)
+  +" %";
 
-  if(status === "CHARGING"){
+  /* ================= CHART ================= */
 
-    el.style.color = "#00ff00";
-  }
+  const now =
+  new Date()
+  .toLocaleTimeString();
 
-  else if(status === "DISCHARGING"){
+  labels.push(now);
 
-    el.style.color = "#ff0033";
-  }
-
-  else{
-
-    el.style.color = "#ffd000";
-  }
-}
-
-// ================= ARROW DIRECTION =================
-
-function updateArrowDirection(){
-
-  const mobile =
-  window.innerWidth < 768;
-
-  const arrows =
-  document.querySelectorAll(
-    ".arrow-symbol"
+  pvData.push(
+    safe(data.pv_p)
   );
 
-  arrows.forEach(a=>{
+  loadData.push(
+    safe(data.load_p)
+  );
 
-    if(mobile){
+  if(labels.length > 20){
 
-      a.innerHTML = "▼";
+    labels.shift();
 
-    }else{
+    pvData.shift();
 
-      a.innerHTML = "➜";
-    }
-  });
-}
-
-updateArrowDirection();
-
-window.addEventListener(
-  "resize",
-  updateArrowDirection
-);
-
-// ================= MQTT MESSAGE =================
-
-client.on("message",(topic,message)=>{
-
-  try{
-
-    const data =
-    JSON.parse(
-      message.toString()
-    );
-
-    // PV
-
-    document.getElementById("pv_v")
-    .innerHTML =
-    safe(data.pv_v).toFixed(1)
-    +" V";
-
-    document.getElementById("pv_i")
-    .innerHTML =
-    safe(data.pv_i).toFixed(2)
-    +" A";
-
-    document.getElementById("pv_p")
-    .innerHTML =
-    safe(data.pv_p).toFixed(1)
-    +" W";
-
-    // BATTERY
-
-    document.getElementById("bat_v")
-    .innerHTML =
-    safe(data.bat_v).toFixed(1)
-    +" V";
-
-    document.getElementById("bat_i")
-    .innerHTML =
-    safe(data.bat_i).toFixed(2)
-    +" A";
-
-    document.getElementById("soc")
-    .innerHTML =
-    safe(data.soc).toFixed(1)
-    +" %";
-
-    // MPPT
-
-    document.getElementById("charge_p")
-    .innerHTML =
-    safe(data.charge_p).toFixed(1)
-    +" W";
-
-    document.getElementById("mppt_eff")
-    .innerHTML =
-    safe(data.mppt_eff).toFixed(1)
-    +" %";
-
-    document.getElementById("mppt_eff2")
-    .innerHTML =
-    safe(data.mppt_eff).toFixed(1)
-    +" %";
-
-    // LOAD
-
-    document.getElementById("load_p")
-    .innerHTML =
-    safe(data.load_p).toFixed(1)
-    +" W";
-
-    updateStatus(
-      data.status || "IDLE"
-    );
-
-    // ENERGY
-
-    document.getElementById("kwh_day")
-    .innerHTML =
-    safe(data.kwh_day).toFixed(2)
-    +" kWh";
-
-    document.getElementById("kwh_month")
-    .innerHTML =
-    safe(data.kwh_month).toFixed(2)
-    +" kWh";
-
-    // ARROW
-
-    updateArrow(
-      "arrow1",
-      data.pv_p
-    );
-
-    updateArrow(
-      "arrow2",
-      data.charge_p
-    );
-
-    updateArrow(
-      "arrow3",
-      data.load_p
-    );
-
-    // CHART
-
-    const now =
-    new Date()
-    .toLocaleTimeString();
-
-    labels.push(now);
-
-    pvData.push(
-      safe(data.pv_p)
-    );
-
-    loadData.push(
-      safe(data.load_p)
-    );
-
-    batData.push(
-      safe(data.bat_v)
-    );
-
-    if(labels.length > 15){
-
-      labels.shift();
-
-      pvData.shift();
-
-      loadData.shift();
-
-      batData.shift();
-    }
-
-    chart.update();
-
-    // SAVE
-
-    localStorage.setItem(
-      "plts_last_data",
-      JSON.stringify(data)
-    );
-
-  }catch(err){
-
-    console.log(err);
+    loadData.shift();
   }
+
+  chart.update();
 });
-
-// ================= RESTORE =================
-
-const saved =
-localStorage.getItem(
-  "plts_last_data"
-);
-
-if(saved){
-
-  try{
-
-    const data =
-    JSON.parse(saved);
-
-    document.getElementById("pv_v")
-    .innerHTML =
-    safe(data.pv_v).toFixed(1)
-    +" V";
-
-  }catch(err){
-
-    console.log(err);
-  }
-}

@@ -8,379 +8,289 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>ISOKUIKI</title>
+<title>ISOKUIKI Dashboard</title>
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 
 <style>
 
 /* ================= GLOBAL ================= */
 
 *{
+  margin:0;
+  padding:0;
   box-sizing:border-box;
 }
 
 body{
 
-  margin:0;
+  background:#065f73;
 
-  padding:0;
+  color:white;
 
-  background:#040b18;
+  font-family:Segoe UI,sans-serif;
 
-  color:#00ffd5;
-
-  font-family:'Orbitron',sans-serif;
-
-  overflow-x:hidden;
+  padding:12px;
 }
 
-/* ================= TITLE ================= */
+/* ================= HEADER ================= */
 
-h1{
-
-  text-align:center;
-
-  margin:10px 5px;
+.header{
 
   font-size:
-  clamp(15px,2vw,28px);
+  clamp(18px,2vw,34px);
+
+  font-weight:bold;
+
+  margin-bottom:20px;
 }
 
-/* ================= FLOW ================= */
+/* ================= MAIN ================= */
 
-.flow{
-
-  display:flex;
-
-  justify-content:center;
-
-  align-items:center;
-
-  flex-wrap:wrap;
-
-  gap:4px;
-
-  padding:5px;
-}
-
-/* ================= BOX ================= */
-
-.box{
-
-  flex:0 1 auto;
-
-  width:auto;
-
-  min-width:100px;
-
-  max-width:150px;
-
-  background:#101b33;
-
-  border-radius:12px;
-
-  padding:8px;
-
-  box-shadow:
-  0 0 10px rgba(0,255,200,0.12);
-
-  transition:0.3s;
-}
-
-.box:hover{
-
-  transform:translateY(-2px);
-}
-
-.box h2{
-
-  margin:0;
-
-  margin-bottom:6px;
-
-  font-size:
-  clamp(10px,1.2vw,16px);
-
-  text-align:center;
-}
-
-.box div{
-
-  margin-top:4px;
-
-  font-size:
-  clamp(10px,1vw,14px);
-
-  text-align:center;
-
-  display:flex;
-
-  justify-content:center;
-
-  align-items:center;
-
-  width:100%;
-}
-
-/* ================= ARROW ================= */
-
-.arrow-container{
-
-  width:25px;
-
-  height:25px;
-
-  position:relative;
-
-  overflow:hidden;
-}
-
-.arrow{
-
-  position:absolute;
-
-  left:-10px;
-
-  top:0;
-
-  font-size:
-  clamp(12px,1.5vw,22px);
-
-  animation:
-  moveArrowHorizontal 1s linear infinite;
-}
-
-@keyframes moveArrowHorizontal{
-
-  0%{
-    left:-10px;
-    opacity:0;
-  }
-
-  30%{
-    opacity:1;
-  }
-
-  100%{
-    left:25px;
-    opacity:0;
-  }
-}
-
-@keyframes moveArrowVertical{
-
-  0%{
-    top:-12px;
-    opacity:0;
-  }
-
-  30%{
-    opacity:1;
-  }
-
-  100%{
-    top:25px;
-    opacity:0;
-  }
-}
-
-/* ================= COLORS ================= */
-
-.green{
-  color:#00ff00;
-}
-
-.yellow{
-  color:#ffd000;
-}
-
-.red{
-  color:#ff0033;
-}
-
-/* ================= GRID ================= */
-
-.grid{
+.main{
 
   display:grid;
 
   grid-template-columns:
-  repeat(auto-fit,minmax(90px,1fr));
+  1.1fr 1fr;
 
-  gap:5px;
-
-  padding:5px;
+  gap:20px;
 }
+
+/* ================= LEFT PANEL ================= */
+
+.left-panel{
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:20px;
+}
+
+/* ================= CENTER ICON ================= */
+
+.center-icons{
+
+  display:grid;
+
+  grid-template-columns:
+  repeat(2,1fr);
+
+  gap:20px;
+
+  justify-items:center;
+}
+
+/* ================= CIRCLE BOX ================= */
+
+.circle-box{
+
+  width:
+  clamp(100px,16vw,160px);
+
+  height:
+  clamp(100px,16vw,160px);
+
+  border-radius:50%;
+
+  background:#0b7285;
+
+  border:4px solid
+  rgba(255,255,255,0.15);
+
+  display:flex;
+
+  flex-direction:column;
+
+  justify-content:center;
+
+  align-items:center;
+
+  box-shadow:
+  0 0 15px rgba(0,0,0,.3);
+}
+
+.circle-box h3{
+
+  font-size:
+  clamp(12px,1.5vw,20px);
+
+  margin-bottom:8px;
+}
+
+.circle-box .value{
+
+  font-size:
+  clamp(16px,2vw,30px);
+
+  font-weight:bold;
+}
+
+/* ================= RIGHT PANEL ================= */
+
+.right-panel{
+
+  display:grid;
+
+  grid-template-columns:
+  repeat(2,1fr);
+
+  gap:15px;
+}
+
+.section{
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:12px;
+}
+
+.section-title{
+
+  font-size:
+  clamp(18px,2vw,28px);
+
+  font-weight:bold;
+}
+
+/* ================= CARD ================= */
 
 .card{
 
-  background:#101b33;
+  background:#118aa0;
 
-  border-radius:10px;
+  border-radius:12px;
 
-  padding:8px;
+  padding:
+  clamp(10px,1.5vw,18px);
+
+  min-height:90px;
 
   box-shadow:
-  0 0 8px rgba(0,255,200,0.12);
-
-  text-align:center;
+  0 0 10px rgba(0,0,0,.25);
 }
 
 .card-title{
 
   font-size:
-  clamp(9px,1vw,13px);
+  clamp(11px,1.2vw,18px);
+
+  opacity:.9;
 }
 
-.value{
+.card-value{
 
   font-size:
-  clamp(12px,1.5vw,18px);
-
-  margin-top:4px;
+  clamp(18px,2vw,34px);
 
   font-weight:bold;
+
+  margin-top:8px;
 }
 
 /* ================= CHART ================= */
 
 .chart-container{
 
-  width:99%;
-
-  margin:auto;
-
-  margin-top:6px;
-
-  background:#101b33;
+  background:#118aa0;
 
   border-radius:12px;
 
-  padding:6px;
+  padding:10px;
 }
 
 canvas{
 
   width:100% !important;
 
-  height:180px !important;
+  height:250px !important;
+}
+
+/* ================= ELECTRICITY STATS ================= */
+
+.statistics{
+
+  margin-top:20px;
+
+  background:#0f7f93;
+
+  border-radius:12px;
+
+  padding:16px;
+}
+
+.stats-title{
+
+  font-size:
+  clamp(18px,2vw,28px);
+
+  font-weight:bold;
+
+  margin-bottom:15px;
+}
+
+.stats-grid{
+
+  display:grid;
+
+  grid-template-columns:
+  repeat(3,1fr);
+
+  gap:15px;
+}
+
+.stats-card{
+
+  background:#118aa0;
+
+  border-radius:10px;
+
+  padding:15px;
+}
+
+.stats-name{
+
+  font-size:
+  clamp(11px,1.2vw,18px);
+
+  margin-bottom:10px;
+}
+
+.stats-value{
+
+  font-size:
+  clamp(16px,2vw,30px);
+
+  font-weight:bold;
 }
 
 /* ================= MOBILE ================= */
 
-@media(max-width:768px){
+@media(max-width:900px){
 
-  .flow{
+  .main{
 
-    flex-direction:column;
-
-    gap:3px;
+    grid-template-columns:1fr;
   }
 
-  .box{
+  .right-panel{
 
-    width:95%;
-
-    max-width:240px;
-
-    padding:7px;
+    grid-template-columns:1fr;
   }
 
-  .box h2{
+  .stats-grid{
 
-    font-size:12px;
-  }
-
-  .box div{
-
-    font-size:10px;
-  }
-
-  .arrow-container{
-
-    width:22px;
-
-    height:32px;
-  }
-
-  .arrow{
-
-    left:0;
-
-    top:-12px;
-
-    font-size:18px;
-
-    animation:
-    moveArrowVertical 1s linear infinite;
-  }
-
-  .grid{
-
-    grid-template-columns:
-    repeat(3,1fr);
-
-    gap:4px;
-  }
-
-  .card{
-
-    padding:6px;
-  }
-
-  .card-title{
-
-    font-size:9px;
-  }
-
-  .value{
-
-    font-size:11px;
+    grid-template-columns:1fr;
   }
 
   canvas{
 
-    height:140px !important;
-  }
-}
-
-/* ================= SMALL MOBILE ================= */
-
-@media(max-width:480px){
-
-  h1{
-
-    font-size:14px;
-  }
-
-  .box{
-
-    max-width:200px;
-  }
-
-  .box h2{
-
-    font-size:11px;
-  }
-
-  .box div{
-
-    font-size:9px;
-  }
-
-  .value{
-
-    font-size:10px;
-  }
-
-  canvas{
-
-    height:120px !important;
+    height:180px !important;
   }
 }
 
@@ -390,162 +300,236 @@ canvas{
 
 <body>
 
-<h1>
-ISOKUIKI
-</h1>
+<div class="header">
+ISOKUIKI Dashboard
+</div>
 
-<!-- ================= FLOW ================= -->
+<div class="main">
 
-<div class="flow">
+  <!-- LEFT -->
+  <div class="left-panel">
 
-  <!-- PV -->
-  <div class="box">
+    <div class="center-icons">
 
-    <h2>☀️ PV</h2>
+      <div class="circle-box">
 
-    <div id="pv_v">0 V</div>
+        <h3>PV Power</h3>
 
-    <div id="pv_i">0 A</div>
+        <div class="value"
+        id="pv_p">
 
-    <div id="pv_p">0 W</div>
+          0 W
 
-  </div>
+        </div>
 
-  <!-- ARROW -->
-  <div class="arrow-container">
+      </div>
 
-    <div id="arrow1"
-    class="arrow green">
+      <div class="circle-box">
 
-      <span class="arrow-symbol">
-        ➜
-      </span>
+        <h3>Battery</h3>
+
+        <div class="value"
+        id="soc">
+
+          0 %
+
+        </div>
+
+      </div>
+
+      <div class="circle-box">
+
+        <h3>Load</h3>
+
+        <div class="value"
+        id="load_p">
+
+          0 W
+
+        </div>
+
+      </div>
+
+      <div class="circle-box">
+
+        <h3>Status</h3>
+
+        <div class="value"
+        id="status">
+
+          IDLE
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- CHART -->
+    <div class="chart-container">
+
+      <canvas id="chart"></canvas>
 
     </div>
 
   </div>
 
-  <!-- MPPT -->
-  <div class="box">
+  <!-- RIGHT -->
+  <div class="right-panel">
 
-    <h2>⚙️ MPPT</h2>
+    <!-- PV -->
+    <div class="section">
 
-    <div id="charge_p">0 W</div>
+      <div class="section-title">
+        Photovoltaic
+      </div>
 
-    <div id="mppt_eff">0 %</div>
+      <div class="card">
 
-  </div>
+        <div class="card-title">
+          PV Voltage
+        </div>
 
-  <!-- ARROW -->
-  <div class="arrow-container">
+        <div class="card-value"
+        id="pv_v">
 
-    <div id="arrow2"
-    class="arrow green">
+          0 V
 
-      <span class="arrow-symbol">
-        ➜
-      </span>
+        </div>
 
-    </div>
+      </div>
 
-  </div>
+      <div class="card">
 
-  <!-- BATTERY -->
-  <div class="box">
+        <div class="card-title">
+          PV Current
+        </div>
 
-    <h2>🔋 BATTERY</h2>
+        <div class="card-value"
+        id="pv_i">
 
-    <div id="bat_v">0 V</div>
+          0 A
 
-    <div id="bat_i">0 A</div>
+        </div>
 
-    <div id="soc">0 %</div>
-
-  </div>
-
-  <!-- ARROW -->
-  <div class="arrow-container">
-
-    <div id="arrow3"
-    class="arrow green">
-
-      <span class="arrow-symbol">
-        ➜
-      </span>
+      </div>
 
     </div>
 
-  </div>
+    <!-- BATTERY -->
+    <div class="section">
 
-  <!-- LOAD -->
-  <div class="box">
+      <div class="section-title">
+        Battery
+      </div>
 
-    <h2>⚡ LOAD</h2>
+      <div class="card">
 
-    <div id="load_p">0 W</div>
+        <div class="card-title">
+          Battery Voltage
+        </div>
 
-    <div id="status">IDLE</div>
+        <div class="card-value"
+        id="bat_v">
+
+          0 V
+
+        </div>
+
+      </div>
+
+      <div class="card">
+
+        <div class="card-title">
+          Battery Current
+        </div>
+
+        <div class="card-value"
+        id="bat_i">
+
+          0 A
+
+        </div>
+
+      </div>
+
+      <div class="card">
+
+        <div class="card-title">
+          Charge Power
+        </div>
+
+        <div class="card-value"
+        id="charge_p">
+
+          0 W
+
+        </div>
+
+      </div>
+
+    </div>
 
   </div>
 
 </div>
 
-<!-- ================= GRID ================= -->
+<!-- ================= ELECTRICITY STATISTICS ================= -->
 
-<div class="grid">
+<div class="statistics">
 
-  <div class="card">
+  <div class="stats-title">
+    Electricity Statistics
+  </div>
 
-    <div class="card-title">
-      TODAY
+  <div class="stats-grid">
+
+    <div class="stats-card">
+
+      <div class="stats-name">
+        Today Energy
+      </div>
+
+      <div class="stats-value"
+      id="kwh_day">
+
+        0 kWh
+
+      </div>
+
     </div>
 
-    <div class="value"
-    id="kwh_day">
+    <div class="stats-card">
 
-      0 kWh
+      <div class="stats-name">
+        Month Energy
+      </div>
+
+      <div class="stats-value"
+      id="kwh_month">
+
+        0 kWh
+
+      </div>
+
+    </div>
+
+    <div class="stats-card">
+
+      <div class="stats-name">
+        MPPT Efficiency
+      </div>
+
+      <div class="stats-value"
+      id="mppt_eff">
+
+        0 %
+
+      </div>
 
     </div>
 
   </div>
-
-  <div class="card">
-
-    <div class="card-title">
-      MONTH
-    </div>
-
-    <div class="value"
-    id="kwh_month">
-
-      0 kWh
-
-    </div>
-
-  </div>
-
-  <div class="card">
-
-    <div class="card-title">
-      EFFICIENCY
-    </div>
-
-    <div class="value"
-    id="mppt_eff2">
-
-      0 %
-
-    </div>
-
-  </div>
-
-</div>
-
-<!-- ================= CHART ================= -->
-
-<div class="chart-container">
-
-  <canvas id="chart"></canvas>
 
 </div>
 
