@@ -26,11 +26,11 @@ content="width=device-width, initial-scale=1.0">
 
 body{
 
-  background:#070b16;
-
-  font-family:'Orbitron',sans-serif;
+  background:#050b18;
 
   color:white;
+
+  font-family:'Orbitron',sans-serif;
 
   overflow-x:hidden;
 }
@@ -46,29 +46,38 @@ body{
 
   color:#00ffd5;
 
-  font-size:30px;
+  font-size:32px;
 
-  text-shadow:0 0 20px #00ffd5;
+  text-shadow:
+  0 0 20px #00ffd5;
 }
 
-/* ================= MAIN ================= */
+/* =====================================================
+   FLOW
+===================================================== */
 
-.container{
+.flow{
 
-  width:95%;
+  display:flex;
 
-  margin:auto;
+  justify-content:center;
 
-  display:grid;
+  align-items:center;
 
-  grid-template-columns:1fr 1fr;
+  flex-wrap:wrap;
 
-  gap:20px;
+  gap:15px;
+
+  padding:20px;
 }
 
-/* ================= LEFT ================= */
+/* =====================================================
+   BOX
+===================================================== */
 
-.left{
+.box{
+
+  width:250px;
 
   background:#10192b;
 
@@ -82,39 +91,29 @@ body{
 
   box-shadow:
   0 0 25px rgba(0,255,200,0.15);
+
+  transition:0.3s;
 }
 
-/* ================= ENERGY ICON ================= */
+.box:hover{
 
-.energy-icon{
-
-  width:130px;
-
-  display:block;
-
-  margin:auto;
-
-  animation:float 3s ease-in-out infinite;
+  transform:translateY(-5px);
 }
 
-@keyframes float{
+.box h2{
 
-  0%{
-    transform:translateY(0px);
-  }
+  text-align:center;
 
-  50%{
-    transform:translateY(-10px);
-  }
+  margin-bottom:20px;
 
-  100%{
-    transform:translateY(0px);
-  }
+  color:#00ffd5;
 }
 
-/* ================= FLOW DOT ================= */
+/* =====================================================
+   ANIMATION
+===================================================== */
 
-.flow{
+.energy-flow{
 
   position:absolute;
 
@@ -123,7 +122,6 @@ body{
   height:100%;
 
   top:0;
-
   left:0;
 
   pointer-events:none;
@@ -152,47 +150,113 @@ body{
 
 .dot:nth-child(2){
 
-  top:45%;
+  top:50%;
   animation-delay:1s;
 }
 
 .dot:nth-child(3){
 
-  top:70%;
+  top:80%;
   animation-delay:2s;
 }
 
 @keyframes moveDot{
 
   0%{
-
     left:-10%;
     opacity:0;
   }
 
   20%{
-
     opacity:1;
   }
 
   100%{
-
     left:110%;
     opacity:0;
   }
 }
 
-/* ================= STATUS ================= */
+/* =====================================================
+   DATA
+===================================================== */
+
+.data{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  background:#151f34;
+
+  padding:12px;
+
+  border-radius:12px;
+
+  margin-top:10px;
+}
+
+.label{
+
+  color:#00ffd5;
+}
+
+.value{
+
+  font-weight:bold;
+}
+
+/* =====================================================
+   SOC
+===================================================== */
+
+.soc-container{
+
+  margin-top:15px;
+}
+
+.soc-bar{
+
+  width:100%;
+
+  height:20px;
+
+  background:#1b2436;
+
+  border-radius:20px;
+
+  overflow:hidden;
+}
+
+.soc-fill{
+
+  width:0%;
+
+  height:100%;
+
+  background:
+  linear-gradient(
+  90deg,
+  #00ff88,
+  #00ffd5
+  );
+
+  transition:1s;
+}
+
+/* =====================================================
+   STATUS
+===================================================== */
 
 .status{
 
+  margin-top:15px;
+
   text-align:center;
 
-  margin-top:20px;
+  font-size:18px;
 
-  font-size:24px;
-
-  color:#00ff88;
+  font-weight:bold;
 
   animation:pulse 1s infinite;
 }
@@ -212,105 +276,17 @@ body{
   }
 }
 
-/* ================= PROGRESS ================= */
+/* =====================================================
+   CHART
+===================================================== */
 
-.progress-container{
+.chart-area{
 
-  margin-top:25px;
-}
+  width:95%;
 
-.progress-text{
+  margin:auto;
 
-  display:flex;
-
-  justify-content:space-between;
-
-  margin-bottom:10px;
-}
-
-.progress-bar{
-
-  width:100%;
-
-  height:20px;
-
-  background:#1a2333;
-
-  border-radius:20px;
-
-  overflow:hidden;
-}
-
-.progress{
-
-  width:0%;
-
-  height:100%;
-
-  background:
-  linear-gradient(
-  90deg,
-  #00ff88,
-  #00ffd5
-  );
-
-  transition:1s;
-}
-
-/* ================= CARD ================= */
-
-.cards{
-
-  margin-top:30px;
-
-  display:grid;
-
-  grid-template-columns:
-  repeat(3,1fr);
-
-  gap:15px;
-}
-
-.card{
-
-  background:#151f34;
-
-  border-radius:15px;
-
-  padding:15px;
-
-  text-align:center;
-
-  box-shadow:
-  0 0 10px rgba(0,255,200,0.1);
-
-  transition:0.3s;
-}
-
-.card:hover{
-
-  transform:translateY(-5px);
-}
-
-.card h3{
-
-  color:#00ffd5;
-
-  margin-bottom:10px;
-
-  font-size:14px;
-}
-
-.value{
-
-  font-size:22px;
-
-  font-weight:bold;
-}
-
-/* ================= RIGHT ================= */
-
-.right{
+  margin-top:20px;
 
   background:#10192b;
 
@@ -326,9 +302,9 @@ body{
 
   text-align:center;
 
-  color:#00ffd5;
-
   margin-bottom:20px;
+
+  color:#00ffd5;
 }
 
 .chart-box{
@@ -336,18 +312,20 @@ body{
   margin-bottom:30px;
 }
 
-/* ================= MOBILE ================= */
+/* =====================================================
+   MOBILE
+===================================================== */
 
 @media(max-width:900px){
 
-  .container{
+  .flow{
 
-    grid-template-columns:1fr;
+    flex-direction:column;
   }
 
-  .cards{
+  .box{
 
-    grid-template-columns:1fr;
+    width:95%;
   }
 }
 
@@ -360,184 +338,287 @@ body{
 <div class="header">
 
   <h1>
-    ⚡ SMART ENERGY MONITOR ⚡
+    ISOKUIKI SMART MONITOR ⚡
   </h1>
 
 </div>
 
-<div class="container">
+<div class="flow">
 
-  <!-- LEFT -->
+  <!-- PV -->
 
-  <div class="left">
+  <div class="box">
 
-    <div class="flow">
-
-      <div class="dot"></div>
+    <div class="energy-flow">
 
       <div class="dot"></div>
-
+      <div class="dot"></div>
       <div class="dot"></div>
 
     </div>
 
-    <img
-    class="energy-icon"
-    src="https://cdn-icons-png.flaticon.com/512/595/595067.png">
+    <h2>☀️ PV PANEL</h2>
 
-    <div
-    class="status"
-    id="status">
+    <div class="data">
 
-      DEVICE WORKING
+      <span class="label">
+        Voltage
+      </span>
 
-    </div>
+      <span class="value"
+      id="pv_v">
 
-    <!-- PROGRESS -->
+        0 V
 
-    <div class="progress-container">
-
-      <div class="progress-text">
-
-        <span>LOAD</span>
-
-        <span id="loadPercent">
-          0%
-        </span>
-
-      </div>
-
-      <div class="progress-bar">
-
-        <div
-        class="progress"
-        id="progress">
-
-        </div>
-
-      </div>
+      </span>
 
     </div>
 
-    <!-- CARDS -->
+    <div class="data">
 
-    <div class="cards">
+      <span class="label">
+        Current
+      </span>
 
-      <div class="card">
+      <span class="value"
+      id="pv_i">
 
-        <h3>Voltage</h3>
+        0 A
 
-        <div
-        class="value"
-        id="voltage">
+      </span>
 
-          0 V
+    </div>
 
-        </div>
+    <div class="data">
 
-      </div>
+      <span class="label">
+        Power
+      </span>
 
-      <div class="card">
+      <span class="value"
+      id="pv_p">
 
-        <h3>Current</h3>
+        0 W
 
-        <div
-        class="value"
-        id="current">
-
-          0 A
-
-        </div>
-
-      </div>
-
-      <div class="card">
-
-        <h3>Power</h3>
-
-        <div
-        class="value"
-        id="power">
-
-          0 W
-
-        </div>
-
-      </div>
-
-      <div class="card">
-
-        <h3>Battery</h3>
-
-        <div
-        class="value"
-        id="battery">
-
-          0 %
-
-        </div>
-
-      </div>
-
-      <div class="card">
-
-        <h3>Efficiency</h3>
-
-        <div
-        class="value"
-        id="efficiency">
-
-          0 %
-
-        </div>
-
-      </div>
-
-      <div class="card">
-
-        <h3>Daily</h3>
-
-        <div
-        class="value"
-        id="daily">
-
-          0 kWh
-
-        </div>
-
-      </div>
+      </span>
 
     </div>
 
   </div>
 
-  <!-- RIGHT -->
+  <!-- MPPT -->
 
-  <div class="right">
+  <div class="box">
 
-    <h2 class="chart-title">
+    <div class="energy-flow">
 
-      Hourly / Daily / Monthly
-
-    </h2>
-
-    <div class="chart-box">
-
-      <canvas id="hourChart"></canvas>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
 
     </div>
 
-    <div class="chart-box">
+    <h2>⚙️ MPPT</h2>
 
-      <canvas id="dayChart"></canvas>
+    <div class="data">
+
+      <span class="label">
+        Charge Power
+      </span>
+
+      <span class="value"
+      id="charge_p">
+
+        0 W
+
+      </span>
 
     </div>
 
-    <div class="chart-box">
+    <div class="data">
 
-      <canvas id="monthChart"></canvas>
+      <span class="label">
+        Efficiency
+      </span>
+
+      <span class="value"
+      id="mppt_eff">
+
+        0 %
+
+      </span>
 
     </div>
+
+  </div>
+
+  <!-- BATTERY -->
+
+  <div class="box">
+
+    <div class="energy-flow">
+
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+
+    </div>
+
+    <h2>🔋 BATTERY</h2>
+
+    <div class="data">
+
+      <span class="label">
+        Voltage
+      </span>
+
+      <span class="value"
+      id="bat_v">
+
+        0 V
+
+      </span>
+
+    </div>
+
+    <div class="data">
+
+      <span class="label">
+        Current
+      </span>
+
+      <span class="value"
+      id="bat_i">
+
+        0 A
+
+      </span>
+
+    </div>
+
+    <div class="data">
+
+      <span class="label">
+        SOC
+      </span>
+
+      <span class="value"
+      id="soc">
+
+        0 %
+
+      </span>
+
+    </div>
+
+    <div class="soc-container">
+
+      <div class="soc-bar">
+
+        <div class="soc-fill"
+        id="soc_fill">
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="status"
+    id="battery_status">
+
+      IDLE
+
+    </div>
+
+  </div>
+
+  <!-- LOAD -->
+
+  <div class="box">
+
+    <div class="energy-flow">
+
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+
+    </div>
+
+    <h2>⚡ LOAD</h2>
+
+    <div class="data">
+
+      <span class="label">
+        Power
+      </span>
+
+      <span class="value"
+      id="load_p">
+
+        0 W
+
+      </span>
+
+    </div>
+
+    <div class="data">
+
+      <span class="label">
+        Daily
+      </span>
+
+      <span class="value"
+      id="kwh_day">
+
+        0 kWh
+
+      </span>
+
+    </div>
+
+    <div class="data">
+
+      <span class="label">
+        Monthly
+      </span>
+
+      <span class="value"
+      id="kwh_month">
+
+        0 kWh
+
+      </span>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="chart-area">
+
+  <h2 class="chart-title">
+
+    Hourly / Daily / Monthly Consumption
+
+  </h2>
+
+  <div class="chart-box">
+
+    <canvas id="hourChart"></canvas>
+
+  </div>
+
+  <div class="chart-box">
+
+    <canvas id="dayChart"></canvas>
+
+  </div>
+
+  <div class="chart-box">
+
+    <canvas id="monthChart"></canvas>
 
   </div>
 

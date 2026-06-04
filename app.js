@@ -1,15 +1,16 @@
-/* ================= MQTT ================= */
-
-const client = mqtt.connect(
+const client =
+mqtt.connect(
 'wss://broker.hivemq.com:8884/mqtt'
 );
 
 const topic =
 "solar/jnge/hybrid";
 
-/* ================= CONNECT ================= */
+/* =====================================================
+   CONNECT
+===================================================== */
 
-client.on('connect', ()=>{
+client.on('connect',()=>{
 
   console.log("MQTT Connected");
 
@@ -17,263 +18,264 @@ client.on('connect', ()=>{
 
 });
 
-/* ================= CHART ================= */
+/* =====================================================
+   CHART CONFIG
+===================================================== */
+
+function createChart(
+canvas,
+label,
+color,
+type='line'
+){
+
+  return new Chart(
+  document.getElementById(canvas),
+  {
+
+    type:type,
+
+    data:{
+
+      labels:[],
+
+      datasets:[{
+
+        label:label,
+
+        data:[],
+
+        borderColor:color,
+
+        backgroundColor:color,
+
+        tension:0.4
+      }]
+    },
+
+    options:{
+
+      responsive:true,
+
+      plugins:{
+
+        legend:{
+          labels:{
+            color:'white'
+          }
+        }
+      },
+
+      scales:{
+
+        x:{
+          ticks:{
+            color:'white'
+          }
+        },
+
+        y:{
+          ticks:{
+            color:'white'
+          }
+        }
+      }
+    }
+  });
+}
+
+/* =====================================================
+   CHART
+===================================================== */
 
 const hourChart =
-new Chart(
-document.getElementById('hourChart'),
-{
-  type:'bar',
-
-  data:{
-    labels:[],
-
-    datasets:[{
-      label:'Hourly Power',
-
-      data:[],
-
-      backgroundColor:'#00ff88'
-    }]
-  },
-
-  options:{
-
-    responsive:true,
-
-    plugins:{
-
-      legend:{
-        labels:{
-          color:'white'
-        }
-      }
-    },
-
-    scales:{
-
-      x:{
-        ticks:{
-          color:'white'
-        }
-      },
-
-      y:{
-        ticks:{
-          color:'white'
-        }
-      }
-    }
-  }
-});
+createChart(
+'hourChart',
+'Load Power',
+'#00ff88',
+'bar'
+);
 
 const dayChart =
-new Chart(
-document.getElementById('dayChart'),
-{
-  type:'line',
-
-  data:{
-    labels:[],
-
-    datasets:[{
-      label:'Daily kWh',
-
-      data:[],
-
-      borderColor:'#00ffd5',
-
-      tension:0.4
-    }]
-  },
-
-  options:{
-
-    responsive:true,
-
-    plugins:{
-
-      legend:{
-        labels:{
-          color:'white'
-        }
-      }
-    },
-
-    scales:{
-
-      x:{
-        ticks:{
-          color:'white'
-        }
-      },
-
-      y:{
-        ticks:{
-          color:'white'
-        }
-      }
-    }
-  }
-});
+createChart(
+'dayChart',
+'Daily Energy',
+'#00ffd5'
+);
 
 const monthChart =
-new Chart(
-document.getElementById('monthChart'),
-{
-  type:'bar',
+createChart(
+'monthChart',
+'Monthly Energy',
+'#00aaff',
+'bar'
+);
 
-  data:{
-    labels:[],
+/* =====================================================
+   UPDATE CHART
+===================================================== */
 
-    datasets:[{
-      label:'Monthly kWh',
+function updateChart(
+chart,
+label,
+value
+){
 
-      data:[],
+  chart.data.labels.push(label);
 
-      backgroundColor:'#00aaff'
-    }]
-  },
+  chart.data.datasets[0]
+  .data.push(value);
 
-  options:{
+  if(
+  chart.data.labels.length > 10
+  ){
 
-    responsive:true,
+    chart.data.labels.shift();
 
-    plugins:{
-
-      legend:{
-        labels:{
-          color:'white'
-        }
-      }
-    },
-
-    scales:{
-
-      x:{
-        ticks:{
-          color:'white'
-        }
-      },
-
-      y:{
-        ticks:{
-          color:'white'
-        }
-      }
-    }
+    chart.data.datasets[0]
+    .data.shift();
   }
-});
 
-/* ================= MQTT MESSAGE ================= */
+  chart.update();
+}
 
-client.on('message',
+/* =====================================================
+   MQTT MESSAGE
+===================================================== */
+
+client.on(
+'message',
 (topic,message)=>{
 
   const data =
-  JSON.parse(message.toString());
-
-  /* ================= TEXT ================= */
-
-  document.getElementById('voltage')
-  .innerHTML =
-  data.bat_v.toFixed(1) + " V";
-
-  document.getElementById('current')
-  .innerHTML =
-  data.bat_i.toFixed(1) + " A";
-
-  document.getElementById('power')
-  .innerHTML =
-  data.load_p.toFixed(1) + " W";
-
-  document.getElementById('battery')
-  .innerHTML =
-  data.soc.toFixed(0) + " %";
-
-  document.getElementById('efficiency')
-  .innerHTML =
-  data.mppt_eff.toFixed(0) + " %";
-
-  document.getElementById('daily')
-  .innerHTML =
-  data.kwh_day.toFixed(2) + " kWh";
-
-  document.getElementById('status')
-  .innerHTML =
-  data.status;
-
-  /* ================= LOAD BAR ================= */
-
-  let load =
-  Math.min(
-  (data.load_p / 2000) * 100,
-  100
+  JSON.parse(
+  message.toString()
   );
 
-  document.getElementById('progress')
-  .style.width =
-  load + "%";
+  /* PV */
 
-  document.getElementById('loadPercent')
-  .innerHTML =
-  load.toFixed(0) + "%";
+  document.getElementById(
+  'pv_v'
+  ).innerHTML =
+  data.pv_v.toFixed(1)
+  + " V";
 
-  /* ================= CHART ================= */
+  document.getElementById(
+  'pv_i'
+  ).innerHTML =
+  data.pv_i.toFixed(1)
+  + " A";
+
+  document.getElementById(
+  'pv_p'
+  ).innerHTML =
+  data.pv_p.toFixed(1)
+  + " W";
+
+  /* BATTERY */
+
+  document.getElementById(
+  'bat_v'
+  ).innerHTML =
+  data.bat_v.toFixed(1)
+  + " V";
+
+  document.getElementById(
+  'bat_i'
+  ).innerHTML =
+  data.bat_i.toFixed(1)
+  + " A";
+
+  document.getElementById(
+  'soc'
+  ).innerHTML =
+  data.soc.toFixed(0)
+  + " %";
+
+  /* MPPT */
+
+  document.getElementById(
+  'charge_p'
+  ).innerHTML =
+  data.charge_p.toFixed(1)
+  + " W";
+
+  document.getElementById(
+  'mppt_eff'
+  ).innerHTML =
+  data.mppt_eff.toFixed(0)
+  + " %";
+
+  /* LOAD */
+
+  document.getElementById(
+  'load_p'
+  ).innerHTML =
+  data.load_p.toFixed(1)
+  + " W";
+
+  document.getElementById(
+  'kwh_day'
+  ).innerHTML =
+  data.kwh_day.toFixed(2)
+  + " kWh";
+
+  document.getElementById(
+  'kwh_month'
+  ).innerHTML =
+  data.kwh_month.toFixed(2)
+  + " kWh";
+
+  /* STATUS */
+
+  let batteryStatus =
+  "IDLE";
+
+  if(data.bat_i > 0){
+
+    batteryStatus =
+    "CHARGING";
+
+  } else if(data.bat_i < 0){
+
+    batteryStatus =
+    "DISCHARGING";
+  }
+
+  document.getElementById(
+  'battery_status'
+  ).innerHTML =
+  batteryStatus;
+
+  /* SOC BAR */
+
+  document.getElementById(
+  'soc_fill'
+  ).style.width =
+  data.soc + "%";
+
+  /* CHART */
 
   const time =
   new Date()
   .toLocaleTimeString();
 
-  /* HOURLY */
+  updateChart(
+  hourChart,
+  time,
+  data.load_p
+  );
 
-  hourChart.data.labels.push(time);
+  updateChart(
+  dayChart,
+  time,
+  data.kwh_day
+  );
 
-  hourChart.data.datasets[0]
-  .data.push(data.load_p);
-
-  if(hourChart.data.labels.length > 10){
-
-    hourChart.data.labels.shift();
-
-    hourChart.data.datasets[0]
-    .data.shift();
-  }
-
-  hourChart.update();
-
-  /* DAILY */
-
-  dayChart.data.labels.push(time);
-
-  dayChart.data.datasets[0]
-  .data.push(data.kwh_day);
-
-  if(dayChart.data.labels.length > 10){
-
-    dayChart.data.labels.shift();
-
-    dayChart.data.datasets[0]
-    .data.shift();
-  }
-
-  dayChart.update();
-
-  /* MONTHLY */
-
-  monthChart.data.labels.push(time);
-
-  monthChart.data.datasets[0]
-  .data.push(data.kwh_month);
-
-  if(monthChart.data.labels.length > 10){
-
-    monthChart.data.labels.shift();
-
-    monthChart.data.datasets[0]
-    .data.shift();
-  }
-
-  monthChart.update();
+  updateChart(
+  monthChart,
+  time,
+  data.kwh_month
+  );
 
 });
