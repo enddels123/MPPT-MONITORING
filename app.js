@@ -2,25 +2,26 @@ const client = mqtt.connect(
   "wss://broker.hivemq.com:8884/mqtt"
 );
 
-const topic = "solar/jnge/hybrid";
+const topic =
+"solar/jnge/hybrid";
 
 // ================= MQTT =================
 
-client.on("connect", () => {
+client.on("connect",()=>{
 
   console.log("MQTT CONNECTED");
 
   client.subscribe(topic);
 });
 
-client.on("reconnect", () => {
+client.on("reconnect",()=>{
 
   console.log("MQTT RECONNECT");
 });
 
-client.on("error", (err) => {
+client.on("error",(err)=>{
 
-  console.log("MQTT ERROR", err);
+  console.log("MQTT ERROR",err);
 });
 
 // ================= CHART =================
@@ -32,10 +33,12 @@ const ctx = document
 const labels = [];
 
 const pvData = [];
+
 const loadData = [];
+
 const batData = [];
 
-const chart = new Chart(ctx, {
+const chart = new Chart(ctx,{
 
   type:'line',
 
@@ -46,23 +49,35 @@ const chart = new Chart(ctx, {
     datasets:[
 
       {
+
         label:'PV Power (W)',
+
         data:pvData,
+
         borderWidth:2,
+
         tension:0.3
       },
 
       {
+
         label:'Load Power (W)',
+
         data:loadData,
+
         borderWidth:2,
+
         tension:0.3
       },
 
       {
+
         label:'Battery Voltage (V)',
+
         data:batData,
+
         borderWidth:2,
+
         tension:0.3
       }
     ]
@@ -79,6 +94,7 @@ const chart = new Chart(ctx, {
     plugins:{
 
       legend:{
+
         labels:{
           color:'#00ffd5'
         }
@@ -88,12 +104,14 @@ const chart = new Chart(ctx, {
     scales:{
 
       x:{
+
         ticks:{
           color:'#00ffd5'
         }
       },
 
       y:{
+
         ticks:{
           color:'#00ffd5'
         }
@@ -177,7 +195,7 @@ function updateStatus(status){
   }
 }
 
-// ================= MOBILE ARROW =================
+// ================= ARROW DIRECTION =================
 
 function updateArrowDirection(){
 
@@ -191,13 +209,16 @@ function updateArrowDirection(){
 
   arrows.forEach(a=>{
 
+    // MOBILE
     if(mobile){
 
-      a.innerHTML = "⬇⬇⬇";
+      a.innerHTML = "▼";
+    }
 
-    }else{
+    // PC
+    else{
 
-      a.innerHTML = "➜➜➜";
+      a.innerHTML = "➜";
     }
   });
 }
@@ -216,55 +237,67 @@ client.on("message",(topic,message)=>{
   try{
 
     const data =
-    JSON.parse(message.toString());
+    JSON.parse(
+      message.toString()
+    );
 
     // ================= PV =================
 
     document.getElementById("pv_v")
     .innerHTML =
-    safe(data.pv_v).toFixed(1)+" V";
+    safe(data.pv_v).toFixed(1)
+    +" V";
 
     document.getElementById("pv_i")
     .innerHTML =
-    safe(data.pv_i).toFixed(2)+" A";
+    safe(data.pv_i).toFixed(2)
+    +" A";
 
     document.getElementById("pv_p")
     .innerHTML =
-    safe(data.pv_p).toFixed(1)+" W";
+    safe(data.pv_p).toFixed(1)
+    +" W";
 
     // ================= BATTERY =================
 
     document.getElementById("bat_v")
     .innerHTML =
-    safe(data.bat_v).toFixed(1)+" V";
+    safe(data.bat_v).toFixed(1)
+    +" V";
 
     document.getElementById("bat_i")
     .innerHTML =
-    safe(data.bat_i).toFixed(2)+" A";
+    safe(data.bat_i).toFixed(2)
+    +" A";
 
     document.getElementById("soc")
     .innerHTML =
-    safe(data.soc).toFixed(1)+" %";
+    safe(data.soc).toFixed(1)
+    +" %";
 
     // ================= MPPT =================
 
     document.getElementById("charge_p")
     .innerHTML =
-    safe(data.charge_p).toFixed(1)+" W";
+    safe(data.charge_p).toFixed(1)
+    +" W";
 
     document.getElementById("mppt_eff")
     .innerHTML =
-    safe(data.mppt_eff).toFixed(1)+" %";
+    safe(data.mppt_eff).toFixed(1)
+    +" %";
 
     document.getElementById("mppt_eff2")
     .innerHTML =
-    safe(data.mppt_eff).toFixed(1)+" %";
+    safe(data.mppt_eff).toFixed(1)
+    +" %";
 
     // ================= LOAD =================
 
     document.getElementById("load_p")
     .innerHTML =
-    safe(data.load_p).toFixed(1)+" W";
+    safe(data.load_p).toFixed(1)
+    +" W";
 
     updateStatus(
       data.status || "IDLE"
@@ -319,6 +352,7 @@ client.on("message",(topic,message)=>{
       safe(data.bat_v)
     );
 
+    // LIMIT
     if(labels.length > 30){
 
       labels.shift();

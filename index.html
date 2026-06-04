@@ -4,11 +4,14 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ISOKUIKI</title>
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>ISOKUIKI PLTS</title>
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
@@ -20,69 +23,106 @@
 }
 
 body{
+
   margin:0;
+
   background:#040b18;
+
   color:#00ffd5;
+
   font-family:'Orbitron',sans-serif;
+
   overflow-x:hidden;
 }
 
 h1{
+
   text-align:center;
+
   margin:15px;
+
   font-size:32px;
 }
 
+/* ================= FLOW ================= */
+
 .flow{
+
   display:flex;
+
   justify-content:center;
+
   align-items:center;
+
   flex-wrap:wrap;
+
   gap:10px;
+
   padding:10px;
 }
 
 .box{
+
   width:200px;
+
   min-height:180px;
+
   background:#101b33;
+
   border-radius:20px;
+
   padding:20px;
-  box-shadow:0 0 20px rgba(0,255,200,0.15);
+
+  box-shadow:
+  0 0 20px rgba(0,255,200,0.15);
+
   transition:0.3s;
 }
 
 .box:hover{
+
   transform:translateY(-3px);
 }
 
 .box h2{
+
   margin:0;
+
   margin-bottom:15px;
 }
 
 .box div{
+
   margin-top:10px;
+
   font-size:20px;
 }
 
+/* ================= ARROW ================= */
+
 .arrow-container{
-  width:110px;
-  height:35px;
+
+  width:80px;
+
+  height:40px;
+
   position:relative;
+
   overflow:hidden;
 }
 
 .arrow{
-  position:absolute;
-  left:-40px;
-  top:0;
-  font-size:30px;
-  animation:moveArrowHorizontal 1s linear infinite;
-}
 
-.arrow-symbol{
-  display:inline-block;
+  position:absolute;
+
+  left:-30px;
+
+  top:0;
+
+  font-size:34px;
+
+  animation:
+  moveArrowHorizontal 1s linear infinite;
 }
 
 /* ================= PC ================= */
@@ -90,16 +130,21 @@ h1{
 @keyframes moveArrowHorizontal{
 
   0%{
-    left:-40px;
+
+    left:-30px;
+
     opacity:0;
   }
 
   30%{
+
     opacity:1;
   }
 
   100%{
-    left:120px;
+
+    left:80px;
+
     opacity:0;
   }
 }
@@ -109,19 +154,26 @@ h1{
 @keyframes moveArrowVertical{
 
   0%{
-    top:-40px;
+
+    top:-30px;
+
     opacity:0;
   }
 
   30%{
+
     opacity:1;
   }
 
   100%{
-    top:50px;
+
+    top:40px;
+
     opacity:0;
   }
 }
+
+/* ================= COLOR ================= */
 
 .green{
   color:#00ff00;
@@ -135,40 +187,65 @@ h1{
   color:#ff0033;
 }
 
+/* ================= GRID ================= */
+
 .grid{
+
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+
+  grid-template-columns:
+  repeat(auto-fit,minmax(200px,1fr));
+
   gap:15px;
+
   padding:15px;
 }
 
 .card{
+
   background:#101b33;
+
   border-radius:20px;
+
   padding:20px;
-  box-shadow:0 0 20px rgba(0,255,200,0.15);
+
+  box-shadow:
+  0 0 20px rgba(0,255,200,0.15);
 }
 
 .card-title{
+
   font-size:18px;
 }
 
 .value{
+
   font-size:28px;
+
   margin-top:10px;
 }
 
+/* ================= CHART ================= */
+
 .chart-container{
+
   width:95%;
+
   margin:auto;
+
   margin-top:20px;
+
   background:#101b33;
+
   border-radius:20px;
+
   padding:20px;
 }
 
 canvas{
+
   width:100% !important;
+
   height:420px !important;
 }
 
@@ -177,40 +254,48 @@ canvas{
 @media(max-width:768px){
 
   h1{
+
     font-size:24px;
   }
 
   .flow{
+
     flex-direction:column;
   }
 
   .box{
+
     width:95%;
+
     min-height:auto;
   }
 
   .arrow-container{
 
     width:40px;
+
     height:60px;
   }
 
   .arrow{
 
     left:0;
-    top:-40px;
+
+    top:-30px;
 
     animation:
     moveArrowVertical 1s linear infinite;
 
-    font-size:24px;
+    font-size:28px;
   }
 
   .grid{
+
     grid-template-columns:1fr;
   }
 
   canvas{
+
     height:260px !important;
   }
 }
@@ -221,7 +306,9 @@ canvas{
 
 <body>
 
-<h1>ISOKUIKI</h1>
+<h1>
+⚡ PLTS INDUSTRIAL MONITOR
+</h1>
 
 <!-- ================= FLOW ================= -->
 
@@ -233,7 +320,9 @@ canvas{
     <h2>☀️ PV</h2>
 
     <div id="pv_v">0 V</div>
+
     <div id="pv_i">0 A</div>
+
     <div id="pv_p">0 W</div>
 
   </div>
@@ -241,10 +330,13 @@ canvas{
   <!-- ARROW -->
   <div class="arrow-container">
 
-    <div id="arrow1" class="arrow green">
+    <div id="arrow1"
+    class="arrow green">
+
       <span class="arrow-symbol">
-        ➜➜➜
+        ➜
       </span>
+
     </div>
 
   </div>
@@ -255,6 +347,7 @@ canvas{
     <h2>⚙️ MPPT</h2>
 
     <div id="charge_p">0 W</div>
+
     <div id="mppt_eff">0 %</div>
 
   </div>
@@ -262,10 +355,13 @@ canvas{
   <!-- ARROW -->
   <div class="arrow-container">
 
-    <div id="arrow2" class="arrow green">
+    <div id="arrow2"
+    class="arrow green">
+
       <span class="arrow-symbol">
-        ➜➜➜
+        ➜
       </span>
+
     </div>
 
   </div>
@@ -276,7 +372,9 @@ canvas{
     <h2>🔋 BATTERY</h2>
 
     <div id="bat_v">0 V</div>
+
     <div id="bat_i">0 A</div>
+
     <div id="soc">0 %</div>
 
   </div>
@@ -284,10 +382,13 @@ canvas{
   <!-- ARROW -->
   <div class="arrow-container">
 
-    <div id="arrow3" class="arrow green">
+    <div id="arrow3"
+    class="arrow green">
+
       <span class="arrow-symbol">
-        ➜➜➜
+        ➜
       </span>
+
     </div>
 
   </div>
@@ -298,6 +399,7 @@ canvas{
     <h2>⚡ LOAD</h2>
 
     <div id="load_p">0 W</div>
+
     <div id="status">IDLE</div>
 
   </div>
@@ -314,8 +416,11 @@ canvas{
       TODAY
     </div>
 
-    <div class="value" id="kwh_day">
+    <div class="value"
+    id="kwh_day">
+
       0 kWh
+
     </div>
 
   </div>
@@ -326,8 +431,11 @@ canvas{
       MONTH
     </div>
 
-    <div class="value" id="kwh_month">
+    <div class="value"
+    id="kwh_month">
+
       0 kWh
+
     </div>
 
   </div>
@@ -338,8 +446,11 @@ canvas{
       EFFICIENCY
     </div>
 
-    <div class="value" id="mppt_eff2">
+    <div class="value"
+    id="mppt_eff2">
+
       0 %
+
     </div>
 
   </div>
