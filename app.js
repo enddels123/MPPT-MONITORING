@@ -152,7 +152,7 @@ function updateArrow(id,power){
   }
 }
 
-// ================= STATUS COLOR =================
+// ================= STATUS =================
 
 function updateStatus(status){
 
@@ -176,6 +176,38 @@ function updateStatus(status){
     el.style.color = "#ffd000";
   }
 }
+
+// ================= MOBILE ARROW =================
+
+function updateArrowDirection(){
+
+  const mobile =
+  window.innerWidth < 768;
+
+  const arrows =
+  document.querySelectorAll(
+    ".arrow-symbol"
+  );
+
+  arrows.forEach(a=>{
+
+    if(mobile){
+
+      a.innerHTML = "⬇⬇⬇";
+
+    }else{
+
+      a.innerHTML = "➜➜➜";
+    }
+  });
+}
+
+updateArrowDirection();
+
+window.addEventListener(
+  "resize",
+  updateArrowDirection
+);
 
 // ================= MQTT MESSAGE =================
 
@@ -287,7 +319,6 @@ client.on("message",(topic,message)=>{
       safe(data.bat_v)
     );
 
-    // LIMIT
     if(labels.length > 30){
 
       labels.shift();

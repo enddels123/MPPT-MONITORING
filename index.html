@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ISOKUIKI PLTS</title>
+<title>ISOKUIKI</title>
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -81,7 +81,11 @@ h1{
   animation:moveArrowHorizontal 1s linear infinite;
 }
 
-/* ================= HORIZONTAL ================= */
+.arrow-symbol{
+  display:inline-block;
+}
+
+/* ================= PC ================= */
 
 @keyframes moveArrowHorizontal{
 
@@ -100,7 +104,7 @@ h1{
   }
 }
 
-/* ================= VERTICAL ================= */
+/* ================= MOBILE ================= */
 
 @keyframes moveArrowVertical{
 
@@ -186,6 +190,7 @@ canvas{
   }
 
   .arrow-container{
+
     width:40px;
     height:60px;
   }
@@ -197,10 +202,6 @@ canvas{
 
     animation:
     moveArrowVertical 1s linear infinite;
-
-    writing-mode:vertical-rl;
-
-    text-orientation:upright;
 
     font-size:24px;
   }
@@ -220,7 +221,7 @@ canvas{
 
 <body>
 
-<h1>⚡ PLTS INDUSTRIAL MONITOR</h1>
+<h1>ISOKUIKI</h1>
 
 <!-- ================= FLOW ================= -->
 
@@ -241,7 +242,9 @@ canvas{
   <div class="arrow-container">
 
     <div id="arrow1" class="arrow green">
-      ➜➜➜
+      <span class="arrow-symbol">
+        ➜➜➜
+      </span>
     </div>
 
   </div>
@@ -260,7 +263,9 @@ canvas{
   <div class="arrow-container">
 
     <div id="arrow2" class="arrow green">
-      ➜➜➜
+      <span class="arrow-symbol">
+        ➜➜➜
+      </span>
     </div>
 
   </div>
@@ -280,7 +285,9 @@ canvas{
   <div class="arrow-container">
 
     <div id="arrow3" class="arrow green">
-      ➜➜➜
+      <span class="arrow-symbol">
+        ➜➜➜
+      </span>
     </div>
 
   </div>
