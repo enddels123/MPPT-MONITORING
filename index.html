@@ -14,9 +14,15 @@ content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<link rel="stylesheet"
+href=
+"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 <style>
 
-/* ================= GLOBAL ================= */
+/* ==================================================
+   GLOBAL
+================================================== */
 
 *{
   margin:0;
@@ -30,12 +36,17 @@ body{
 
   color:white;
 
-  font-family:Segoe UI,sans-serif;
+  font-family:
+  Segoe UI,sans-serif;
 
   padding:10px;
+
+  overflow-x:hidden;
 }
 
-/* ================= HEADER ================= */
+/* ==================================================
+   HEADER
+================================================== */
 
 .header{
 
@@ -47,7 +58,9 @@ body{
   margin-bottom:15px;
 }
 
-/* ================= MAIN ================= */
+/* ==================================================
+   MAIN
+================================================== */
 
 .main{
 
@@ -56,47 +69,197 @@ body{
   grid-template-columns:
   1fr 1fr;
 
-  gap:14px;
-}
-
-/* ================= LEFT ================= */
-
-.left-panel{
-
-  display:flex;
-
-  flex-direction:column;
-
   gap:15px;
 }
 
-/* ================= CENTER ICONS ================= */
+/* ==================================================
+   FLOW AREA
+================================================== */
+
+.flow-wrapper{
+
+  position:relative;
+
+  width:100%;
+
+  min-height:470px;
+}
+
+/* ==================================================
+   SVG LINE
+================================================== */
+
+.flow-lines{
+
+  position:absolute;
+
+  width:100%;
+
+  height:100%;
+
+  top:0;
+  left:0;
+
+  z-index:0;
+}
+
+.flow-lines path{
+
+  fill:none;
+
+  stroke:#00d9ff;
+
+  stroke-width:8;
+
+  opacity:.4;
+
+  stroke-linecap:round;
+
+  stroke-dasharray:12 12;
+
+  animation:
+  dashMove 1s linear infinite;
+}
+
+@keyframes dashMove{
+
+  from{
+
+    stroke-dashoffset:0;
+  }
+
+  to{
+
+    stroke-dashoffset:-24;
+  }
+}
+
+/* ==================================================
+   ENERGY DOT
+================================================== */
+
+.energy-dot{
+
+  position:absolute;
+
+  width:14px;
+
+  height:14px;
+
+  border-radius:50%;
+
+  background:#00ffff;
+
+  box-shadow:
+  0 0 15px cyan;
+
+  z-index:3;
+}
+
+#dot1{
+
+  top:115px;
+
+  left:130px;
+
+  animation:
+  move1 2s linear infinite;
+}
+
+#dot2{
+
+  top:130px;
+
+  left:395px;
+
+  animation:
+  move2 2s linear infinite;
+}
+
+#dot3{
+
+  top:115px;
+
+  left:420px;
+
+  animation:
+  move3 2s linear infinite;
+}
+
+@keyframes move1{
+
+  from{
+
+    left:130px;
+  }
+
+  to{
+
+    left:365px;
+  }
+}
+
+@keyframes move2{
+
+  from{
+
+    top:130px;
+  }
+
+  to{
+
+    top:295px;
+  }
+}
+
+@keyframes move3{
+
+  from{
+
+    left:420px;
+  }
+
+  to{
+
+    left:640px;
+  }
+}
+
+/* ==================================================
+   CENTER ICON
+================================================== */
 
 .center-icons{
+
+  position:relative;
+
+  z-index:2;
 
   display:grid;
 
   grid-template-columns:
   repeat(2,1fr);
 
-  gap:14px;
+  gap:80px;
+
+  padding-top:30px;
 
   justify-items:center;
 }
 
-/* ================= CIRCLE ================= */
+/* ==================================================
+   CIRCLE
+================================================== */
 
 .circle-box{
 
   width:
-  clamp(110px,15vw,160px);
+  clamp(110px,15vw,165px);
 
   height:
-  clamp(110px,15vw,160px);
+  clamp(110px,15vw,165px);
 
   border-radius:50%;
-
-  position:relative;
 
   background:
   radial-gradient(
@@ -116,6 +279,8 @@ body{
   justify-content:center;
 
   align-items:center;
+
+  position:relative;
 
   overflow:hidden;
 
@@ -166,7 +331,9 @@ body{
   margin-top:5px;
 }
 
-/* ================= RIGHT PANEL ================= */
+/* ==================================================
+   RIGHT PANEL
+================================================== */
 
 .right-panel{
 
@@ -175,7 +342,7 @@ body{
   grid-template-columns:
   repeat(2,minmax(150px,1fr));
 
-  gap:12px;
+  gap:15px;
 }
 
 .section{
@@ -195,7 +362,19 @@ body{
   font-weight:bold;
 }
 
-/* ================= CARD ================= */
+/* ==================================================
+   CARD GRID
+================================================== */
+
+.card-grid{
+
+  display:grid;
+
+  grid-template-columns:
+  repeat(2,1fr);
+
+  gap:10px;
+}
 
 .card{
 
@@ -205,11 +384,7 @@ body{
 
   padding:12px;
 
-  height:
-  clamp(80px,11vw,110px);
-
-  box-shadow:
-  0 0 10px rgba(0,0,0,.25);
+  min-height:95px;
 
   display:flex;
 
@@ -220,6 +395,9 @@ body{
   align-items:center;
 
   text-align:center;
+
+  box-shadow:
+  0 0 10px rgba(0,0,0,.25);
 }
 
 .card-title{
@@ -237,10 +415,12 @@ body{
 
   font-weight:bold;
 
-  margin-top:6px;
+  margin-top:5px;
 }
 
-/* ================= CHART ================= */
+/* ==================================================
+   CHART
+================================================== */
 
 .chart-container{
 
@@ -249,6 +429,8 @@ body{
   border-radius:12px;
 
   padding:12px;
+
+  margin-top:20px;
 }
 
 canvas{
@@ -258,7 +440,9 @@ canvas{
   height:220px !important;
 }
 
-/* ================= STATS ================= */
+/* ==================================================
+   STATISTICS
+================================================== */
 
 .statistics{
 
@@ -330,7 +514,9 @@ canvas{
   margin-top:8px;
 }
 
-/* ================= MOBILE ================= */
+/* ==================================================
+   MOBILE
+================================================== */
 
 @media(max-width:900px){
 
@@ -341,6 +527,11 @@ canvas{
 
   .right-panel{
 
+    grid-template-columns:1fr;
+  }
+
+  .card-grid{
+
     grid-template-columns:
     repeat(2,1fr);
   }
@@ -349,6 +540,11 @@ canvas{
 
     grid-template-columns:
     repeat(2,1fr);
+  }
+
+  .center-icons{
+
+    gap:40px;
   }
 
   canvas{
@@ -370,36 +566,126 @@ Isokuiki Dashboard
 <div class="main">
 
   <!-- LEFT -->
-  <div class="left-panel">
+  <div>
 
-    <div class="center-icons">
+    <div class="flow-wrapper">
 
-      <div class="circle-box">
-        <div class="circle-icon">☀️</div>
-        <div class="circle-label">PV POWER</div>
-        <div class="circle-value" id="pv_p">0 W</div>
-      </div>
+      <!-- SVG FLOW -->
+      <svg class="flow-lines"
+      viewBox="0 0 800 500">
 
-      <div class="circle-box">
-        <div class="circle-icon">🔋</div>
-        <div class="circle-label">BATTERY</div>
-        <div class="circle-value" id="soc">0 %</div>
-      </div>
+        <!-- PV TO MPPT -->
+        <path
+        d="M180 120 L400 120"/>
 
-      <div class="circle-box">
-        <div class="circle-icon">🏠</div>
-        <div class="circle-label">LOAD</div>
-        <div class="circle-value" id="load_p">0 W</div>
-      </div>
+        <!-- MPPT TO BATTERY -->
+        <path
+        d="M400 120 L400 300"/>
 
-      <div class="circle-box">
-        <div class="circle-icon">⚡</div>
-        <div class="circle-label">STATUS</div>
-        <div class="circle-value" id="status">IDLE</div>
+        <!-- MPPT TO LOAD -->
+        <path
+        d="M400 120 L620 120"/>
+
+      </svg>
+
+      <!-- ENERGY DOT -->
+      <div class="energy-dot"
+      id="dot1"></div>
+
+      <div class="energy-dot"
+      id="dot2"></div>
+
+      <div class="energy-dot"
+      id="dot3"></div>
+
+      <!-- CIRCLE -->
+      <div class="center-icons">
+
+        <!-- PV -->
+        <div class="circle-box">
+
+          <div class="circle-icon">
+            <i class="fa-solid fa-solar-panel"></i>
+          </div>
+
+          <div class="circle-label">
+            PV POWER
+          </div>
+
+          <div class="circle-value"
+          id="pv_p">
+
+            0 W
+
+          </div>
+
+        </div>
+
+        <!-- BAT -->
+        <div class="circle-box">
+
+          <div class="circle-icon">
+            <i class="fa-solid fa-battery-half"></i>
+          </div>
+
+          <div class="circle-label">
+            BATTERY
+          </div>
+
+          <div class="circle-value"
+          id="soc">
+
+            0 %
+
+          </div>
+
+        </div>
+
+        <!-- LOAD -->
+        <div class="circle-box">
+
+          <div class="circle-icon">
+            <i class="fa-solid fa-house"></i>
+          </div>
+
+          <div class="circle-label">
+            LOAD
+          </div>
+
+          <div class="circle-value"
+          id="load_p">
+
+            0 W
+
+          </div>
+
+        </div>
+
+        <!-- STATUS -->
+        <div class="circle-box">
+
+          <div class="circle-icon">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+
+          <div class="circle-label">
+            STATUS
+          </div>
+
+          <div class="circle-value"
+          id="status">
+
+            IDLE
+
+          </div>
+
+        </div>
+
       </div>
 
     </div>
 
+    <!-- CHART -->
     <div class="chart-container">
 
       <canvas id="chart"></canvas>
@@ -418,19 +704,38 @@ Isokuiki Dashboard
         Photovoltaic
       </div>
 
-      <div class="card">
-        <div class="card-title">PV Voltage</div>
-        <div class="card-value" id="pv_v">0 V</div>
-      </div>
+      <div class="card-grid">
 
-      <div class="card">
-        <div class="card-title">PV Current</div>
-        <div class="card-value" id="pv_i">0 A</div>
-      </div>
+        <div class="card">
+          <div class="card-title">
+            PV Voltage
+          </div>
+          <div class="card-value"
+          id="pv_v">
+            0 V
+          </div>
+        </div>
 
-      <div class="card">
-        <div class="card-title">PV Power</div>
-        <div class="card-value" id="pv_power_card">0 W</div>
+        <div class="card">
+          <div class="card-title">
+            PV Current
+          </div>
+          <div class="card-value"
+          id="pv_i">
+            0 A
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            PV Power
+          </div>
+          <div class="card-value"
+          id="pv_power_card">
+            0 W
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -442,19 +747,38 @@ Isokuiki Dashboard
         Battery
       </div>
 
-      <div class="card">
-        <div class="card-title">Battery Voltage</div>
-        <div class="card-value" id="bat_v">0 V</div>
-      </div>
+      <div class="card-grid">
 
-      <div class="card">
-        <div class="card-title">Battery Current</div>
-        <div class="card-value" id="bat_i">0 A</div>
-      </div>
+        <div class="card">
+          <div class="card-title">
+            Battery Voltage
+          </div>
+          <div class="card-value"
+          id="bat_v">
+            0 V
+          </div>
+        </div>
 
-      <div class="card">
-        <div class="card-title">Charge Power</div>
-        <div class="card-value" id="charge_p">0 W</div>
+        <div class="card">
+          <div class="card-title">
+            Battery Current
+          </div>
+          <div class="card-value"
+          id="bat_i">
+            0 A
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            Charge Power
+          </div>
+          <div class="card-value"
+          id="charge_p">
+            0 W
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -466,19 +790,48 @@ Isokuiki Dashboard
         MPPT
       </div>
 
-      <div class="card">
-        <div class="card-title">MPPT Voltage</div>
-        <div class="card-value" id="mppt_v">0 V</div>
-      </div>
+      <div class="card-grid">
 
-      <div class="card">
-        <div class="card-title">MPPT Current</div>
-        <div class="card-value" id="mppt_i">0 A</div>
-      </div>
+        <div class="card">
+          <div class="card-title">
+            MPPT Voltage
+          </div>
+          <div class="card-value"
+          id="mppt_v">
+            0 V
+          </div>
+        </div>
 
-      <div class="card">
-        <div class="card-title">MPPT Power</div>
-        <div class="card-value" id="mppt_p">0 W</div>
+        <div class="card">
+          <div class="card-title">
+            MPPT Current
+          </div>
+          <div class="card-value"
+          id="mppt_i">
+            0 A
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            MPPT Power
+          </div>
+          <div class="card-value"
+          id="mppt_p">
+            0 W
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            MPPT Efficiency
+          </div>
+          <div class="card-value"
+          id="mppt_eff">
+            0 %
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -487,7 +840,7 @@ Isokuiki Dashboard
 
 </div>
 
-<!-- ================= STATISTICS ================= -->
+<!-- STATISTICS -->
 
 <div class="statistics">
 
@@ -498,33 +851,53 @@ Isokuiki Dashboard
   <div class="stats-grid">
 
     <div class="stats-card">
-      <div class="stats-name">Today Energy</div>
-      <div class="stats-value" id="kwh_day">0 kWh</div>
+      <div class="stats-name">
+        Today Energy
+      </div>
+      <div class="stats-value"
+      id="kwh_day">
+        0 kWh
+      </div>
     </div>
 
     <div class="stats-card">
-      <div class="stats-name">Month Energy</div>
-      <div class="stats-value" id="kwh_month">0 kWh</div>
+      <div class="stats-name">
+        Month Energy
+      </div>
+      <div class="stats-value"
+      id="kwh_month">
+        0 kWh
+      </div>
     </div>
 
     <div class="stats-card">
-      <div class="stats-name">Storage Production</div>
-      <div class="stats-value" id="storage_prod">0 kWh</div>
+      <div class="stats-name">
+        Storage Production
+      </div>
+      <div class="stats-value"
+      id="storage_prod">
+        0 kWh
+      </div>
     </div>
 
     <div class="stats-card">
-      <div class="stats-name">Charged</div>
-      <div class="stats-value" id="charged">0 kWh</div>
+      <div class="stats-name">
+        Charged
+      </div>
+      <div class="stats-value"
+      id="charged">
+        0 kWh
+      </div>
     </div>
 
     <div class="stats-card">
-      <div class="stats-name">Load Consumption</div>
-      <div class="stats-value" id="load_cons">0 kWh</div>
-    </div>
-
-    <div class="stats-card">
-      <div class="stats-name">MPPT Efficiency</div>
-      <div class="stats-value" id="mppt_eff">0 %</div>
+      <div class="stats-name">
+        Load Consumption
+      </div>
+      <div class="stats-value"
+      id="load_cons">
+        0 kWh
+      </div>
     </div>
 
   </div>

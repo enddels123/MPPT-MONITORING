@@ -6,9 +6,13 @@ mqtt.connect(
 const topic =
 "solar/jnge/hybrid";
 
+/* ================= MQTT ================= */
+
 client.on("connect",()=>{
 
-  console.log("MQTT CONNECTED");
+  console.log(
+    "MQTT CONNECTED"
+  );
 
   client.subscribe(topic);
 });
@@ -45,14 +49,22 @@ const chart = new Chart(ctx,{
 
       {
         label:'PV Power',
+
         data:pvData,
-        borderWidth:2
+
+        borderWidth:3,
+
+        tension:0.4
       },
 
       {
         label:'Load Power',
+
         data:loadData,
-        borderWidth:2
+
+        borderWidth:3,
+
+        tension:0.4
       }
     ]
   },
@@ -61,93 +73,279 @@ const chart = new Chart(ctx,{
 
     responsive:true,
 
-    maintainAspectRatio:false
+    maintainAspectRatio:false,
+
+    plugins:{
+
+      legend:{
+
+        labels:{
+
+          color:'white'
+        }
+      }
+    },
+
+    scales:{
+
+      x:{
+
+        ticks:{
+
+          color:'white'
+        }
+      },
+
+      y:{
+
+        ticks:{
+
+          color:'white'
+        }
+      }
+    }
   }
 });
 
-/* ================= MQTT ================= */
+/* ================= MQTT MESSAGE ================= */
 
-client.on("message",
+client.on(
+"message",
 (topic,message)=>{
 
   const data =
-  JSON.parse(message.toString());
+  JSON.parse(
+    message.toString()
+  );
 
-  document.getElementById("pv_v")
-  .innerHTML =
-  safe(data.pv_v).toFixed(1)+" V";
+  /* ==================================================
+     FLOW COLOR
+  ================================================== */
 
-  document.getElementById("pv_i")
-  .innerHTML =
-  safe(data.pv_i).toFixed(1)+" A";
+  const pvPower =
+  safe(data.pv_p);
 
-  document.getElementById("pv_p")
-  .innerHTML =
-  safe(data.pv_p).toFixed(1)+" W";
+  let color =
+  "#00d9ff";
 
-  document.getElementById("pv_power_card")
-  .innerHTML =
-  safe(data.pv_p).toFixed(1)+" W";
+  if(pvPower > 200){
 
-  document.getElementById("bat_v")
-  .innerHTML =
-  safe(data.bat_v).toFixed(1)+" V";
+    color =
+    "#00ff88";
+  }
 
-  document.getElementById("bat_i")
-  .innerHTML =
-  safe(data.bat_i).toFixed(1)+" A";
+  if(pvPower > 500){
 
-  document.getElementById("soc")
-  .innerHTML =
-  safe(data.soc).toFixed(0)+" %";
+    color =
+    "#ffee00";
+  }
 
-  document.getElementById("load_p")
-  .innerHTML =
-  safe(data.load_p).toFixed(1)+" W";
+  if(pvPower > 800){
 
-  document.getElementById("charge_p")
-  .innerHTML =
-  safe(data.charge_p).toFixed(1)+" W";
+    color =
+    "#ff5500";
+  }
 
-  document.getElementById("status")
-  .innerHTML =
+  document
+  .querySelectorAll(
+    ".flow-lines path"
+  )
+  .forEach(line=>{
+
+    line.style.stroke =
+    color;
+  });
+
+  document
+  .querySelectorAll(
+    ".energy-dot"
+  )
+  .forEach(dot=>{
+
+    dot.style.background =
+    color;
+
+    dot.style.boxShadow =
+    `0 0 15px ${color}`;
+  });
+
+  /* ==================================================
+     PV
+  ================================================== */
+
+  document.getElementById(
+    "pv_v"
+  ).innerHTML =
+
+  safe(data.pv_v)
+  .toFixed(1)
+  +" V";
+
+  document.getElementById(
+    "pv_i"
+  ).innerHTML =
+
+  safe(data.pv_i)
+  .toFixed(1)
+  +" A";
+
+  document.getElementById(
+    "pv_p"
+  ).innerHTML =
+
+  safe(data.pv_p)
+  .toFixed(1)
+  +" W";
+
+  document.getElementById(
+    "pv_power_card"
+  ).innerHTML =
+
+  safe(data.pv_p)
+  .toFixed(1)
+  +" W";
+
+  /* ==================================================
+     BATTERY
+  ================================================== */
+
+  document.getElementById(
+    "bat_v"
+  ).innerHTML =
+
+  safe(data.bat_v)
+  .toFixed(1)
+  +" V";
+
+  document.getElementById(
+    "bat_i"
+  ).innerHTML =
+
+  safe(data.bat_i)
+  .toFixed(1)
+  +" A";
+
+  document.getElementById(
+    "charge_p"
+  ).innerHTML =
+
+  safe(data.charge_p)
+  .toFixed(1)
+  +" W";
+
+  document.getElementById(
+    "soc"
+  ).innerHTML =
+
+  safe(data.soc)
+  .toFixed(0)
+  +" %";
+
+  /* ==================================================
+     LOAD
+  ================================================== */
+
+  document.getElementById(
+    "load_p"
+  ).innerHTML =
+
+  safe(data.load_p)
+  .toFixed(1)
+  +" W";
+
+  /* ==================================================
+     STATUS
+  ================================================== */
+
+  document.getElementById(
+    "status"
+  ).innerHTML =
+
   data.status;
 
-  document.getElementById("mppt_v")
-  .innerHTML =
-  safe(data.mppt_v).toFixed(1)+" V";
+  /* ==================================================
+     MPPT
+  ================================================== */
 
-  document.getElementById("mppt_i")
-  .innerHTML =
-  safe(data.mppt_i).toFixed(1)+" A";
+  document.getElementById(
+    "mppt_v"
+  ).innerHTML =
 
-  document.getElementById("mppt_p")
-  .innerHTML =
-  safe(data.mppt_p).toFixed(1)+" W";
+  safe(data.mppt_v)
+  .toFixed(1)
+  +" V";
 
-  document.getElementById("kwh_day")
-  .innerHTML =
-  safe(data.kwh_day).toFixed(2)+" kWh";
+  document.getElementById(
+    "mppt_i"
+  ).innerHTML =
 
-  document.getElementById("kwh_month")
-  .innerHTML =
-  safe(data.kwh_month).toFixed(2)+" kWh";
+  safe(data.mppt_i)
+  .toFixed(1)
+  +" A";
 
-  document.getElementById("storage_prod")
-  .innerHTML =
-  safe(data.storage_prod).toFixed(2)+" kWh";
+  document.getElementById(
+    "mppt_p"
+  ).innerHTML =
 
-  document.getElementById("charged")
-  .innerHTML =
-  safe(data.charged).toFixed(2)+" kWh";
+  safe(data.mppt_p)
+  .toFixed(1)
+  +" W";
 
-  document.getElementById("load_cons")
-  .innerHTML =
-  safe(data.load_cons).toFixed(2)+" kWh";
+  document.getElementById(
+    "mppt_eff"
+  ).innerHTML =
 
-  document.getElementById("mppt_eff")
-  .innerHTML =
-  safe(data.mppt_eff).toFixed(1)+" %";
+  safe(data.mppt_eff)
+  .toFixed(1)
+  +" %";
+
+  /* ==================================================
+     STATISTICS
+  ================================================== */
+
+  document.getElementById(
+    "kwh_day"
+  ).innerHTML =
+
+  safe(data.kwh_day)
+  .toFixed(2)
+  +" kWh";
+
+  document.getElementById(
+    "kwh_month"
+  ).innerHTML =
+
+  safe(data.kwh_month)
+  .toFixed(2)
+  +" kWh";
+
+  document.getElementById(
+    "storage_prod"
+  ).innerHTML =
+
+  safe(data.storage_prod)
+  .toFixed(2)
+  +" kWh";
+
+  document.getElementById(
+    "charged"
+  ).innerHTML =
+
+  safe(data.charged)
+  .toFixed(2)
+  +" kWh";
+
+  document.getElementById(
+    "load_cons"
+  ).innerHTML =
+
+  safe(data.load_cons)
+  .toFixed(2)
+  +" kWh";
+
+  /* ==================================================
+     CHART
+  ================================================== */
 
   const now =
   new Date()
