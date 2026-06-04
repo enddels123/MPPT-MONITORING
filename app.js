@@ -1,109 +1,49 @@
-const client =
-mqtt.connect(
-"wss://broker.hivemq.com:8884/mqtt"
+/* ================= MQTT ================= */
+
+const client = mqtt.connect(
+'wss://broker.hivemq.com:8884/mqtt'
 );
 
 const topic =
 "solar/jnge/hybrid";
 
-/* =====================================================
-   MQTT CONNECT
-===================================================== */
+/* ================= CONNECT ================= */
 
-client.on("connect",()=>{
+client.on('connect', ()=>{
 
-  console.log(
-    "MQTT CONNECTED"
-  );
+  console.log("MQTT Connected");
 
   client.subscribe(topic);
+
 });
 
-/* =====================================================
-   SAFE VALUE
-===================================================== */
+/* ================= CHART ================= */
 
-function safe(v){
-
-  if(isNaN(v))
-    return 0;
-
-  return Number(v);
-}
-
-/* =====================================================
-   UPDATE ELEMENT
-===================================================== */
-
-function setText(id,val){
-
-  const el =
-  document.getElementById(id);
-
-  if(el){
-
-    el.innerHTML = val;
-  }
-}
-
-/* =====================================================
-   CHART
-===================================================== */
-
-const ctx =
-document.getElementById(
-  "powerChart"
-).getContext("2d");
-
-const labels = [];
-
-const pvData = [];
-
-const loadData = [];
-
-const chart =
-new Chart(ctx,{
-
-  type:'line',
+const hourChart =
+new Chart(
+document.getElementById('hourChart'),
+{
+  type:'bar',
 
   data:{
+    labels:[],
 
-    labels:labels,
+    datasets:[{
+      label:'Hourly Power',
 
-    datasets:[
+      data:[],
 
-      {
-        label:'PV Power',
-
-        data:pvData,
-
-        borderWidth:3,
-
-        tension:0.4
-      },
-
-      {
-        label:'Load Power',
-
-        data:loadData,
-
-        borderWidth:3,
-
-        tension:0.4
-      }
-    ]
+      backgroundColor:'#00ff88'
+    }]
   },
 
   options:{
 
     responsive:true,
 
-    maintainAspectRatio:false,
-
     plugins:{
 
       legend:{
-
         labels:{
           color:'white'
         }
@@ -127,260 +67,213 @@ new Chart(ctx,{
   }
 });
 
-/* =====================================================
-   MQTT MESSAGE
-===================================================== */
+const dayChart =
+new Chart(
+document.getElementById('dayChart'),
+{
+  type:'line',
 
-client.on(
-"message",
+  data:{
+    labels:[],
+
+    datasets:[{
+      label:'Daily kWh',
+
+      data:[],
+
+      borderColor:'#00ffd5',
+
+      tension:0.4
+    }]
+  },
+
+  options:{
+
+    responsive:true,
+
+    plugins:{
+
+      legend:{
+        labels:{
+          color:'white'
+        }
+      }
+    },
+
+    scales:{
+
+      x:{
+        ticks:{
+          color:'white'
+        }
+      },
+
+      y:{
+        ticks:{
+          color:'white'
+        }
+      }
+    }
+  }
+});
+
+const monthChart =
+new Chart(
+document.getElementById('monthChart'),
+{
+  type:'bar',
+
+  data:{
+    labels:[],
+
+    datasets:[{
+      label:'Monthly kWh',
+
+      data:[],
+
+      backgroundColor:'#00aaff'
+    }]
+  },
+
+  options:{
+
+    responsive:true,
+
+    plugins:{
+
+      legend:{
+        labels:{
+          color:'white'
+        }
+      }
+    },
+
+    scales:{
+
+      x:{
+        ticks:{
+          color:'white'
+        }
+      },
+
+      y:{
+        ticks:{
+          color:'white'
+        }
+      }
+    }
+  }
+});
+
+/* ================= MQTT MESSAGE ================= */
+
+client.on('message',
 (topic,message)=>{
 
   const data =
-  JSON.parse(
-    message.toString()
+  JSON.parse(message.toString());
+
+  /* ================= TEXT ================= */
+
+  document.getElementById('voltage')
+  .innerHTML =
+  data.bat_v.toFixed(1) + " V";
+
+  document.getElementById('current')
+  .innerHTML =
+  data.bat_i.toFixed(1) + " A";
+
+  document.getElementById('power')
+  .innerHTML =
+  data.load_p.toFixed(1) + " W";
+
+  document.getElementById('battery')
+  .innerHTML =
+  data.soc.toFixed(0) + " %";
+
+  document.getElementById('efficiency')
+  .innerHTML =
+  data.mppt_eff.toFixed(0) + " %";
+
+  document.getElementById('daily')
+  .innerHTML =
+  data.kwh_day.toFixed(2) + " kWh";
+
+  document.getElementById('status')
+  .innerHTML =
+  data.status;
+
+  /* ================= LOAD BAR ================= */
+
+  let load =
+  Math.min(
+  (data.load_p / 2000) * 100,
+  100
   );
 
-  /* =================================================
-     FLOW COLOR
-  ================================================= */
+  document.getElementById('progress')
+  .style.width =
+  load + "%";
 
-  const pvPower =
-  safe(data.pv_p);
+  document.getElementById('loadPercent')
+  .innerHTML =
+  load.toFixed(0) + "%";
 
-  let color =
-  "#00d9ff";
+  /* ================= CHART ================= */
 
-  if(pvPower > 200){
-
-    color =
-    "#00ff88";
-  }
-
-  if(pvPower > 500){
-
-    color =
-    "#ffee00";
-  }
-
-  if(pvPower > 800){
-
-    color =
-    "#ff5500";
-  }
-
-  /* =================================================
-     LINE COLOR
-  ================================================= */
-
-  document
-  .querySelectorAll(
-    ".flow-lines path"
-  )
-  .forEach(line=>{
-
-    line.style.stroke =
-    color;
-  });
-
-  /* =================================================
-     NODE COLOR
-  ================================================= */
-
-  document
-  .querySelectorAll(
-    ".energy-node"
-  )
-  .forEach(dot=>{
-
-    dot.style.background =
-    color;
-
-    dot.style.boxShadow =
-    `0 0 12px ${color}`;
-  });
-
-  /* =================================================
-     PV
-  ================================================= */
-
-  setText(
-    "pv_v",
-    safe(data.pv_v).toFixed(1)+" V"
-  );
-
-  setText(
-    "pv_i",
-    safe(data.pv_i).toFixed(1)+" A"
-  );
-
-  setText(
-    "pv_p",
-    safe(data.pv_p).toFixed(1)+" W"
-  );
-
-  /* CARD */
-
-  setText(
-    "pv_voltage_card",
-    safe(data.pv_v).toFixed(1)+" V"
-  );
-
-  setText(
-    "pv_current_card",
-    safe(data.pv_i).toFixed(1)+" A"
-  );
-
-  setText(
-    "pv_power_card",
-    safe(data.pv_p).toFixed(1)+" W"
-  );
-
-  /* =================================================
-     BATTERY
-  ================================================= */
-
-  setText(
-    "bat_v",
-    safe(data.bat_v).toFixed(1)+" V"
-  );
-
-  setText(
-    "bat_i",
-    safe(data.bat_i).toFixed(1)+" A"
-  );
-
-  setText(
-    "bat_p",
-    safe(data.bat_p).toFixed(1)+" W"
-  );
-
-  setText(
-    "soc",
-    safe(data.soc).toFixed(0)+" %"
-  );
-
-  /* CARD */
-
-  setText(
-    "bat_voltage_card",
-    safe(data.bat_v).toFixed(1)+" V"
-  );
-
-  setText(
-    "bat_current_card",
-    safe(data.bat_i).toFixed(1)+" A"
-  );
-
-  setText(
-    "soc_card",
-    safe(data.soc).toFixed(0)+" %"
-  );
-
-  /* =================================================
-     LOAD
-  ================================================= */
-
-  setText(
-    "load_v",
-    safe(data.load_v).toFixed(1)+" V"
-  );
-
-  setText(
-    "load_i",
-    safe(data.load_i).toFixed(1)+" A"
-  );
-
-  setText(
-    "load_p",
-    safe(data.load_p).toFixed(1)+" W"
-  );
-
-  /* =================================================
-     MPPT
-  ================================================= */
-
-  setText(
-    "mppt_v",
-    safe(data.mppt_v).toFixed(1)+" V"
-  );
-
-  setText(
-    "mppt_i",
-    safe(data.mppt_i).toFixed(1)+" A"
-  );
-
-  setText(
-    "mppt_p",
-    safe(data.mppt_p).toFixed(1)+" W"
-  );
-
-  /* =================================================
-     IDLE
-  ================================================= */
-
-  setText(
-    "idle_v",
-    safe(data.idle_v).toFixed(1)+" V"
-  );
-
-  setText(
-    "idle_i",
-    safe(data.idle_i).toFixed(1)+" A"
-  );
-
-  setText(
-    "idle_p",
-    safe(data.idle_p).toFixed(1)+" W"
-  );
-
-  /* =================================================
-     ELECTRICITY STAT
-  ================================================= */
-
-  setText(
-    "today_energy",
-    safe(data.today_energy)
-    .toFixed(2)+" kWh"
-  );
-
-  setText(
-    "month_energy",
-    safe(data.month_energy)
-    .toFixed(2)+" kWh"
-  );
-
-  setText(
-    "load_energy",
-    safe(data.load_energy)
-    .toFixed(2)+" kWh"
-  );
-
-  /* =================================================
-     CHART
-  ================================================= */
-
-  const now =
+  const time =
   new Date()
   .toLocaleTimeString();
 
-  labels.push(now);
+  /* HOURLY */
 
-  pvData.push(
-    safe(data.pv_p)
-  );
+  hourChart.data.labels.push(time);
 
-  loadData.push(
-    safe(data.load_p)
-  );
+  hourChart.data.datasets[0]
+  .data.push(data.load_p);
 
-  if(labels.length > 20){
+  if(hourChart.data.labels.length > 10){
 
-    labels.shift();
+    hourChart.data.labels.shift();
 
-    pvData.shift();
-
-    loadData.shift();
+    hourChart.data.datasets[0]
+    .data.shift();
   }
 
-  chart.update();
+  hourChart.update();
+
+  /* DAILY */
+
+  dayChart.data.labels.push(time);
+
+  dayChart.data.datasets[0]
+  .data.push(data.kwh_day);
+
+  if(dayChart.data.labels.length > 10){
+
+    dayChart.data.labels.shift();
+
+    dayChart.data.datasets[0]
+    .data.shift();
+  }
+
+  dayChart.update();
+
+  /* MONTHLY */
+
+  monthChart.data.labels.push(time);
+
+  monthChart.data.datasets[0]
+  .data.push(data.kwh_month);
+
+  if(monthChart.data.labels.length > 10){
+
+    monthChart.data.labels.shift();
+
+    monthChart.data.datasets[0]
+    .data.shift();
+  }
+
+  monthChart.update();
+
 });
