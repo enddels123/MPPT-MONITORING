@@ -1,11 +1,4 @@
-/* =====================================================
-   ISOKUIKI NEXT-GEN INDUSTRIAL SCADA v2.0
-   MQTT + FIREBASE + REALTIME SCADA
-===================================================== */
-
-/* =====================================================
-   MQTT
-===================================================== */
+/* MQTT */
 
 const client =
 mqtt.connect(
@@ -15,31 +8,17 @@ mqtt.connect(
 const topic =
 "solar/jnge/hybrid";
 
-/* =====================================================
-   FIREBASE
-===================================================== */
+/* FIREBASE */
 
 const firebaseConfig = {
 
 apiKey:"AIzaSyC7ctgLv34n6pwg9cQpcTN9qd77FbMGbOg",
-
-authDomain:
-"isokuiki-scada.firebaseapp.com",
-
-databaseURL:
-"https://isokuiki-scada-default-rtdb.asia-southeast1.firebasedatabase.app",
-
-projectId:
-"isokuiki-scada",
-
-storageBucket:
-"isokuiki-scada.firebasestorage.app",
-
-messagingSenderId:
-"1078745557059",
-
-appId:
-"1:1078745557059:web:0f465f1a8a2ddf20dd8cf6"
+authDomain:"isokuiki-scada.firebaseapp.com",
+databaseURL:"https://isokuiki-scada-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId:"isokuiki-scada",
+storageBucket:"isokuiki-scada.firebasestorage.app",
+messagingSenderId:"1078745557059",
+appId:"1:1078745557059:web:0f465f1a8a2ddf20dd8cf6"
 
 };
 
@@ -48,381 +27,170 @@ firebase.initializeApp(firebaseConfig);
 const db =
 firebase.database();
 
-/* =====================================================
-   CHART CONFIG
-===================================================== */
+/* =========================
+   GAUGE
+========================= */
 
-Chart.defaults.color = "#ffffff";
-
-Chart.defaults.font.family =
-"Orbitron";
-
-/* =====================================================
-   CREATE CHART
-===================================================== */
-
-function createChart(id,datasets){
+function createGauge(id,color){
 
 return new Chart(
-
 document.getElementById(id),
-
 {
-
-type:'line',
+type:'doughnut',
 
 data:{
-
-labels:[],
-
-datasets:datasets
-
+datasets:[{
+data:[0,100],
+backgroundColor:[
+color,
+'#132544'
+],
+borderWidth:0
+}]
 },
 
 options:{
 
 responsive:true,
-
 maintainAspectRatio:false,
 
-animation:false,
+cutout:'82%',
 
 plugins:{
-
-legend:{
-
-labels:{
-
-color:'#ffffff',
-
-font:{
-size:10
-}
-
-}
-
-}
-
+legend:{display:false}
 },
 
-elements:{
-
-line:{
-borderWidth:2
-},
-
-point:{
-radius:0
-}
-
-},
-
-scales:{
-
-x:{
-
-ticks:{
-display:false
-},
-
-grid:{
-color:'rgba(255,255,255,.03)'
-}
-
-},
-
-y:{
-
-ticks:{
-color:'#ffffff',
-font:{size:9}
-},
-
-grid:{
-color:'rgba(255,255,255,.05)'
+animation:{
+duration:500
 }
 
 }
-
-}
-
-}
-
 });
-
 }
 
-/* =====================================================
-   PV CHART
-===================================================== */
-
-const chart1 =
-createChart(
-
-'chart1',
-
-[
-
-{
-label:'Voltage',
-data:[],
-borderColor:'#00ffe1',
-tension:.4
-},
-
-{
-label:'Current',
-data:[],
-borderColor:'#00ff88',
-tension:.4
-},
-
-{
-label:'Power',
-data:[],
-borderColor:'#2b7cff',
-tension:.4
-}
-
-]
-
+const gauge1 =
+createGauge(
+'gauge1',
+'#00ffe1'
 );
 
-/* =====================================================
-   DAILY CHART
-===================================================== */
-
-const chart2 =
-createChart(
-
-'chart2',
-
-[
-
-{
-label:'Daily kWh',
-data:[],
-borderColor:'#00ff88',
-tension:.4
-}
-
-]
-
+const gauge2 =
+createGauge(
+'gauge2',
+'#00ff88'
 );
 
-/* =====================================================
-   MONTHLY CHART
-===================================================== */
-
-const chart3 =
-createChart(
-
-'chart3',
-
-[
-
-{
-label:'Monthly kWh',
-data:[],
-borderColor:'#00aaff',
-tension:.4
-}
-
-]
-
-);
-
-/* =====================================================
-   DYNAMIC NODE FLOW
-===================================================== */
-
-let pvFlow = 0;
-let batFlow = 0;
-let energyFlow = 0;
-
-function animateNodes(){
-
-/* =========================
-   PV -> MPPT
-========================= */
-
-pvFlow += 2;
-
-if(pvFlow > 90){
-pvFlow = 0;
-}
-
-document
-.getElementById("node1")
-.setAttribute(
-"cx",
-150
-);
-
-document
-.getElementById("node1")
-.setAttribute(
-"cy",
-60 + pvFlow
+const gauge3 =
+createGauge(
+'gauge3',
+'#00aaff'
 );
 
 /* =========================
-   MPPT -> BATTERY
+   NODE FLOW
 ========================= */
 
-batFlow += 2;
+let p1=0;
+let p2=0;
+let p3=0;
 
-if(batFlow > 170){
-batFlow = 0;
-}
+function animateFlow(){
 
-let batX;
-let batY;
+p1 += 2;
+p2 += 2;
+p3 += 2;
 
-if(batFlow <= 70){
+/* PV -> MPPT */
 
-batX =
-150 - batFlow;
+if(p1>95)p1=0;
 
-batY =
-310;
+document.getElementById("n1")
+.setAttribute(
+"transform",
+`translate(200 ${135+p1})`
+);
+
+/* MPPT -> BAT */
+
+if(p2>260)p2=0;
+
+let x2,y2;
+
+if(p2<90){
+
+x2 = 200 - p2;
+y2 = 335;
 
 }else{
 
-batX =
-80;
-
-batY =
-310 + (batFlow - 70);
+x2 = 110;
+y2 = 335 + (p2-90);
 
 }
 
-document
-.getElementById("node2")
-.setAttribute("cx",batX);
+document.getElementById("n2")
+.setAttribute(
+"transform",
+`translate(${x2} ${y2})`
+);
 
-document
-.getElementById("node2")
-.setAttribute("cy",batY);
+/* MPPT -> LOAD */
 
-/* =========================
-   MPPT -> ENERGY
-========================= */
+if(p3>260)p3=0;
 
-energyFlow += 2;
+let x3,y3;
 
-if(energyFlow > 170){
-energyFlow = 0;
-}
+if(p3<90){
 
-let energyX;
-let energyY;
-
-if(energyFlow <= 70){
-
-energyX =
-150 + energyFlow;
-
-energyY =
-310;
+x3 = 200 + p3;
+y3 = 335;
 
 }else{
 
-energyX =
-220;
-
-energyY =
-310 + (energyFlow - 70);
+x3 = 290;
+y3 = 335 + (p3-90);
 
 }
 
-document
-.getElementById("node3")
-.setAttribute("cx",energyX);
-
-document
-.getElementById("node3")
-.setAttribute("cy",energyY);
+document.getElementById("n3")
+.setAttribute(
+"transform",
+`translate(${x3} ${y3})`
+);
 
 requestAnimationFrame(
-animateNodes
+animateFlow
 );
 
 }
 
-animateNodes();
+animateFlow();
 
-/* =====================================================
+/* =========================
    MQTT CONNECT
-===================================================== */
+========================= */
 
 client.on(
-
 'connect',
-
 ()=>{
-
-console.log(
-'MQTT CONNECTED'
-);
 
 client.subscribe(topic);
 
-document
-.getElementById(
+document.getElementById(
 'onlineText'
-)
-.innerHTML =
-'ONLINE';
+).innerHTML='ONLINE';
+
+console.log("MQTT CONNECTED");
 
 }
-
-/* reconnect */
-
 );
 
-client.on(
-
-'reconnect',
-
-()=>{
-
-document
-.getElementById(
-'onlineText'
-)
-.innerHTML =
-'RECONNECTING...';
-
-}
-
-);
-
-client.on(
-
-'offline',
-
-()=>{
-
-document
-.getElementById(
-'onlineText'
-)
-.innerHTML =
-'OFFLINE';
-
-}
-
-);
-
-/* =====================================================
+/* =========================
    MQTT MESSAGE
-===================================================== */
+========================= */
 
 client.on(
-
 'message',
-
 (topic,message)=>{
 
 const d =
@@ -430,20 +198,13 @@ JSON.parse(
 message.toString()
 );
 
-/* =====================================================
-   SAVE FIREBASE HISTORY
-===================================================== */
+/* SAVE FIREBASE */
 
 db.ref(
 'history'
 ).push({
 
-timestamp:
-Date.now(),
-
-date:
-new Date()
-.toLocaleString(),
+time:Date.now(),
 
 pv_v:d.pv_v,
 pv_i:d.pv_i,
@@ -457,21 +218,15 @@ bat_i:d.bat_i,
 soc:d.soc,
 
 kwh_day:d.kwh_day,
-kwh_month:d.kwh_month,
-
-status:d.status
+kwh_month:d.kwh_month
 
 });
 
-/* =====================================================
-   DEVICE STATUS
-===================================================== */
+/* STATUS */
 
-document
-.getElementById(
+document.getElementById(
 'deviceStatus'
-)
-.innerHTML =
+).innerHTML =
 
 d.status === "WORKING"
 
@@ -483,215 +238,127 @@ d.status === "WORKING"
 
 "DEVICE SHUTDOWN";
 
-/* =====================================================
-   WIDGET VALUE
-===================================================== */
+/* PV */
 
-const map = {
-
-pvv:
-d.pv_v + "V",
-
-pvi:
-d.pv_i + "A",
-
-pvp:
-d.pv_p + "W",
-
-charge:
-d.charge_p + "W",
-
-eff:
-d.mppt_eff + "%",
-
-bv:
-d.bat_v + "V",
-
-bi:
-d.bat_i + "A",
-
-soc:
-d.soc + "%",
-
-day:
-d.kwh_day,
-
-month:
-d.kwh_month
-
-};
-
-Object.keys(map).forEach(id=>{
-
-const el =
-document.getElementById(id);
-
-if(el){
-
-el.innerHTML =
-map[id];
-
-}
-
-});
-
-/* =====================================================
-   SCADA VALUE
-===================================================== */
-
-pvVolt.innerHTML =
+document.getElementById(
+'pvv'
+).innerHTML =
 d.pv_v + "V";
 
-pvAmp.innerHTML =
+document.getElementById(
+'pvi'
+).innerHTML =
 d.pv_i + "A";
 
-pvPower.innerHTML =
+document.getElementById(
+'pvp'
+).innerHTML =
 d.pv_p + "W";
 
-mpptW.innerHTML =
+/* MPPT */
+
+document.getElementById(
+'charge'
+).innerHTML =
 d.charge_p + "W";
 
-mpptEff.innerHTML =
+document.getElementById(
+'eff'
+).innerHTML =
 d.mppt_eff + "%";
 
-batVolt.innerHTML =
+/* BATTERY */
+
+document.getElementById(
+'bv'
+).innerHTML =
 d.bat_v + "V";
 
-batAmp.innerHTML =
+document.getElementById(
+'bi'
+).innerHTML =
 d.bat_i + "A";
 
-batSoc.innerHTML =
+document.getElementById(
+'soc'
+).innerHTML =
 d.soc + "%";
 
-kwhDay.innerHTML =
+/* ENERGY */
+
+document.getElementById(
+'day'
+).innerHTML =
 d.kwh_day;
 
-/* =====================================================
-   CHART UPDATE
-===================================================== */
+document.getElementById(
+'month'
+).innerHTML =
+d.kwh_month;
 
-const now =
-new Date()
-.toLocaleTimeString();
+/* =========================
+   GAUGE UPDATE
+========================= */
 
-/* PV */
+gauge1.data.datasets[0].data = [
 
-chart1.data.labels.push(now);
+d.pv_p,
+5000-d.pv_p
 
-chart1.data.datasets[0]
-.data.push(d.pv_v);
+];
 
-chart1.data.datasets[1]
-.data.push(d.pv_i);
+gauge2.data.datasets[0].data = [
 
-chart1.data.datasets[2]
-.data.push(d.pv_p);
+d.soc,
+100-d.soc
 
-/* DAILY */
+];
 
-chart2.data.labels.push(now);
+gauge3.data.datasets[0].data = [
 
-chart2.data.datasets[0]
-.data.push(d.kwh_day);
+d.mppt_eff,
+100-d.mppt_eff
 
-/* MONTHLY */
+];
 
-chart3.data.labels.push(now);
-
-chart3.data.datasets[0]
-.data.push(d.kwh_month);
-
-/* LIMIT */
-
-if(chart1.data.labels.length > 20){
-
-chart1.data.labels.shift();
-
-chart1.data.datasets
-.forEach(ds=>{
-
-ds.data.shift();
-
-});
-
-chart2.data.labels.shift();
-
-chart2.data.datasets[0]
-.data.shift();
-
-chart3.data.labels.shift();
-
-chart3.data.datasets[0]
-.data.shift();
+gauge1.update();
+gauge2.update();
+gauge3.update();
 
 }
-
-/* UPDATE */
-
-chart1.update();
-chart2.update();
-chart3.update();
-
-}
-
-/* END MESSAGE */
-
 );
 
-/* =====================================================
-   LOAD FIREBASE HISTORY
-===================================================== */
+/* =========================
+   AUTO RECONNECT
+========================= */
 
-db.ref(
-'history'
-)
-.limitToLast(20)
-.once(
-'value',
-(snapshot)=>{
+client.on(
+'reconnect',
+()=>{
 
-snapshot.forEach((child)=>{
+console.log(
+"MQTT RECONNECT..."
+);
 
-const d =
-child.val();
+}
+);
 
-const time =
-new Date(
-d.timestamp
-)
-.toLocaleTimeString();
+client.on(
+'offline',
+()=>{
 
-/* PV */
+document.getElementById(
+'onlineText'
+).innerHTML='OFFLINE';
 
-chart1.data.labels.push(time);
+}
+);
 
-chart1.data.datasets[0]
-.data.push(d.pv_v);
+client.on(
+'error',
+(err)=>{
 
-chart1.data.datasets[1]
-.data.push(d.pv_i);
+console.log(err);
 
-chart1.data.datasets[2]
-.data.push(d.pv_p);
-
-/* DAILY */
-
-chart2.data.labels.push(time);
-
-chart2.data.datasets[0]
-.data.push(d.kwh_day);
-
-/* MONTH */
-
-chart3.data.labels.push(time);
-
-chart3.data.datasets[0]
-.data.push(d.kwh_month);
-
-});
-
-chart1.update();
-chart2.update();
-chart3.update();
-
-});
+}
+);

@@ -4,19 +4,26 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>ISOKUIKI SMART ENERGY</title>
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<title>
+ISOKUIKI SMART ENERGY
+</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap"
+rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <style>
@@ -30,8 +37,11 @@ box-sizing:border-box;
 body{
 
 font-family:'Orbitron',sans-serif;
+
 background:#010b1d;
+
 color:#fff;
+
 overflow:hidden;
 
 }
@@ -51,9 +61,9 @@ grid-template-columns:
 grid-template-rows:
 11vh 34vh 25vh 30vh;
 
-gap:.6vh;
+gap:.5vh;
 
-padding:.8vh;
+padding:.5vh;
 
 }
 
@@ -65,24 +75,29 @@ grid-column:1/3;
 
 display:flex;
 flex-direction:column;
-justify-content:center;
 align-items:center;
+justify-content:center;
 
 }
 
 .title{
 
 font-size:2.2vh;
+
 color:#00ffe1;
-text-shadow:0 0 18px #00ffe1;
+
+text-shadow:
+0 0 15px #00ffe1;
 
 }
 
 .online{
 
-font-size:1.1vh;
-margin-top:.2vh;
+font-size:1vh;
+
 color:#00ff88;
+
+margin-top:.2vh;
 
 }
 
@@ -91,16 +106,19 @@ color:#00ff88;
 margin-top:.6vh;
 
 width:38vw;
-height:4vh;
+height:3.8vh;
 
-border:2px solid #00ffb3;
-border-radius:1.2vh;
+border:
+2px solid #00ffb3;
+
+border-radius:1vh;
 
 display:flex;
-align-items:center;
 justify-content:center;
+align-items:center;
 
-font-size:1.2vh;
+font-size:1.1vh;
+
 font-weight:bold;
 
 box-shadow:
@@ -116,11 +134,9 @@ grid-row:2/5;
 
 background:#04152d;
 
-border-radius:1.5vh;
+border-radius:1vh;
 
-padding:1vh;
-
-position:relative;
+padding:.5vh;
 
 overflow:hidden;
 
@@ -139,10 +155,13 @@ height:100%;
 
 display:grid;
 
-grid-template-columns:1fr 1fr;
-grid-template-rows:1fr 1fr;
+grid-template-columns:
+1fr 1fr;
 
-gap:.6vh;
+grid-template-rows:
+1fr 1fr;
+
+gap:.5vh;
 
 }
 
@@ -150,12 +169,13 @@ gap:.6vh;
 
 background:#04152d;
 
-border-radius:1.2vh;
+border-radius:1vh;
 
-padding:.9vh;
+padding:.7vh;
 
-box-shadow:
-0 0 12px rgba(0,255,255,.1);
+aspect-ratio:1/1;
+
+overflow:hidden;
 
 }
 
@@ -163,9 +183,9 @@ box-shadow:
 
 text-align:center;
 
-font-size:1.2vh;
+font-size:1vh;
 
-margin-bottom:.7vh;
+margin-bottom:.5vh;
 
 color:#00ffe1;
 
@@ -176,11 +196,12 @@ color:#00ffe1;
 display:flex;
 justify-content:space-between;
 
-padding:.35vh 0;
+padding:.25vh 0;
 
-font-size:1vh;
+font-size:.85vh;
 
-border-bottom:1px solid rgba(255,255,255,.08);
+border-bottom:
+1px solid rgba(255,255,255,.08);
 
 }
 
@@ -192,9 +213,10 @@ grid-column:2/3;
 
 display:grid;
 
-grid-template-columns:1fr 1fr 1fr;
+grid-template-columns:
+1fr 1fr 1fr;
 
-gap:.6vh;
+gap:.5vh;
 
 }
 
@@ -202,14 +224,13 @@ gap:.6vh;
 
 background:#04152d;
 
-border-radius:1.2vh;
+border-radius:1vh;
 
-padding:.7vh;
+padding:.5vh;
 
-height:100%;
+aspect-ratio:1/1;
 
-display:flex;
-flex-direction:column;
+overflow:hidden;
 
 }
 
@@ -217,9 +238,9 @@ flex-direction:column;
 
 text-align:center;
 
-font-size:1vh;
+font-size:.9vh;
 
-margin-bottom:.4vh;
+margin-bottom:.3vh;
 
 color:#00ffe1;
 
@@ -228,9 +249,9 @@ color:#00ffe1;
 .chartCanvas{
 
 position:relative;
-flex:1;
 
-min-height:0;
+width:100%;
+height:85%;
 
 }
 
@@ -240,10 +261,11 @@ min-height:0;
 
 .main{
 
-grid-template-columns:38% 62%;
+grid-template-columns:
+38% 62%;
 
 grid-template-rows:
-10vh 32vh 24vh 34vh;
+10vh 32vh 25vh 33vh;
 
 }
 
@@ -261,7 +283,17 @@ font-size:2vh;
 
 }
 
+/* SCADA GLOW */
+
+circle{
+
+filter:
+drop-shadow(0 0 8px #00ffe1);
+
+}
+
 </style>
+
 </head>
 
 <body>
@@ -276,11 +308,13 @@ font-size:2vh;
 ISOKUIKI SMART ENERGY
 </div>
 
-<div class="online" id="onlineText">
+<div class="online"
+id="onlineText">
 OFFLINE
 </div>
 
-<div class="device" id="deviceStatus">
+<div class="device"
+id="deviceStatus">
 DEVICE SHUTDOWN
 </div>
 
@@ -292,81 +326,126 @@ DEVICE SHUTDOWN
 
 <svg viewBox="0 0 400 700">
 
-<!-- LINES -->
+<!-- FLOW -->
 
-<line x1="200" y1="100" x2="200" y2="230"
-stroke="#36a3ff"
-stroke-width="5"/>
+<path d="
+M200 135
+L200 230
+"
 
-<line x1="200" y1="350" x2="110" y2="350"
 stroke="#36a3ff"
-stroke-width="5"/>
+stroke-width="5"
+fill="none"/>
 
-<line x1="110" y1="350" x2="110" y2="500"
-stroke="#36a3ff"
-stroke-width="5"/>
+<path d="
+M200 335
+L110 335
+L110 505
+"
 
-<line x1="200" y1="350" x2="290" y2="350"
 stroke="#36a3ff"
-stroke-width="5"/>
+stroke-width="5"
+fill="none"/>
 
-<line x1="290" y1="350" x2="290" y2="500"
+<path d="
+M200 335
+L290 335
+L290 505
+"
+
 stroke="#36a3ff"
-stroke-width="5"/>
+stroke-width="5"
+fill="none"/>
 
 <!-- NODE -->
 
-<circle id="n1" r="8" fill="#00ff88"/>
-<circle id="n2" r="8" fill="#00ff88"/>
-<circle id="n3" r="8" fill="#00ff88"/>
+<circle id="n1"
+r="8"
+fill="#00ff88"/>
+
+<circle id="n2"
+r="8"
+fill="#00ff88"/>
+
+<circle id="n3"
+r="8"
+fill="#00ff88"/>
 
 <!-- PV -->
 
-<circle cx="200" cy="80" r="55"
+<circle cx="200"
+cy="80"
+r="55"
+
 fill="#031326"
 stroke="#00ffe1"
 stroke-width="4"/>
 
-<text x="200" y="85"
+<text x="200"
+y="88"
+
 fill="#fff"
-font-size="16"
-text-anchor="middle">PV</text>
+font-size="18"
+text-anchor="middle">
+PV
+</text>
 
 <!-- MPPT -->
 
-<circle cx="200" cy="280" r="55"
+<circle cx="200"
+cy="280"
+r="55"
+
 fill="#031326"
 stroke="#00ffe1"
 stroke-width="4"/>
 
-<text x="200" y="285"
+<text x="200"
+y="288"
+
 fill="#fff"
-font-size="16"
-text-anchor="middle">MPPT</text>
+font-size="18"
+text-anchor="middle">
+MPPT
+</text>
 
-<!-- BATTERY -->
+<!-- BAT -->
 
-<circle cx="110" cy="560" r="55"
+<circle cx="110"
+cy="560"
+r="55"
+
 fill="#031326"
 stroke="#00ffe1"
 stroke-width="4"/>
 
-<text x="110" y="565"
+<text x="110"
+y="568"
+
 fill="#fff"
-font-size="16"
-text-anchor="middle">BAT</text>
+font-size="18"
+text-anchor="middle">
+BAT
+</text>
 
-<!-- ENERGY -->
+<!-- LOAD -->
 
-<circle cx="290" cy="560" r="55"
+<circle cx="290"
+cy="560"
+r="55"
+
 fill="#031326"
 stroke="#00ffe1"
 stroke-width="4"/>
 
-<text x="290" y="565"
+<text x="290"
+y="568"
+
 fill="#fff"
-font-size="16"
-text-anchor="middle">LOAD</text>
+font-size="18"
+text-anchor="middle">
+LOAD
+</text>
 
 </svg>
 
