@@ -16,22 +16,22 @@ const client =
 mqtt.connect(broker);
 
 /* =========================================
-DATA ARRAY
+DATA STORAGE
 ========================================= */
 
 let powerData = [];
-let labelData = [];
+let powerLabel = [];
 
-let energyDayData = [];
-let energyMonthData = [];
-
+let dayData = [];
+let monthData = [];
 let energyLabel = [];
 
 /* =========================================
 CHART POWER
 ========================================= */
 
-const powerChart = new Chart(
+const powerChart =
+new Chart(
 
 document.getElementById(
 "powerChart"
@@ -42,22 +42,22 @@ type:"line",
 
 data:{
 
-labels:labelData,
+labels:powerLabel,
 
 datasets:[{
 
-label:"PV Power (W)",
+label:"PV Power",
 
 data:powerData,
 
 borderColor:"#00ffd5",
 
 backgroundColor:
-"rgba(0,255,200,0.15)",
+"rgba(0,255,200,0.12)",
 
 fill:true,
 
-tension:0.4
+tension:0.45
 
 }]
 },
@@ -99,7 +99,8 @@ color:"white"
 CHART DAILY
 ========================================= */
 
-const energyDayChart = new Chart(
+const energyDayChart =
+new Chart(
 
 document.getElementById(
 "energyDayChart"
@@ -116,10 +117,10 @@ datasets:[{
 
 label:"Daily kWh",
 
-data:energyDayData,
+data:dayData,
 
 backgroundColor:
-"rgba(0,255,120,0.6)"
+"rgba(0,255,120,0.5)"
 
 }]
 },
@@ -161,7 +162,8 @@ color:"white"
 CHART MONTHLY
 ========================================= */
 
-const energyMonthChart = new Chart(
+const energyMonthChart =
+new Chart(
 
 document.getElementById(
 "energyMonthChart"
@@ -178,10 +180,10 @@ datasets:[{
 
 label:"Monthly kWh",
 
-data:energyMonthData,
+data:monthData,
 
 backgroundColor:
-"rgba(0,180,255,0.6)"
+"rgba(0,180,255,0.55)"
 
 }]
 },
@@ -225,34 +227,35 @@ HELPER
 
 function setText(id,val){
 
-document.getElementById(id)
+document
+.getElementById(id)
 .innerHTML = val;
 }
 
+/* =========================================
+FLOW CONTROL
+========================================= */
+
 function setFlow(state){
 
-const flows = [
+const nodes = [
 
-"pv_flow",
-"split_flow",
-"bat_flow",
-"load_flow"
+".flow-pv",
+".flow-battery",
+".flow-energy"
 
 ];
 
-flows.forEach(id=>{
+nodes.forEach(cls=>{
 
-const el =
-document.getElementById(id);
+document
+.querySelectorAll(cls)
+.forEach(el=>{
 
-if(state){
+el.style.display =
+state ? "block" : "none";
 
-el.style.display = "block";
-
-}else{
-
-el.style.display = "none";
-}
+});
 });
 }
 
@@ -287,7 +290,7 @@ client.subscribe(topic);
 );
 
 /* =========================================
-MQTT ERROR
+MQTT OFFLINE
 ========================================= */
 
 client.on(
@@ -342,8 +345,6 @@ setText(
 "pv_p",
 data.pv_p.toFixed(0)+" W"
 );
-
-/* CIRCLE */
 
 setText(
 "pv_v_circle",
@@ -452,7 +453,7 @@ data.kwh_day.toFixed(1)
 );
 
 /* =========================================
-DEVICE
+DEVICE STATUS
 ========================================= */
 
 const deviceBox =
@@ -472,7 +473,7 @@ deviceBox.style.border =
 "4px solid #00ff88";
 
 deviceBox.style.boxShadow =
-"0 0 35px rgba(0,255,140,0.4)";
+"0 0 35px rgba(0,255,120,0.4)";
 
 setFlow(true);
 
@@ -495,9 +496,9 @@ setFlow(false);
 BATTERY FLOW DIRECTION
 ========================================= */
 
-const batFlow =
-document.getElementById(
-"bat_flow"
+const batteryNode =
+document.querySelector(
+".flow-battery"
 );
 
 if(
@@ -505,13 +506,13 @@ data.battery_status ==
 "DISCHARGING"
 ){
 
-batFlow.style.animationDirection =
+batteryNode.style.animationDirection =
 "reverse";
 
 }
 else{
 
-batFlow.style.animationDirection =
+batteryNode.style.animationDirection =
 "normal";
 }
 
@@ -525,15 +526,15 @@ new Date()
 
 /* POWER */
 
-labelData.push(now);
+powerLabel.push(now);
 
 powerData.push(
 data.pv_p
 );
 
-if(labelData.length > 20){
+if(powerLabel.length > 15){
 
-labelData.shift();
+powerLabel.shift();
 powerData.shift();
 }
 
@@ -543,21 +544,21 @@ powerChart.update();
 
 energyLabel.push(now);
 
-energyDayData.push(
+dayData.push(
 data.kwh_day
 );
 
-energyMonthData.push(
+monthData.push(
 data.kwh_month
 );
 
-if(energyLabel.length > 20){
+if(energyLabel.length > 15){
 
 energyLabel.shift();
 
-energyDayData.shift();
+dayData.shift();
 
-energyMonthData.shift();
+monthData.shift();
 }
 
 energyDayChart.update();
@@ -568,7 +569,7 @@ energyMonthChart.update();
 );
 
 /* =========================================
-AUTO RECONNECT WATCHDOG
+AUTO RECONNECT
 ========================================= */
 
 setInterval(()=>{
