@@ -21,13 +21,13 @@ client.on("reconnect",()=>{
 
 client.on("error",(err)=>{
 
-  console.log("MQTT ERROR",err);
+  console.log(err);
 });
 
 // ================= CHART =================
 
-const ctx = document
-.getElementById("chart")
+const ctx =
+document.getElementById("chart")
 .getContext("2d");
 
 const labels = [];
@@ -96,7 +96,9 @@ const chart = new Chart(ctx,{
       legend:{
 
         labels:{
+
           color:'#00ffd5',
+
           font:{
             size:9
           }
@@ -109,7 +111,9 @@ const chart = new Chart(ctx,{
       x:{
 
         ticks:{
+
           color:'#00ffd5',
+
           font:{
             size:8
           }
@@ -119,7 +123,9 @@ const chart = new Chart(ctx,{
       y:{
 
         ticks:{
+
           color:'#00ffd5',
+
           font:{
             size:8
           }
@@ -244,7 +250,7 @@ client.on("message",(topic,message)=>{
       message.toString()
     );
 
-    // ================= PV =================
+    // PV
 
     document.getElementById("pv_v")
     .innerHTML =
@@ -261,7 +267,7 @@ client.on("message",(topic,message)=>{
     safe(data.pv_p).toFixed(1)
     +" W";
 
-    // ================= BATTERY =================
+    // BATTERY
 
     document.getElementById("bat_v")
     .innerHTML =
@@ -278,7 +284,7 @@ client.on("message",(topic,message)=>{
     safe(data.soc).toFixed(1)
     +" %";
 
-    // ================= MPPT =================
+    // MPPT
 
     document.getElementById("charge_p")
     .innerHTML =
@@ -295,7 +301,7 @@ client.on("message",(topic,message)=>{
     safe(data.mppt_eff).toFixed(1)
     +" %";
 
-    // ================= LOAD =================
+    // LOAD
 
     document.getElementById("load_p")
     .innerHTML =
@@ -306,7 +312,7 @@ client.on("message",(topic,message)=>{
       data.status || "IDLE"
     );
 
-    // ================= ENERGY =================
+    // ENERGY
 
     document.getElementById("kwh_day")
     .innerHTML =
@@ -318,7 +324,7 @@ client.on("message",(topic,message)=>{
     safe(data.kwh_month).toFixed(2)
     +" kWh";
 
-    // ================= ARROW =================
+    // ARROW
 
     updateArrow(
       "arrow1",
@@ -335,7 +341,7 @@ client.on("message",(topic,message)=>{
       data.load_p
     );
 
-    // ================= CHART =================
+    // CHART
 
     const now =
     new Date()
@@ -368,7 +374,7 @@ client.on("message",(topic,message)=>{
 
     chart.update();
 
-    // ================= SAVE =================
+    // SAVE
 
     localStorage.setItem(
       "plts_last_data",
@@ -377,10 +383,7 @@ client.on("message",(topic,message)=>{
 
   }catch(err){
 
-    console.log(
-      "JSON ERROR",
-      err
-    );
+    console.log(err);
   }
 });
 
