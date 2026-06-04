@@ -1,28 +1,44 @@
 const client =
 mqtt.connect(
-'wss://broker.hivemq.com:8884/mqtt'
-);
+'wss://broker.hivemq.com:8884/mqtt',
+{
+reconnectPeriod:2000,
+connectTimeout:5000
+});
 
 const topic =
 "solar/jnge/hybrid";
 
-/* =====================================================
-   MQTT CONNECT
-===================================================== */
+/* NETWORK */
+
+const network =
+document.getElementById(
+'network_status'
+);
+
+/* MQTT */
 
 client.on('connect',()=>{
 
-  console.log(
-  "MQTT Connected"
-  );
+network.innerHTML =
+"ONLINE";
 
-  client.subscribe(topic);
+network.className =
+"online";
 
+client.subscribe(topic);
 });
 
-/* =====================================================
-   CREATE CHART
-===================================================== */
+client.on('offline',()=>{
+
+network.innerHTML =
+"OFFLINE";
+
+network.className =
+"offline";
+});
+
+/* CHART */
 
 function createChart(
 canvas,
@@ -31,88 +47,36 @@ color,
 type='line'
 ){
 
-  return new Chart(
-  document.getElementById(canvas),
-  {
+return new Chart(
+document.getElementById(canvas),
+{
 
-    type:type,
+type:type,
 
-    data:{
+data:{
+labels:[],
+datasets:[{
+label:label,
+data:[],
+borderColor:color,
+backgroundColor:color,
+borderWidth:2,
+tension:0.4
+}]
+},
 
-      labels:[],
-
-      datasets:[{
-
-        label:label,
-
-        data:[],
-
-        borderColor:color,
-
-        backgroundColor:color,
-
-        borderWidth:2,
-
-        tension:0.4,
-
-        fill:false
-      }]
-    },
-
-    options:{
-
-      responsive:true,
-
-      maintainAspectRatio:false,
-
-      plugins:{
-
-        legend:{
-
-          labels:{
-            color:'white'
-          }
-        }
-      },
-
-      scales:{
-
-        x:{
-
-          ticks:{
-            color:'white'
-          },
-
-          grid:{
-            color:'#23304d'
-          }
-        },
-
-        y:{
-
-          ticks:{
-            color:'white'
-          },
-
-          grid:{
-            color:'#23304d'
-          }
-        }
-      }
-    }
-  });
+options:{
+responsive:true,
+maintainAspectRatio:false
 }
-
-/* =====================================================
-   CHART INIT
-===================================================== */
+});
+}
 
 const powerChart =
 createChart(
 'powerChart',
 'PV Power',
-'#00ff88',
-'line'
+'#00ff88'
 );
 
 const energyDayChart =
@@ -131,170 +95,192 @@ createChart(
 'bar'
 );
 
-/* =====================================================
-   UPDATE CHART
-===================================================== */
-
 function updateChart(
 chart,
 label,
 value
 ){
 
-  chart.data.labels.push(label);
+chart.data.labels.push(label);
 
-  chart.data.datasets[0]
-  .data.push(value);
+chart.data.datasets[0]
+.data.push(value);
 
-  if(
-  chart.data.labels.length > 15
-  ){
+if(chart.data.labels.length>20){
 
-    chart.data.labels.shift();
+chart.data.labels.shift();
 
-    chart.data.datasets[0]
-    .data.shift();
-  }
-
-  chart.update();
+chart.data.datasets[0]
+.data.shift();
 }
 
-/* =====================================================
-   MQTT MESSAGE
-===================================================== */
+chart.update();
+}
+
+/* MQTT MESSAGE */
 
 client.on(
 'message',
 (topic,message)=>{
 
-  const data =
-  JSON.parse(
-  message.toString()
-  );
+const data =
+JSON.parse(
+message.toString()
+);
 
-  /* DEVICE STATUS */
+/* LOCAL STORAGE */
 
-  if(data.device == "WORKING"){
+localStorage.setItem(
+"solarData",
+JSON.stringify(data)
+);
 
-    document.getElementById(
-    'device_box'
-    ).innerHTML =
-    "DEVICE WORKING";
+/* ALARM */
 
-  } else {
+const alarm =
+document.getElementById(
+'alarm_box'
+);
 
-    document.getElementById(
-    'device_box'
-    ).innerHTML =
-    "DEVICE SHUTDOWN";
-  }
+if(data.soc < 20){
 
-  /* PV */
+alarm.style.display =
+"block";
 
-  document.getElementById(
-  'pv_v'
-  ).innerHTML =
-  data.pv_v.toFixed(1)
-  + " V";
+} else {
 
-  document.getElementById(
-  'pv_i'
-  ).innerHTML =
-  data.pv_i.toFixed(2)
-  + " A";
+alarm.style.display =
+"none";
+}
 
-  document.getElementById(
-  'pv_p'
-  ).innerHTML =
-  data.pv_p.toFixed(1)
-  + " W";
+/* DEVICE */
 
-  /* BATTERY */
+document.getElementById(
+'device_box'
+).innerHTML =
 
-  document.getElementById(
-  'bat_v'
-  ).innerHTML =
-  data.bat_v.toFixed(1)
-  + " V";
+"DEVICE " +
+data.device;
 
-  document.getElementById(
-  'bat_i'
-  ).innerHTML =
-  data.bat_i.toFixed(2)
-  + " A";
+/* FLOW */
 
-  document.getElementById(
-  'soc'
-  ).innerHTML =
-  data.soc.toFixed(0)
-  + " %";
+const pvFlow =
+document.getElementById(
+'pv_flow'
+);
 
-  document.getElementById(
-  'soc_fill'
-  ).style.width =
-  data.soc + "%";
+const batFlow =
+document.getElementById(
+'bat_flow'
+);
 
-  document.getElementById(
-  'battery_status'
-  ).innerHTML =
-  data.battery_status;
+const loadFlow =
+document.getElementById(
+'load_flow'
+);
 
-  /* MPPT */
+if(data.device=="SHUTDOWN"){
 
-  document.getElementById(
-  'charge_p'
-  ).innerHTML =
-  data.charge_p.toFixed(1)
-  + " W";
+pvFlow.style.display="none";
+batFlow.style.display="none";
+loadFlow.style.display="none";
 
-  document.getElementById(
-  'mppt_eff'
-  ).innerHTML =
-  data.mppt_eff.toFixed(0)
-  + " %";
+} else {
 
-  /* ENERGY */
+pvFlow.style.display="block";
+batFlow.style.display="block";
+loadFlow.style.display="block";
+}
 
-  document.getElementById(
-  'total_power'
-  ).innerHTML =
-  data.pv_p.toFixed(1)
-  + " W";
+if(
+data.battery_status==
+"DISCHARGING"
+){
 
-  document.getElementById(
-  'kwh_day'
-  ).innerHTML =
-  data.kwh_day.toFixed(3)
-  + " kWh";
+batFlow.style.animationDirection =
+"reverse";
 
-  document.getElementById(
-  'kwh_month'
-  ).innerHTML =
-  data.kwh_month.toFixed(3)
-  + " kWh";
+} else {
 
-  /* CHART */
+batFlow.style.animationDirection =
+"normal";
+}
 
-  const time =
-  new Date()
-  .toLocaleTimeString();
+/* UPDATE */
 
-  updateChart(
-  powerChart,
-  time,
-  data.pv_p
-  );
+document.getElementById('pv_v')
+.innerHTML =
+data.pv_v.toFixed(1)+" V";
 
-  updateChart(
-  energyDayChart,
-  time,
-  data.kwh_day
-  );
+document.getElementById('pv_i')
+.innerHTML =
+data.pv_i.toFixed(2)+" A";
 
-  updateChart(
-  energyMonthChart,
-  time,
-  data.kwh_month
-  );
+document.getElementById('pv_p')
+.innerHTML =
+data.pv_p.toFixed(1)+" W";
 
+document.getElementById('bat_v')
+.innerHTML =
+data.bat_v.toFixed(1)+" V";
+
+document.getElementById('bat_i')
+.innerHTML =
+data.bat_i.toFixed(2)+" A";
+
+document.getElementById('soc')
+.innerHTML =
+data.soc.toFixed(0)+" %";
+
+document.getElementById('charge_p')
+.innerHTML =
+data.charge_p.toFixed(1)+" W";
+
+document.getElementById('mppt_eff')
+.innerHTML =
+data.mppt_eff.toFixed(0)+" %";
+
+document.getElementById('kwh_day')
+.innerHTML =
+data.kwh_day.toFixed(3)+" kWh";
+
+document.getElementById('kwh_month')
+.innerHTML =
+data.kwh_month.toFixed(3)+" kWh";
+
+document.getElementById('total_power')
+.innerHTML =
+data.pv_p.toFixed(1)+" W";
+
+document.getElementById(
+'battery_status'
+).innerHTML =
+data.battery_status;
+
+document.getElementById(
+'soc_fill'
+).style.width =
+data.soc + "%";
+
+const time =
+new Date()
+.toLocaleTimeString();
+
+updateChart(
+powerChart,
+time,
+data.pv_p
+);
+
+updateChart(
+energyDayChart,
+time,
+data.kwh_day
+);
+
+updateChart(
+energyMonthChart,
+time,
+data.kwh_month
+);
 });

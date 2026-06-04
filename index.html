@@ -8,7 +8,7 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>SMART ENERGY MONITOR</title>
+<title>ISOKUIKI SMART ENERGY</title>
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
@@ -19,297 +19,410 @@ content="width=device-width, initial-scale=1.0">
 <style>
 
 *{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
 body{
 
-  background:#050b18;
+background:
+linear-gradient(
+180deg,
+#030712,
+#071426
+);
 
-  color:white;
+color:white;
 
-  font-family:'Orbitron',sans-serif;
+font-family:'Orbitron',sans-serif;
 
-  overflow-x:hidden;
+overflow-x:hidden;
 }
 
-/* =====================================================
-   HEADER
-===================================================== */
+/* HEADER */
 
 .header{
 
-  text-align:center;
+text-align:center;
 
-  padding:20px;
+padding:20px;
 }
 
 .header h1{
 
-  color:#00ffd5;
+font-size:34px;
 
-  font-size:32px;
+color:#00ffd5;
 
-  text-shadow:
-  0 0 20px #00ffd5;
+text-shadow:
+0 0 25px #00ffd5;
 }
 
-/* =====================================================
-   DEVICE STATUS
-===================================================== */
+/* NETWORK */
+
+.network{
+
+text-align:center;
+
+margin-bottom:20px;
+
+font-size:14px;
+}
+
+.online{
+color:#00ff88;
+}
+
+.offline{
+color:red;
+}
+
+/* STATUS */
 
 .status-widget{
 
-  width:100%;
+display:flex;
 
-  display:flex;
+flex-direction:column;
 
-  flex-direction:column;
+align-items:center;
 
-  justify-content:center;
-
-  align-items:center;
-
-  margin-top:10px;
-
-  margin-bottom:25px;
+margin-bottom:25px;
 }
 
 .status-icon{
 
-  font-size:90px;
+font-size:90px;
 
-  color:#00ff88;
+color:#00ff88;
 
-  margin-bottom:15px;
-
-  text-shadow:
-  0 0 30px #00ff88;
+text-shadow:
+0 0 30px #00ff88;
 }
 
 .device-box{
 
-  background:#10192b;
+margin-top:15px;
 
-  padding:15px 40px;
+padding:15px 40px;
 
-  border-radius:15px;
+border-radius:15px;
 
-  font-size:24px;
+background:
+rgba(16,25,43,0.9);
 
-  font-weight:bold;
+border:
+2px solid #00ff88;
 
-  border:
-  2px solid #00ff88;
+font-size:24px;
 
-  box-shadow:
-  0 0 25px rgba(0,255,150,0.4);
+font-weight:bold;
 
-  transition:0.5s;
+box-shadow:
+0 0 25px rgba(0,255,150,0.3);
+
+backdrop-filter:blur(12px);
 }
 
-/* =====================================================
-   FLOW
-===================================================== */
+/* FLOW */
+
+.power-container{
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+margin-top:20px;
+
+margin-bottom:40px;
+}
+
+.power-node{
+
+width:100px;
+height:100px;
+
+border-radius:50%;
+
+background:
+rgba(16,25,43,0.8);
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:40px;
+
+border:
+2px solid rgba(0,255,200,0.3);
+
+box-shadow:
+0 0 30px rgba(0,255,200,0.25);
+
+backdrop-filter:blur(10px);
+}
+
+.power-node span{
+
+font-size:12px;
+
+margin-top:5px;
+
+color:#00ffd5;
+}
+
+.line{
+
+position:relative;
+
+overflow:hidden;
+
+background:#23304d;
+}
+
+.vertical{
+
+width:6px;
+height:80px;
+}
+
+.horizontal{
+
+width:140px;
+height:6px;
+
+margin-top:50px;
+}
+
+.split-container{
+
+display:flex;
+
+gap:120px;
+}
+
+.split-side{
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+}
+
+.particle{
+
+position:absolute;
+
+width:20px;
+height:20px;
+
+border-radius:50%;
+
+background:#00ff88;
+
+box-shadow:
+0 0 20px #00ff88;
+
+animation:
+flowAnim 1.2s linear infinite;
+}
+
+.vertical .particle{
+
+left:-7px;
+}
+
+.horizontal .particle{
+
+top:-7px;
+}
+
+@keyframes flowAnim{
+
+0%{
+transform:
+translate(-20px,-20px);
+
+opacity:0;
+}
+
+50%{
+opacity:1;
+}
+
+100%{
+transform:
+translate(150px,90px);
+
+opacity:0;
+}
+}
+
+/* WIDGET */
 
 .flow{
 
-  display:flex;
+display:flex;
 
-  justify-content:center;
+flex-wrap:wrap;
 
-  align-items:flex-start;
+justify-content:center;
 
-  flex-wrap:wrap;
+gap:20px;
 
-  gap:20px;
-
-  padding:20px;
+padding:20px;
 }
-
-/* =====================================================
-   BOX
-===================================================== */
 
 .box{
 
-  width:260px;
+width:260px;
 
-  background:#10192b;
+background:
+rgba(16,25,43,0.85);
 
-  border-radius:20px;
+border-radius:20px;
 
-  padding:20px;
+padding:20px;
 
-  box-shadow:
-  0 0 20px rgba(0,255,200,0.15);
+backdrop-filter:blur(10px);
 
-  transition:0.3s;
-}
-
-.box:hover{
-
-  transform:translateY(-5px);
-
-  box-shadow:
-  0 0 30px rgba(0,255,200,0.3);
+box-shadow:
+0 0 25px rgba(0,255,200,0.12);
 }
 
 .box h2{
 
-  text-align:center;
+text-align:center;
 
-  margin-bottom:20px;
+color:#00ffd5;
 
-  color:#00ffd5;
+margin-bottom:20px;
 }
-
-/* =====================================================
-   DATA
-===================================================== */
 
 .data{
 
-  display:flex;
+display:flex;
 
-  justify-content:space-between;
+justify-content:space-between;
 
-  background:#151f34;
+background:#151f34;
 
-  padding:12px;
+padding:12px;
 
-  border-radius:12px;
+border-radius:12px;
 
-  margin-top:10px;
+margin-top:10px;
 }
 
-.label{
-
-  color:#00ffd5;
-}
-
-.value{
-
-  font-weight:bold;
-}
-
-/* =====================================================
-   SOC
-===================================================== */
-
-.soc-container{
-
-  margin-top:15px;
-}
+/* SOC */
 
 .soc-bar{
 
-  width:100%;
+width:100%;
 
-  height:24px;
+height:24px;
 
-  background:#1c2740;
+background:#1c2740;
 
-  border-radius:20px;
+border-radius:20px;
 
-  overflow:hidden;
+overflow:hidden;
+
+margin-top:15px;
 }
 
 .soc-fill{
 
-  width:0%;
+width:0%;
 
-  height:100%;
+height:100%;
 
-  background:
-  linear-gradient(
-  90deg,
-  #00ff88,
-  #00ffd5
-  );
+background:
+linear-gradient(
+90deg,
+#00ff88,
+#00ffd5
+);
 
-  transition:1s;
+transition:1s;
 }
 
-/* =====================================================
-   BATTERY STATUS
-===================================================== */
+/* ALARM */
 
-.status{
+.alarm{
 
-  text-align:center;
+width:95%;
 
-  margin-top:15px;
+margin:auto;
 
-  font-size:18px;
+margin-top:20px;
 
-  font-weight:bold;
+background:#3b0a0a;
 
-  color:#00ff88;
+color:#ffaaaa;
+
+padding:15px;
+
+border-radius:15px;
+
+text-align:center;
+
+display:none;
 }
 
-/* =====================================================
-   CHART
-===================================================== */
+/* CHART */
 
 .chart-area{
 
-  width:95%;
+width:95%;
 
-  margin:auto;
+margin:auto;
 
-  margin-top:20px;
+margin-top:30px;
 
-  background:#10192b;
+background:
+rgba(16,25,43,0.9);
 
-  border-radius:20px;
+border-radius:20px;
 
-  padding:20px;
-
-  box-shadow:
-  0 0 20px rgba(0,255,200,0.15);
-}
-
-.chart-title{
-
-  text-align:center;
-
-  color:#00ffd5;
-
-  margin-bottom:20px;
+padding:20px;
 }
 
 .chart-box{
 
-  height:300px;
+height:300px;
 
-  margin-bottom:40px;
+margin-bottom:40px;
 }
 
-/* =====================================================
-   MOBILE
-===================================================== */
+/* MOBILE */
 
 @media(max-width:900px){
 
-  .flow{
+.flow{
+flex-direction:column;
+align-items:center;
+}
 
-    flex-direction:column;
+.box{
+width:95%;
+}
 
-    align-items:center;
-  }
+.split-container{
+gap:40px;
+}
 
-  .box{
-
-    width:95%;
-  }
-
-  .device-box{
-
-    font-size:20px;
-  }
+.horizontal{
+width:90px;
+}
 }
 
 </style>
@@ -318,299 +431,214 @@ body{
 
 <body>
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
-
 <div class="header">
 
-  <h1>
-    ⚡ SMART ENERGY MONITOR ⚡
-  </h1>
+<h1>
+ISOKUIKI SMART ENERGY 
+</h1>
 
 </div>
 
-<!-- =====================================================
-     DEVICE STATUS
-===================================================== -->
+<div class="network">
+
+<span id="network_status"
+class="offline">
+
+OFFLINE
+
+</span>
+
+</div>
 
 <div class="status-widget">
 
-  <div class="status-icon"
-  id="status_icon">
+<div class="status-icon">
 
-    ⚡
-
-  </div>
-
-  <div class="device-box"
-  id="device_box">
-
-    DEVICE SHUTDOWN
-
-  </div>
+⚡
 
 </div>
 
-<!-- =====================================================
-     MAIN FLOW
-===================================================== -->
+<div class="device-box"
+id="device_box">
+
+DEVICE SHUTDOWN
+
+</div>
+
+</div>
+
+<!-- FLOW -->
+
+<div class="power-container">
+
+<div class="power-node">
+☀️
+<span>PV</span>
+</div>
+
+<div class="line vertical">
+<div class="particle"
+id="pv_flow"></div>
+</div>
+
+<div class="power-node">
+⚙️
+<span>MPPT</span>
+</div>
+
+<div class="split-container">
+
+<div class="split-side">
+
+<div class="line horizontal">
+<div class="particle"
+id="bat_flow"></div>
+</div>
+
+<div class="power-node">
+🔋
+<span>BATTERY</span>
+</div>
+
+</div>
+
+<div class="split-side">
+
+<div class="line horizontal">
+<div class="particle"
+id="load_flow"></div>
+</div>
+
+<div class="power-node">
+⚡
+<span>ENERGY</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ALARM -->
+
+<div class="alarm"
+id="alarm_box">
+
+LOW BATTERY WARNING
+
+</div>
+
+<!-- WIDGET -->
 
 <div class="flow">
 
-  <!-- PHOTOVOLTAIC -->
-
-  <div class="box">
-
-    <h2>☀️ PHOTOVOLTAIC</h2>
-
-    <div class="data">
-
-      <span class="label">
-        Voltage
-      </span>
-
-      <span class="value"
-      id="pv_v">
-
-        0 V
-
-      </span>
-
-    </div>
-
-    <div class="data">
-
-      <span class="label">
-        Current
-      </span>
-
-      <span class="value"
-      id="pv_i">
-
-        0 A
-
-      </span>
-
-    </div>
-
-    <div class="data">
-
-      <span class="label">
-        Power
-      </span>
-
-      <span class="value"
-      id="pv_p">
-
-        0 W
-
-      </span>
-
-    </div>
-
-  </div>
-
-  <!-- MPPT -->
-
-  <div class="box">
-
-    <h2>⚙️ MPPT</h2>
-
-    <div class="data">
-
-      <span class="label">
-        Charge Power
-      </span>
-
-      <span class="value"
-      id="charge_p">
-
-        0 W
-
-      </span>
-
-    </div>
-
-    <div class="data">
-
-      <span class="label">
-        Efficiency
-      </span>
-
-      <span class="value"
-      id="mppt_eff">
-
-        0 %
-
-      </span>
-
-    </div>
-
-  </div>
-
-  <!-- BATTERY -->
-
-  <div class="box">
-
-    <h2>🔋 BATTERY</h2>
-
-    <div class="data">
-
-      <span class="label">
-        Voltage
-      </span>
-
-      <span class="value"
-      id="bat_v">
-
-        0 V
-
-      </span>
-
-    </div>
-
-    <div class="data">
-
-      <span class="label">
-        Current
-      </span>
-
-      <span class="value"
-      id="bat_i">
-
-        0 A
-
-      </span>
-
-    </div>
-
-    <div class="data">
-
-      <span class="label">
-        SOC
-      </span>
-
-      <span class="value"
-      id="soc">
-
-        0 %
-
-      </span>
-
-    </div>
-
-    <!-- SOC BAR -->
-
-    <div class="soc-container">
-
-      <div class="soc-bar">
-
-        <div
-        class="soc-fill"
-        id="soc_fill">
-
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- BATTERY STATUS -->
-
-    <div class="status"
-    id="battery_status">
-
-      STANDBY
-
-    </div>
-
-  </div>
-
-  <!-- ENERGY -->
-
-  <div class="box">
-
-    <h2>⚡ ENERGY</h2>
-
-    <div class="data">
-
-      <span class="label">
-        Total Power
-      </span>
-
-      <span class="value"
-      id="total_power">
-
-        0 W
-
-      </span>
-
-    </div>
-
-    <div class="data">
-
-      <span class="label">
-        Daily kWh
-      </span>
-
-      <span class="value"
-      id="kwh_day">
-
-        0 kWh
-
-      </span>
-
-    </div>
-
-    <div class="data">
-
-      <span class="label">
-        Monthly kWh
-      </span>
-
-      <span class="value"
-      id="kwh_month">
-
-        0 kWh
-
-      </span>
-
-    </div>
-
-  </div>
+<div class="box">
+
+<h2>☀️ PHOTOVOLTAIC</h2>
+
+<div class="data">
+<span>Voltage</span>
+<span id="pv_v">0</span>
+</div>
+
+<div class="data">
+<span>Current</span>
+<span id="pv_i">0</span>
+</div>
+
+<div class="data">
+<span>Power</span>
+<span id="pv_p">0</span>
+</div>
 
 </div>
 
-<!-- =====================================================
-     CHART
-===================================================== -->
+<div class="box">
+
+<h2>⚙️ MPPT</h2>
+
+<div class="data">
+<span>Charge Power</span>
+<span id="charge_p">0</span>
+</div>
+
+<div class="data">
+<span>Efficiency</span>
+<span id="mppt_eff">0</span>
+</div>
+
+</div>
+
+<div class="box">
+
+<h2>🔋 BATTERY</h2>
+
+<div class="data">
+<span>Voltage</span>
+<span id="bat_v">0</span>
+</div>
+
+<div class="data">
+<span>Current</span>
+<span id="bat_i">0</span>
+</div>
+
+<div class="data">
+<span>SOC</span>
+<span id="soc">0</span>
+</div>
+
+<div class="soc-bar">
+<div class="soc-fill"
+id="soc_fill"></div>
+</div>
+
+<div style="margin-top:15px;text-align:center"
+id="battery_status">
+
+STANDBY
+
+</div>
+
+</div>
+
+<div class="box">
+
+<h2>⚡ ENERGY</h2>
+
+<div class="data">
+<span>Total Power</span>
+<span id="total_power">0</span>
+</div>
+
+<div class="data">
+<span>Daily kWh</span>
+<span id="kwh_day">0</span>
+</div>
+
+<div class="data">
+<span>Monthly kWh</span>
+<span id="kwh_month">0</span>
+</div>
+
+</div>
+
+</div>
 
 <div class="chart-area">
 
-  <h2 class="chart-title">
+<div class="chart-box">
+<canvas id="powerChart"></canvas>
+</div>
 
-    ENERGY ANALYTICS
+<div class="chart-box">
+<canvas id="energyDayChart"></canvas>
+</div>
 
-  </h2>
-
-  <div class="chart-box">
-
-    <canvas id="powerChart"></canvas>
-
-  </div>
-
-  <div class="chart-box">
-
-    <canvas id="energyDayChart"></canvas>
-
-  </div>
-
-  <div class="chart-box">
-
-    <canvas id="energyMonthChart"></canvas>
-
-  </div>
+<div class="chart-box">
+<canvas id="energyMonthChart"></canvas>
+</div>
 
 </div>
 
