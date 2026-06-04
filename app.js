@@ -78,8 +78,7 @@ client.on("message",
   const data =
   JSON.parse(message.toString());
 
-  /* ================= PV ================= */
-
+  // PV
   document.getElementById("pv_v")
   .innerHTML =
   safe(data.pv_v).toFixed(1)+" V";
@@ -92,8 +91,7 @@ client.on("message",
   .innerHTML =
   safe(data.pv_p).toFixed(1)+" W";
 
-  /* ================= BATTERY ================= */
-
+  // BATTERY
   document.getElementById("bat_v")
   .innerHTML =
   safe(data.bat_v).toFixed(1)+" V";
@@ -106,26 +104,22 @@ client.on("message",
   .innerHTML =
   safe(data.soc).toFixed(0)+" %";
 
-  /* ================= LOAD ================= */
-
+  // LOAD
   document.getElementById("load_p")
   .innerHTML =
   safe(data.load_p).toFixed(1)+" W";
 
-  /* ================= CHARGE ================= */
-
+  // CHARGE
   document.getElementById("charge_p")
   .innerHTML =
   safe(data.charge_p).toFixed(1)+" W";
 
-  /* ================= STATUS ================= */
-
+  // STATUS
   document.getElementById("status")
   .innerHTML =
   data.status || "IDLE";
 
-  /* ================= STATISTICS ================= */
-
+  // STATS
   document.getElementById("kwh_day")
   .innerHTML =
   safe(data.kwh_day).toFixed(2)
