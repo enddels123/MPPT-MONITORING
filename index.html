@@ -8,7 +8,7 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>ISOKUIKI SMART MONITOR</title>
+<title>SMART ENERGY MONITOR</title>
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
@@ -54,6 +54,60 @@ body{
 
   text-shadow:
   0 0 20px #00ffd5;
+}
+
+/* =====================================================
+   DEVICE STATUS
+===================================================== */
+
+.status-widget{
+
+  width:100%;
+
+  display:flex;
+
+  flex-direction:column;
+
+  justify-content:center;
+
+  align-items:center;
+
+  margin-top:10px;
+
+  margin-bottom:25px;
+}
+
+.status-icon{
+
+  font-size:90px;
+
+  color:#00ff88;
+
+  margin-bottom:15px;
+
+  text-shadow:
+  0 0 30px #00ff88;
+}
+
+.device-box{
+
+  background:#10192b;
+
+  padding:15px 40px;
+
+  border-radius:15px;
+
+  font-size:24px;
+
+  font-weight:bold;
+
+  border:
+  2px solid #00ff88;
+
+  box-shadow:
+  0 0 25px rgba(0,255,150,0.4);
+
+  transition:0.5s;
 }
 
 /* =====================================================
@@ -107,9 +161,9 @@ body{
 
   text-align:center;
 
-  color:#00ffd5;
-
   margin-bottom:20px;
+
+  color:#00ffd5;
 }
 
 /* =====================================================
@@ -142,7 +196,7 @@ body{
 }
 
 /* =====================================================
-   SOC BAR
+   SOC
 ===================================================== */
 
 .soc-container{
@@ -156,7 +210,7 @@ body{
 
   height:24px;
 
-  background:#1d2740;
+  background:#1c2740;
 
   border-radius:20px;
 
@@ -180,7 +234,7 @@ body{
 }
 
 /* =====================================================
-   STATUS
+   BATTERY STATUS
 ===================================================== */
 
 .status{
@@ -197,7 +251,7 @@ body{
 }
 
 /* =====================================================
-   CHART AREA
+   CHART
 ===================================================== */
 
 .chart-area{
@@ -251,6 +305,11 @@ body{
 
     width:95%;
   }
+
+  .device-box{
+
+    font-size:20px;
+  }
 }
 
 </style>
@@ -259,21 +318,51 @@ body{
 
 <body>
 
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
 <div class="header">
 
   <h1>
-    ISOKUIKI SMART MONITOR 
+    ⚡ SMART ENERGY MONITOR ⚡
   </h1>
 
 </div>
 
+<!-- =====================================================
+     DEVICE STATUS
+===================================================== -->
+
+<div class="status-widget">
+
+  <div class="status-icon"
+  id="status_icon">
+
+    ⚡
+
+  </div>
+
+  <div class="device-box"
+  id="device_box">
+
+    DEVICE SHUTDOWN
+
+  </div>
+
+</div>
+
+<!-- =====================================================
+     MAIN FLOW
+===================================================== -->
+
 <div class="flow">
 
-  <!-- PV -->
+  <!-- PHOTOVOLTAIC -->
 
   <div class="box">
 
-    <h2>☀️ PV PANEL</h2>
+    <h2>☀️ PHOTOVOLTAIC</h2>
 
     <div class="data">
 
@@ -427,7 +516,7 @@ body{
 
     </div>
 
-    <!-- STATUS -->
+    <!-- BATTERY STATUS -->
 
     <div class="status"
     id="battery_status">

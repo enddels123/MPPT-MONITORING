@@ -12,7 +12,9 @@ const topic =
 
 client.on('connect',()=>{
 
-  console.log("MQTT Connected");
+  console.log(
+  "MQTT Connected"
+  );
 
   client.subscribe(topic);
 
@@ -170,9 +172,24 @@ client.on(
   message.toString()
   );
 
-  /* =====================================================
-     PV
-  ===================================================== */
+  /* DEVICE STATUS */
+
+  if(data.device == "WORKING"){
+
+    document.getElementById(
+    'device_box'
+    ).innerHTML =
+    "DEVICE WORKING";
+
+  } else {
+
+    document.getElementById(
+    'device_box'
+    ).innerHTML =
+    "DEVICE SHUTDOWN";
+  }
+
+  /* PV */
 
   document.getElementById(
   'pv_v'
@@ -192,9 +209,7 @@ client.on(
   data.pv_p.toFixed(1)
   + " W";
 
-  /* =====================================================
-     BATTERY
-  ===================================================== */
+  /* BATTERY */
 
   document.getElementById(
   'bat_v'
@@ -214,41 +229,17 @@ client.on(
   data.soc.toFixed(0)
   + " %";
 
-  /* =====================================================
-     SOC BAR
-  ===================================================== */
-
   document.getElementById(
   'soc_fill'
   ).style.width =
   data.soc + "%";
 
-  /* =====================================================
-     BATTERY STATUS
-  ===================================================== */
-
-  let status =
-  "STANDBY";
-
-  if(data.bat_i > 0){
-
-    status =
-    "CHARGING";
-
-  } else if(data.bat_i < 0){
-
-    status =
-    "DISCHARGING";
-  }
-
   document.getElementById(
   'battery_status'
   ).innerHTML =
-  status;
+  data.battery_status;
 
-  /* =====================================================
-     MPPT
-  ===================================================== */
+  /* MPPT */
 
   document.getElementById(
   'charge_p'
@@ -262,9 +253,7 @@ client.on(
   data.mppt_eff.toFixed(0)
   + " %";
 
-  /* =====================================================
-     ENERGY
-  ===================================================== */
+  /* ENERGY */
 
   document.getElementById(
   'total_power'
@@ -284,9 +273,7 @@ client.on(
   data.kwh_month.toFixed(3)
   + " kWh";
 
-  /* =====================================================
-     CHART
-  ===================================================== */
+  /* CHART */
 
   const time =
   new Date()
