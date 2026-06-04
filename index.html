@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ISOKUIKI</title>
+<title>ISOKUIKI PLTS</title>
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -31,7 +31,6 @@ h1{
   text-align:center;
   margin:15px;
   font-size:32px;
-  color:#00ffd5;
 }
 
 .flow{
@@ -55,13 +54,11 @@ h1{
 
 .box:hover{
   transform:translateY(-3px);
-  box-shadow:0 0 25px rgba(0,255,200,0.35);
 }
 
 .box h2{
   margin:0;
   margin-bottom:15px;
-  font-size:22px;
 }
 
 .box div{
@@ -79,11 +76,14 @@ h1{
 .arrow{
   position:absolute;
   left:-40px;
+  top:0;
   font-size:30px;
-  animation:moveArrow 1s linear infinite;
+  animation:moveArrowHorizontal 1s linear infinite;
 }
 
-@keyframes moveArrow{
+/* ================= HORIZONTAL ================= */
+
+@keyframes moveArrowHorizontal{
 
   0%{
     left:-40px;
@@ -96,6 +96,25 @@ h1{
 
   100%{
     left:120px;
+    opacity:0;
+  }
+}
+
+/* ================= VERTICAL ================= */
+
+@keyframes moveArrowVertical{
+
+  0%{
+    top:-40px;
+    opacity:0;
+  }
+
+  30%{
+    opacity:1;
+  }
+
+  100%{
+    top:50px;
     opacity:0;
   }
 }
@@ -123,7 +142,6 @@ h1{
   background:#101b33;
   border-radius:20px;
   padding:20px;
-  text-align:center;
   box-shadow:0 0 20px rgba(0,255,200,0.15);
 }
 
@@ -143,7 +161,6 @@ h1{
   background:#101b33;
   border-radius:20px;
   padding:20px;
-  box-shadow:0 0 20px rgba(0,255,200,0.15);
 }
 
 canvas{
@@ -161,54 +178,40 @@ canvas{
 
   .flow{
     flex-direction:column;
-    padding:5px;
   }
 
   .box{
     width:95%;
     min-height:auto;
-    padding:18px;
-  }
-
-  .box h2{
-    font-size:20px;
-  }
-
-  .box div{
-    font-size:18px;
   }
 
   .arrow-container{
-    width:70px;
-    height:25px;
+    width:40px;
+    height:60px;
   }
 
   .arrow{
+
+    left:0;
+    top:-40px;
+
+    animation:
+    moveArrowVertical 1s linear infinite;
+
+    writing-mode:vertical-rl;
+
+    text-orientation:upright;
+
     font-size:24px;
   }
 
   .grid{
     grid-template-columns:1fr;
-    padding:10px;
-  }
-
-  .card{
-    width:100%;
-  }
-
-  .value{
-    font-size:24px;
-  }
-
-  .chart-container{
-    width:95%;
-    padding:10px;
   }
 
   canvas{
     height:260px !important;
   }
-
 }
 
 </style>
@@ -217,7 +220,7 @@ canvas{
 
 <body>
 
-<h1>ISOKUIKI</h1>
+<h1>⚡ PLTS INDUSTRIAL MONITOR</h1>
 
 <!-- ================= FLOW ================= -->
 
@@ -234,7 +237,7 @@ canvas{
 
   </div>
 
-  <!-- ARROW 1 -->
+  <!-- ARROW -->
   <div class="arrow-container">
 
     <div id="arrow1" class="arrow green">
@@ -253,7 +256,7 @@ canvas{
 
   </div>
 
-  <!-- ARROW 2 -->
+  <!-- ARROW -->
   <div class="arrow-container">
 
     <div id="arrow2" class="arrow green">
@@ -273,7 +276,7 @@ canvas{
 
   </div>
 
-  <!-- ARROW 3 -->
+  <!-- ARROW -->
   <div class="arrow-container">
 
     <div id="arrow3" class="arrow green">
