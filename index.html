@@ -242,4 +242,301 @@ h1{
   font-size:
   clamp(16px,2vw,28px);
 
-  margin
+  margin-top:8px;
+}
+
+/* ================= CHART ================= */
+
+.chart-container{
+
+  width:98%;
+
+  margin:auto;
+
+  margin-top:10px;
+
+  background:#101b33;
+
+  border-radius:16px;
+
+  padding:10px;
+}
+
+canvas{
+
+  width:100% !important;
+
+  height:300px !important;
+}
+
+/* ================= TABLET ================= */
+
+@media(max-width:1024px){
+
+  .box{
+
+    max-width:180px;
+  }
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:768px){
+
+  body{
+
+    font-size:12px;
+  }
+
+  h1{
+
+    font-size:22px;
+  }
+
+  .flow{
+
+    flex-direction:column;
+
+    gap:5px;
+  }
+
+  .box{
+
+    width:95%;
+
+    max-width:none;
+
+    min-height:auto;
+
+    padding:10px;
+  }
+
+  .arrow-container{
+
+    width:35px;
+
+    height:45px;
+  }
+
+  .arrow{
+
+    left:0;
+
+    top:-20px;
+
+    animation:
+    moveArrowVertical 1s linear infinite;
+
+    font-size:22px;
+  }
+
+  .grid{
+
+    grid-template-columns:1fr;
+  }
+
+  canvas{
+
+    height:220px !important;
+  }
+}
+
+/* ================= SMALL MOBILE ================= */
+
+@media(max-width:480px){
+
+  h1{
+
+    font-size:18px;
+  }
+
+  .box h2{
+
+    font-size:15px;
+  }
+
+  .box div{
+
+    font-size:12px;
+  }
+
+  .value{
+
+    font-size:18px;
+  }
+
+  canvas{
+
+    height:180px !important;
+  }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>
+⚡ PLTS INDUSTRIAL MONITOR
+</h1>
+
+<!-- ================= FLOW ================= -->
+
+<div class="flow">
+
+  <!-- PV -->
+  <div class="box">
+
+    <h2>☀️ PV</h2>
+
+    <div id="pv_v">0 V</div>
+
+    <div id="pv_i">0 A</div>
+
+    <div id="pv_p">0 W</div>
+
+  </div>
+
+  <!-- ARROW -->
+  <div class="arrow-container">
+
+    <div id="arrow1"
+    class="arrow green">
+
+      <span class="arrow-symbol">
+        ➜
+      </span>
+
+    </div>
+
+  </div>
+
+  <!-- MPPT -->
+  <div class="box">
+
+    <h2>⚙️ MPPT</h2>
+
+    <div id="charge_p">0 W</div>
+
+    <div id="mppt_eff">0 %</div>
+
+  </div>
+
+  <!-- ARROW -->
+  <div class="arrow-container">
+
+    <div id="arrow2"
+    class="arrow green">
+
+      <span class="arrow-symbol">
+        ➜
+      </span>
+
+    </div>
+
+  </div>
+
+  <!-- BATTERY -->
+  <div class="box">
+
+    <h2>🔋 BATTERY</h2>
+
+    <div id="bat_v">0 V</div>
+
+    <div id="bat_i">0 A</div>
+
+    <div id="soc">0 %</div>
+
+  </div>
+
+  <!-- ARROW -->
+  <div class="arrow-container">
+
+    <div id="arrow3"
+    class="arrow green">
+
+      <span class="arrow-symbol">
+        ➜
+      </span>
+
+    </div>
+
+  </div>
+
+  <!-- LOAD -->
+  <div class="box">
+
+    <h2>⚡ LOAD</h2>
+
+    <div id="load_p">0 W</div>
+
+    <div id="status">IDLE</div>
+
+  </div>
+
+</div>
+
+<!-- ================= GRID ================= -->
+
+<div class="grid">
+
+  <div class="card">
+
+    <div class="card-title">
+      TODAY
+    </div>
+
+    <div class="value"
+    id="kwh_day">
+
+      0 kWh
+
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <div class="card-title">
+      MONTH
+    </div>
+
+    <div class="value"
+    id="kwh_month">
+
+      0 kWh
+
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <div class="card-title">
+      EFFICIENCY
+    </div>
+
+    <div class="value"
+    id="mppt_eff2">
+
+      0 %
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ================= CHART ================= -->
+
+<div class="chart-container">
+
+  <canvas id="chart"></canvas>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
