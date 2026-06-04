@@ -28,6 +28,8 @@ body{
 
   margin:0;
 
+  padding:0;
+
   background:#040b18;
 
   color:#00ffd5;
@@ -35,8 +37,6 @@ body{
   font-family:'Orbitron',sans-serif;
 
   overflow-x:hidden;
-
-  font-size:clamp(10px,1vw,16px);
 }
 
 /* ================= TITLE ================= */
@@ -45,10 +45,10 @@ h1{
 
   text-align:center;
 
-  margin:8px;
+  margin:8px 4px;
 
   font-size:
-  clamp(16px,2vw,28px);
+  clamp(14px,2vw,26px);
 }
 
 /* ================= FLOW ================= */
@@ -63,9 +63,9 @@ h1{
 
   flex-wrap:wrap;
 
-  gap:6px;
+  gap:4px;
 
-  padding:6px;
+  padding:4px;
 }
 
 /* ================= BOX ================= */
@@ -74,22 +74,20 @@ h1{
 
   flex:0 1 auto;
 
-  width:fit-content;
+  width:auto;
 
-  min-width:110px;
+  min-width:95px;
 
-  max-width:170px;
-
-  min-height:auto;
+  max-width:150px;
 
   background:#101b33;
 
-  border-radius:12px;
+  border-radius:10px;
 
-  padding:10px;
+  padding:8px;
 
   box-shadow:
-  0 0 10px rgba(0,255,200,0.12);
+  0 0 8px rgba(0,255,200,0.12);
 
   transition:0.3s;
 }
@@ -103,18 +101,18 @@ h1{
 
   margin:0;
 
-  margin-bottom:6px;
+  margin-bottom:4px;
 
   font-size:
-  clamp(12px,1.5vw,18px);
+  clamp(10px,1.2vw,16px);
 }
 
 .box div{
 
-  margin-top:4px;
+  margin-top:3px;
 
   font-size:
-  clamp(10px,1vw,15px);
+  clamp(9px,1vw,13px);
 
   word-break:break-word;
 }
@@ -123,9 +121,9 @@ h1{
 
 .arrow-container{
 
-  width:40px;
+  width:28px;
 
-  height:30px;
+  height:25px;
 
   position:relative;
 
@@ -136,12 +134,12 @@ h1{
 
   position:absolute;
 
-  left:-20px;
+  left:-15px;
 
   top:0;
 
   font-size:
-  clamp(16px,1.5vw,24px);
+  clamp(12px,1.5vw,22px);
 
   animation:
   moveArrowHorizontal 1s linear infinite;
@@ -153,7 +151,7 @@ h1{
 
   0%{
 
-    left:-20px;
+    left:-15px;
 
     opacity:0;
   }
@@ -165,7 +163,7 @@ h1{
 
   100%{
 
-    left:40px;
+    left:28px;
 
     opacity:0;
   }
@@ -177,7 +175,7 @@ h1{
 
   0%{
 
-    top:-20px;
+    top:-15px;
 
     opacity:0;
   }
@@ -189,7 +187,7 @@ h1{
 
   100%{
 
-    top:30px;
+    top:28px;
 
     opacity:0;
   }
@@ -216,71 +214,61 @@ h1{
   display:grid;
 
   grid-template-columns:
-  repeat(auto-fit,minmax(120px,1fr));
+  repeat(auto-fit,minmax(100px,1fr));
 
-  gap:8px;
+  gap:5px;
 
-  padding:8px;
+  padding:5px;
 }
 
 .card{
 
   background:#101b33;
 
-  border-radius:12px;
+  border-radius:10px;
 
-  padding:10px;
+  padding:8px;
 
   box-shadow:
-  0 0 10px rgba(0,255,200,0.12);
+  0 0 8px rgba(0,255,200,0.12);
 }
 
 .card-title{
 
   font-size:
-  clamp(10px,1vw,15px);
+  clamp(9px,1vw,13px);
 }
 
 .value{
 
   font-size:
-  clamp(14px,1.5vw,22px);
+  clamp(12px,1.5vw,18px);
 
-  margin-top:6px;
+  margin-top:4px;
 }
 
 /* ================= CHART ================= */
 
 .chart-container{
 
-  width:98%;
+  width:99%;
 
   margin:auto;
 
-  margin-top:8px;
+  margin-top:6px;
 
   background:#101b33;
 
-  border-radius:12px;
+  border-radius:10px;
 
-  padding:8px;
+  padding:6px;
 }
 
 canvas{
 
   width:100% !important;
 
-  height:240px !important;
-}
-
-/* ================= TABLET ================= */
-
-@media(max-width:1024px){
-
-  .box{
-
-    max-width:150px;
-  }
+  height:180px !important;
 }
 
 /* ================= MOBILE ================= */
@@ -291,45 +279,73 @@ canvas{
 
     flex-direction:column;
 
-    gap:4px;
+    gap:2px;
   }
 
   .box{
 
-    width:92%;
+    width:96%;
 
-    max-width:320px;
+    max-width:240px;
 
-    padding:8px;
+    padding:6px;
+  }
+
+  .box h2{
+
+    font-size:12px;
+  }
+
+  .box div{
+
+    font-size:10px;
   }
 
   .arrow-container{
 
-    width:30px;
+    width:22px;
 
-    height:40px;
+    height:32px;
   }
 
   .arrow{
 
     left:0;
 
-    top:-20px;
+    top:-15px;
+
+    font-size:18px;
 
     animation:
     moveArrowVertical 1s linear infinite;
-
-    font-size:20px;
   }
 
   .grid{
 
-    grid-template-columns:1fr;
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:4px;
+  }
+
+  .card{
+
+    padding:6px;
+  }
+
+  .card-title{
+
+    font-size:9px;
+  }
+
+  .value{
+
+    font-size:12px;
   }
 
   canvas{
 
-    height:180px !important;
+    height:140px !important;
   }
 }
 
@@ -339,27 +355,32 @@ canvas{
 
   h1{
 
-    font-size:16px;
+    font-size:14px;
+  }
+
+  .box{
+
+    max-width:200px;
   }
 
   .box h2{
 
-    font-size:13px;
+    font-size:11px;
   }
 
   .box div{
 
-    font-size:11px;
+    font-size:9px;
   }
 
   .value{
 
-    font-size:16px;
+    font-size:11px;
   }
 
   canvas{
 
-    height:150px !important;
+    height:120px !important;
   }
 }
 

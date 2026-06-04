@@ -49,23 +49,35 @@ const chart = new Chart(ctx,{
     datasets:[
 
       {
+
         label:'PV W',
+
         data:pvData,
-        borderWidth:1.5,
+
+        borderWidth:1,
+
         tension:0.3
       },
 
       {
+
         label:'LOAD W',
+
         data:loadData,
-        borderWidth:1.5,
+
+        borderWidth:1,
+
         tension:0.3
       },
 
       {
+
         label:'BAT V',
+
         data:batData,
-        borderWidth:1.5,
+
+        borderWidth:1,
+
         tension:0.3
       }
     ]
@@ -86,7 +98,7 @@ const chart = new Chart(ctx,{
         labels:{
           color:'#00ffd5',
           font:{
-            size:10
+            size:9
           }
         }
       }
@@ -99,7 +111,7 @@ const chart = new Chart(ctx,{
         ticks:{
           color:'#00ffd5',
           font:{
-            size:9
+            size:8
           }
         }
       },
@@ -109,7 +121,7 @@ const chart = new Chart(ctx,{
         ticks:{
           color:'#00ffd5',
           font:{
-            size:9
+            size:8
           }
         }
       }
@@ -343,7 +355,7 @@ client.on("message",(topic,message)=>{
       safe(data.bat_v)
     );
 
-    if(labels.length > 20){
+    if(labels.length > 15){
 
       labels.shift();
 
@@ -356,6 +368,13 @@ client.on("message",(topic,message)=>{
 
     chart.update();
 
+    // ================= SAVE =================
+
+    localStorage.setItem(
+      "plts_last_data",
+      JSON.stringify(data)
+    );
+
   }catch(err){
 
     console.log(
@@ -364,3 +383,28 @@ client.on("message",(topic,message)=>{
     );
   }
 });
+
+// ================= RESTORE =================
+
+const saved =
+localStorage.getItem(
+  "plts_last_data"
+);
+
+if(saved){
+
+  try{
+
+    const data =
+    JSON.parse(saved);
+
+    document.getElementById("pv_v")
+    .innerHTML =
+    safe(data.pv_v).toFixed(1)
+    +" V";
+
+  }catch(err){
+
+    console.log(err);
+  }
+}
