@@ -1,362 +1,504 @@
-/* MQTT */
+/* =========================================================
+   MQTT CONFIG
+========================================================= */
 
-const client =
-mqtt.connect(
-"wss://broker.hivemq.com:8884/mqtt"
+const topic = "solar/jnge/hybrid";
+
+const client = mqtt.connect(
+  "wss://broker.hivemq.com:8884/mqtt",
+  {
+    reconnectPeriod: 3000,
+    connectTimeout: 10000,
+    clean: true
+  }
 );
 
-const topic =
-"solar/jnge/hybrid";
-
-/* FIREBASE */
+/* =========================================================
+   FIREBASE CONFIG
+========================================================= */
 
 const firebaseConfig = {
 
-apiKey:"AIzaSyC7ctgLv34n6pwg9cQpcTN9qd77FbMGbOg",
-authDomain:"isokuiki-scada.firebaseapp.com",
-databaseURL:"https://isokuiki-scada-default-rtdb.asia-southeast1.firebasedatabase.app",
-projectId:"isokuiki-scada",
-storageBucket:"isokuiki-scada.firebasestorage.app",
-messagingSenderId:"1078745557059",
-appId:"1:1078745557059:web:0f465f1a8a2ddf20dd8cf6"
+  apiKey: "AIzaSyC7ctgLv34n6pwg9cQpcTN9qd77FbMGbOg",
+
+  authDomain:
+  "isokuiki-scada.firebaseapp.com",
+
+  databaseURL:
+  "https://isokuiki-scada-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+  projectId:
+  "isokuiki-scada",
+
+  storageBucket:
+  "isokuiki-scada.firebasestorage.app",
+
+  messagingSenderId:
+  "1078745557059",
+
+  appId:
+  "1:1078745557059:web:0f465f1a8a2ddf20dd8cf6"
 
 };
 
+/* INIT FIREBASE */
+
 firebase.initializeApp(firebaseConfig);
 
-const db =
-firebase.database();
+const db = firebase.database();
 
-/* CHART */
+/* =========================================================
+   CHART GLOBAL STYLE
+========================================================= */
 
-function createGauge(id,color){
+Chart.defaults.color = "#ffffff";
 
-return new Chart(
-document.getElementById(id),
-{
-type:'doughnut',
-data:{
-datasets:[{
-data:[0,100],
-backgroundColor:[
-color,
-'#132544'
-],
-borderWidth:0
-}]
-},
-options:{
-responsive:true,
-maintainAspectRatio:false,
-cutout:'80%',
-plugins:{
-legend:{display:false}
+Chart.defaults.borderColor =
+"rgba(0,255,255,0.08)";
+
+/* =========================================================
+   MULTI GAUGE CREATOR
+========================================================= */
+
+function createGauge(id, color){
+
+  return new Chart(
+    document.getElementById(id),
+    {
+      type:'doughnut',
+
+      data:{
+        datasets:[{
+          data:[0,100],
+          backgroundColor:[
+            color,
+            '#112244'
+          ],
+          borderWidth:0,
+          borderRadius:20
+        }]
+      },
+
+      options:{
+
+        responsive:true,
+
+        maintainAspectRatio:false,
+
+        cutout:'78%',
+
+        plugins:{
+          legend:{display:false},
+          tooltip:{enabled:false}
+        },
+
+        animation:{
+          duration:600
+        }
+      }
+    }
+  );
 }
-}
-});
-}
 
-const gauge1 =
+/* =========================================================
+   GAUGES
+========================================================= */
+
+const pvGauge =
 createGauge(
-'gauge1',
-'#00ffe1'
+  'gaugePV',
+  '#00ffe1'
 );
 
-const gauge2 =
+const batteryGauge =
 createGauge(
-'gauge2',
-'#00ff88'
+  'gaugeBattery',
+  '#00ff88'
 );
 
-const gauge3 =
+const mpptGauge =
 createGauge(
-'gauge3',
-'#00aaff'
+  'gaugeMPPT',
+  '#00aaff'
 );
 
-function createLine(id,color,label){
+/* =========================================================
+   LINE CHART
+========================================================= */
 
-return new Chart(
-document.getElementById(id),
-{
-type:'line',
-data:{
-labels:[],
-datasets:[{
-label:label,
-data:[],
-borderColor:color,
-backgroundColor:color,
-tension:.4
-}]
-},
-options:{
-responsive:true,
-maintainAspectRatio:false,
-plugins:{
-legend:{
-labels:{
-color:'#fff'
-}
-}
-},
-scales:{
-x:{
-ticks:{color:'#fff'}
-},
-y:{
-ticks:{color:'#fff'}
-}
-}
-}
-});
+function createLineChart(id,color,label){
+
+  return new Chart(
+    document.getElementById(id),
+    {
+
+      type:'line',
+
+      data:{
+        labels:[],
+
+        datasets:[{
+
+          label:label,
+
+          data:[],
+
+          borderColor:color,
+
+          backgroundColor:
+          color + '22',
+
+          borderWidth:3,
+
+          fill:true,
+
+          tension:0.4,
+
+          pointRadius:0
+
+        }]
+      },
+
+      options:{
+
+        responsive:true,
+
+        maintainAspectRatio:false,
+
+        plugins:{
+          legend:{
+            labels:{
+              color:'#fff'
+            }
+          }
+        },
+
+        scales:{
+
+          x:{
+            ticks:{
+              color:'#aaa',
+              maxTicksLimit:5
+            },
+            grid:{
+              color:'rgba(255,255,255,0.03)'
+            }
+          },
+
+          y:{
+            ticks:{
+              color:'#aaa'
+            },
+            grid:{
+              color:'rgba(255,255,255,0.03)'
+            }
+          }
+        }
+      }
+    }
+  );
 }
 
-const chart1 =
-createLine(
-'chart1',
-'#00ffe1',
-'PV Power'
+/* =========================================================
+   CHARTS
+========================================================= */
+
+const chartPV =
+createLineChart(
+  'chartPV',
+  '#00ffe1',
+  'PV Power'
 );
 
-const chart2 =
-createLine(
-'chart2',
-'#00ff88',
-'Daily kWh'
+const chartDay =
+createLineChart(
+  'chartDay',
+  '#00ff88',
+  'Daily kWh'
 );
 
-const chart3 =
-createLine(
-'chart3',
-'#00aaff',
-'Monthly kWh'
+const chartMonth =
+createLineChart(
+  'chartMonth',
+  '#00aaff',
+  'Monthly kWh'
 );
 
-/* FLOW NODE */
+/* =========================================================
+   FLOW NODE ANIMATION
+========================================================= */
 
-let t1=0;
-let t2=0;
-let t3=0;
+let flow1 = 0;
+let flow2 = 0;
+let flow3 = 0;
 
 function animateFlow(){
 
-t1+=.01;
-t2+=.01;
-t3+=.01;
+  flow1 += 1.5;
+  flow2 += 1.2;
+  flow3 += 1.2;
 
-const n1 =
-document.getElementById('n1');
+  const n1 =
+  document.getElementById("node1");
 
-const n2 =
-document.getElementById('n2');
+  const n2 =
+  document.getElementById("node2");
 
-const n3 =
-document.getElementById('n3');
+  const n3 =
+  document.getElementById("node3");
 
-/* PV -> MPPT */
+  /* PV -> MPPT */
 
-n1.setAttribute(
-'cx',
-150
-);
+  const y1 =
+  120 + (flow1 % 120);
 
-n1.setAttribute(
-'cy',
-70 + (100*t1%100)
-);
+  n1.style.transform =
+  `translate(-50%, ${y1}px)`;
 
-/* MPPT -> BATTERY */
+  /* MPPT -> BATTERY */
 
-n2.setAttribute(
-'cx',
-150 - (80*t2%80)
-);
+  const x2 =
+  -120 + (flow2 % 120);
 
-n2.setAttribute(
-'cy',
-300
-);
+  n2.style.transform =
+  `translate(${x2}px,-50%)`;
 
-/* MPPT -> ENERGY */
+  /* MPPT -> ENERGY */
 
-n3.setAttribute(
-'cx',
-150 + (80*t3%80)
-);
+  const x3 =
+  flow3 % 120;
 
-n3.setAttribute(
-'cy',
-300
-);
+  n3.style.transform =
+  `translate(${x3}px,-50%)`;
 
-requestAnimationFrame(
-animateFlow
-);
+  requestAnimationFrame(
+    animateFlow
+  );
 }
 
 animateFlow();
 
-/* MQTT */
+/* =========================================================
+   MQTT CONNECT
+========================================================= */
 
 client.on(
-'connect',
-()=>{
+  "connect",
+  ()=>{
 
-client.subscribe(topic);
+    console.log("MQTT CONNECTED");
 
-document.getElementById(
-'onlineText'
-).innerHTML='ONLINE';
+    client.subscribe(topic);
 
-}
+    document.getElementById(
+      "onlineText"
+    ).innerHTML = "ONLINE";
+
+    document.getElementById(
+      "onlineText"
+    ).style.color = "#00ff88";
+  }
+);
+
+/* =========================================================
+   MQTT RECONNECT
+========================================================= */
+
+client.on(
+  "reconnect",
+  ()=>{
+
+    console.log("MQTT RECONNECTING");
+  }
 );
 
 client.on(
-'message',
-(topic,message)=>{
+  "offline",
+  ()=>{
 
-const d =
-JSON.parse(
-message.toString()
+    document.getElementById(
+      "onlineText"
+    ).innerHTML = "OFFLINE";
+
+    document.getElementById(
+      "onlineText"
+    ).style.color = "#ff4444";
+  }
 );
 
-/* SAVE FIREBASE */
+/* =========================================================
+   UPDATE UI
+========================================================= */
 
-db.ref(
-'history'
-).push(d);
+client.on(
+  "message",
+  (topic,message)=>{
 
-/* DEVICE */
+    const d =
+    JSON.parse(
+      message.toString()
+    );
 
-document.getElementById(
-'deviceStatus'
-).innerHTML =
-d.status === "WORKING"
-?
-"DEVICE WORKING"
-:
-"DEVICE SHUTDOWN";
+    /* =====================================================
+       SAVE FIREBASE HISTORY
+    ===================================================== */
 
-/* UPDATE */
+    db.ref("history").push({
 
-const map = {
+      time:Date.now(),
 
-pvv:d.pv_v+"V",
-pvi:d.pv_i+"A",
-pvp:d.pv_p+"W",
+      pv_v:d.pv_v,
+      pv_i:d.pv_i,
+      pv_p:d.pv_p,
 
-charge:d.charge_p+"W",
-eff:d.mppt_eff+"%",
+      bat_v:d.bat_v,
+      bat_i:d.bat_i,
 
-bv:d.bat_v+"V",
-bi:d.bat_i+"A",
-soc:d.soc+"%",
+      soc:d.soc,
 
-day:d.kwh_day,
-month:d.kwh_month
+      mppt_eff:d.mppt_eff,
 
-};
+      kwh_day:d.kwh_day,
+      kwh_month:d.kwh_month,
 
-Object.keys(map).forEach(id=>{
+      status:d.status
+    });
 
-document.getElementById(id)
-.innerHTML = map[id];
+    /* =====================================================
+       DEVICE STATUS
+    ===================================================== */
 
-});
+    const device =
+    document.getElementById(
+      "deviceStatus"
+    );
 
-/* SCADA */
+    if(
+      d.status === "CHARGING"
+    ){
 
-document.getElementById(
-'pvVolt'
-).innerHTML =
-d.pv_v+"V";
+      device.innerHTML =
+      "DEVICE WORKING";
 
-document.getElementById(
-'pvAmp'
-).innerHTML =
-d.pv_i+"A";
+      device.style.borderColor =
+      "#00ff88";
 
-document.getElementById(
-'pvPower'
-).innerHTML =
-d.pv_p+"W";
+    } else {
 
-document.getElementById(
-'mpptW'
-).innerHTML =
-d.charge_p+"W";
+      device.innerHTML =
+      "DEVICE SHUTDOWN";
 
-document.getElementById(
-'mpptEff'
-).innerHTML =
-d.mppt_eff+"%";
+      device.style.borderColor =
+      "#ff4444";
+    }
 
-document.getElementById(
-'batVolt'
-).innerHTML =
-d.bat_v+"V";
+    /* =====================================================
+       TEXT DATA
+    ===================================================== */
 
-document.getElementById(
-'batAmp'
-).innerHTML =
-d.bat_i+"A";
+    const set = (id,val)=>
+    document.getElementById(id)
+    .innerHTML = val;
 
-document.getElementById(
-'batSoc'
-).innerHTML =
-d.soc+"%";
+    set("pvv", d.pv_v+" V");
+    set("pvi", d.pv_i+" A");
+    set("pvp", d.pv_p+" W");
 
-document.getElementById(
-'kwhDay'
-).innerHTML =
-d.kwh_day;
+    set("charge", d.charge_p+" W");
+    set("eff", d.mppt_eff+" %");
 
-/* GAUGE */
+    set("bv", d.bat_v+" V");
+    set("bi", d.bat_i+" A");
+    set("soc", d.soc+" %");
 
-gauge1.data.datasets[0].data =
-[d.pv_p,5000-d.pv_p];
+    set("day", d.kwh_day.toFixed(2));
+    set("month", d.kwh_month.toFixed(2));
 
-gauge2.data.datasets[0].data =
-[d.soc,100-d.soc];
+    /* =====================================================
+       SCADA CIRCLE DATA
+    ===================================================== */
 
-gauge3.data.datasets[0].data =
-[d.mppt_eff,100-d.mppt_eff];
+    set("pvVolt", d.pv_v+"V");
+    set("pvAmp", d.pv_i+"A");
+    set("pvPower", d.pv_p+"W");
 
-gauge1.update();
-gauge2.update();
-gauge3.update();
+    set("mpptW", d.charge_p+"W");
+    set("mpptEff", d.mppt_eff+"%");
 
-/* CHART */
+    set("batVolt", d.bat_v+"V");
+    set("batAmp", d.bat_i+"A");
+    set("batSoc", d.soc+"%");
 
-const now =
-new Date()
-.toLocaleTimeString();
+    set("kwhDay", d.kwh_day.toFixed(2));
+    set("kwhMonth", d.kwh_month.toFixed(2));
 
-chart1.data.labels.push(now);
-chart1.data.datasets[0].data.push(d.pv_p);
+    /* =====================================================
+       GAUGE UPDATE
+    ===================================================== */
 
-chart2.data.labels.push(now);
-chart2.data.datasets[0].data.push(d.kwh_day);
+    pvGauge.data.datasets[0].data = [
+      d.pv_p,
+      Math.max(1,5000-d.pv_p)
+    ];
 
-chart3.data.labels.push(now);
-chart3.data.datasets[0].data.push(d.kwh_month);
+    batteryGauge.data.datasets[0].data = [
+      d.soc,
+      100-d.soc
+    ];
 
-if(chart1.data.labels.length>10){
+    mpptGauge.data.datasets[0].data = [
+      d.mppt_eff,
+      100-d.mppt_eff
+    ];
 
-chart1.data.labels.shift();
-chart1.data.datasets[0].data.shift();
+    pvGauge.update();
+    batteryGauge.update();
+    mpptGauge.update();
 
-chart2.data.labels.shift();
-chart2.data.datasets[0].data.shift();
+    /* =====================================================
+       CHART UPDATE
+    ===================================================== */
 
-chart3.data.labels.shift();
-chart3.data.datasets[0].data.shift();
+    const now =
+    new Date()
+    .toLocaleTimeString();
 
-}
+    function pushChart(
+      chart,
+      value
+    ){
 
-chart1.update();
-chart2.update();
-chart3.update();
+      chart.data.labels.push(now);
 
-});
+      chart.data.datasets[0]
+      .data.push(value);
+
+      if(
+        chart.data.labels.length > 20
+      ){
+
+        chart.data.labels.shift();
+
+        chart.data.datasets[0]
+        .data.shift();
+      }
+
+      chart.update();
+    }
+
+    pushChart(
+      chartPV,
+      d.pv_p
+    );
+
+    pushChart(
+      chartDay,
+      d.kwh_day
+    );
+
+    pushChart(
+      chartMonth,
+      d.kwh_month
+    );
+  }
+);
