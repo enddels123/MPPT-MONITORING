@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
@@ -10,16 +9,14 @@ name="viewport"
 content="width=device-width, initial-scale=1.0"
 />
 
-<title>ISOKUIKI SMART ENERGY</title>
+<title>ISOKUIKI</title>
 
 <link
-href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap"
+href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap"
 rel="stylesheet"
 />
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 
@@ -47,10 +44,6 @@ overflow:hidden;
 color:white;
 }
 
-/* ====================================
-MAIN
-==================================== */
-
 .dashboard{
 
 width:100vw;
@@ -59,16 +52,14 @@ height:100vh;
 display:grid;
 
 grid-template-rows:
-7vh 6vh 22vh 1fr;
+8vh 8vh 1fr;
 
-gap:.7vh;
+gap:1vh;
 
-padding:.7vh;
+padding:1vh;
 }
 
-/* ====================================
-HEADER
-==================================== */
+/* HEADER */
 
 .header{
 
@@ -82,40 +73,37 @@ align-items:center;
 .title{
 
 font-size:
-clamp(18px,2vw,34px);
+clamp(20px,2vw,42px);
 
 color:#00ffe1;
 
 text-shadow:
-0 0 10px #00ffe1,
-0 0 20px #00ffe1;
+0 0 10px #00ffe1;
 }
 
 #network{
 
 font-size:
-clamp(10px,.8vw,14px);
+clamp(10px,.8vw,16px);
 
 margin-top:.3vh;
 }
 
-.online{
-color:#00ff88;
+/* STATUS */
+
+.status{
+
+display:flex;
+
+justify-content:center;
+align-items:center;
 }
 
-.offline{
-color:#ff4444;
-}
-
-/* ====================================
-STATUS
-==================================== */
-
-.status-box{
+#deviceStatus{
 
 width:min(60vw,520px);
 
-margin:auto;
+height:100%;
 
 display:flex;
 
@@ -131,57 +119,22 @@ background:
 rgba(0,20,40,.8);
 
 box-shadow:
-0 0 15px #00ff99;
-
-font-size:
-clamp(12px,1vw,20px);
+0 0 18px #00ff99;
 }
 
-/* ====================================
-CHART
-==================================== */
+/* MAIN */
 
-.top-charts{
+.main{
 
 display:grid;
 
 grid-template-columns:
-1fr 1fr 1fr;
+28% 72%;
 
-gap:.7vh;
+gap:1vh;
 }
 
-.chart-box{
-
-background:
-rgba(0,15,40,.85);
-
-border-radius:16px;
-
-padding:.5vh;
-
-height:100%;
-}
-
-/* ====================================
-BOTTOM
-==================================== */
-
-.bottom{
-
-display:grid;
-
-grid-template-columns:
-24% 76%;
-
-gap:.7vh;
-
-height:100%;
-}
-
-/* ====================================
-SCADA
-==================================== */
+/* SCADA */
 
 .scada{
 
@@ -192,119 +145,11 @@ border-radius:20px;
 
 display:flex;
 
-align-items:center;
 justify-content:center;
-
-overflow:hidden;
+align-items:center;
 }
 
-svg{
-
-width:100%;
-height:100%;
-}
-
-/* ====================================
-FLOW
-==================================== */
-
-.flow{
-
-stroke:#3b82f6;
-stroke-width:5;
-fill:none;
-}
-
-.node{
-
-fill:#00ff88;
-
-filter:
-drop-shadow(0 0 8px #00ff88);
-}
-
-/* ====================================
-NODE ANIMATION
-==================================== */
-
-#nodePV{
-
-animation:
-pvFlow 2s linear infinite;
-}
-
-#nodeBAT{
-
-animation:
-batFlow 2s linear infinite;
-}
-
-#nodeENERGY{
-
-animation:
-energyFlow 2s linear infinite;
-}
-
-@keyframes pvFlow{
-
-0%{
-transform:
-translateY(-45px);
-opacity:0;
-}
-
-30%{
-opacity:1;
-}
-
-100%{
-transform:
-translateY(55px);
-opacity:0;
-}
-}
-
-@keyframes batFlow{
-
-0%{
-transform:
-translate(0px,0px);
-opacity:0;
-}
-
-50%{
-opacity:1;
-}
-
-100%{
-transform:
-translate(-82px,102px);
-opacity:0;
-}
-}
-
-@keyframes energyFlow{
-
-0%{
-transform:
-translate(0px,0px);
-opacity:0;
-}
-
-50%{
-opacity:1;
-}
-
-100%{
-transform:
-translate(82px,102px);
-opacity:0;
-}
-}
-
-/* ====================================
-RIGHT
-==================================== */
+/* RIGHT */
 
 .right{
 
@@ -316,12 +161,10 @@ grid-template-columns:
 grid-template-rows:
 1fr 1fr;
 
-gap:.7vh;
+gap:1vh;
 }
 
-/* ====================================
-WIDGET
-==================================== */
+/* WIDGET */
 
 .widget{
 
@@ -330,22 +173,16 @@ rgba(0,15,40,.85);
 
 border-radius:18px;
 
-padding:.8vh;
-
-box-shadow:
-0 0 10px rgba(0,255,255,.12);
+padding:1vh;
 }
 
 .widget h3{
 
 text-align:center;
 
+margin-bottom:1vh;
+
 color:#00ffe1;
-
-font-size:
-clamp(10px,.9vw,18px);
-
-margin-bottom:.5vh;
 }
 
 .row{
@@ -354,34 +191,27 @@ display:flex;
 
 justify-content:space-between;
 
-padding:.4vh;
+padding:.5vh;
 
-margin-bottom:.4vh;
+margin-bottom:.5vh;
 
 background:
 rgba(255,255,255,.04);
 
 border-radius:8px;
-
-font-size:
-clamp(9px,.75vw,14px);
 }
 
-/* ====================================
-SOC
-==================================== */
+/* SOC */
 
 .socbar{
 
-height:9px;
+height:10px;
 
 background:#1e293b;
 
 border-radius:20px;
 
 overflow:hidden;
-
-margin-top:.7vh;
 }
 
 .socfill{
@@ -395,43 +225,17 @@ linear-gradient(
 #00ff88,
 #00ffe1
 );
-
-transition:.5s;
 }
 
-/* ====================================
-RESPONSIVE
-==================================== */
+/* RESPONSIVE */
 
 @media(max-width:900px){
 
-.dashboard{
-
-grid-template-rows:
-6vh 5vh 18vh 1fr;
-}
-
-.bottom{
+.main{
 
 grid-template-columns:
-32% 68%;
+35% 65%;
 }
-
-.top-charts{
-
-gap:.5vh;
-}
-
-.right{
-
-gap:.5vh;
-}
-
-.widget{
-
-padding:.6vh;
-}
-
 }
 
 </style>
@@ -441,111 +245,82 @@ padding:.6vh;
 
 <div class="dashboard">
 
-<!-- HEADER -->
-
 <div class="header">
 
 <div class="title">
-ISOKUIKI SMART ENERGY
+ISOKUIKI
 </div>
 
-<div id="network"
-class="offline">
+<div id="network">
 OFFLINE
 </div>
 
 </div>
 
-<!-- STATUS -->
+<div class="status">
 
-<div
-id="deviceStatus"
-class="status-box">
-
+<div id="deviceStatus">
 DEVICE SHUTDOWN
-
-</div>
-
-<!-- CHART -->
-
-<div class="top-charts">
-
-<div class="chart-box">
-<canvas id="powerChart"></canvas>
-</div>
-
-<div class="chart-box">
-<canvas id="dayChart"></canvas>
-</div>
-
-<div class="chart-box">
-<canvas id="monthChart"></canvas>
 </div>
 
 </div>
 
-<!-- BOTTOM -->
-
-<div class="bottom">
+<div class="main">
 
 <!-- SCADA -->
 
 <div class="scada">
 
-<svg viewBox="0 0 400 500">
+<svg
+viewBox="0 0 400 500"
+width="100%"
+height="100%">
 
 <!-- FLOW -->
 
-<path
-d="
-M200 100
-L200 200
-"
-class="flow"
+<line
+x1="200"
+y1="100"
+x2="200"
+y2="200"
+stroke="#3b82f6"
+stroke-width="5"
 />
 
-<path
-d="
-M200 250
-L110 250
-L110 360
-"
-class="flow"
+<line
+x1="200"
+y1="250"
+x2="110"
+y2="250"
+stroke="#3b82f6"
+stroke-width="5"
 />
 
-<path
-d="
-M200 250
-L290 250
-L290 360
-"
-class="flow"
+<line
+x1="110"
+y1="250"
+x2="110"
+y2="360"
+stroke="#3b82f6"
+stroke-width="5"
 />
 
-<!-- NODE -->
-
-<circle
-id="nodePV"
-cx="200"
-cy="140"
-r="6"
-class="node"
+<line
+x1="200"
+y1="250"
+x2="290"
+y2="250"
+stroke="#3b82f6"
+stroke-width="5"
 />
 
-<circle
-id="nodeBAT"
-cx="200"
-cy="250"
-r="6"
-class="node"
-/>
-
-<circle
-id="nodeENERGY"
-cx="200"
-cy="250"
-r="6"
-class="node"
+<line
+x1="290"
+y1="250"
+x2="290"
+y2="360"
+stroke="#3b82f6"
+stroke-width="5"
 />
 
 <!-- PV -->
@@ -553,208 +328,44 @@ class="node"
 <circle
 cx="200"
 cy="60"
-r="48"
+r="50"
 fill="#001b33"
 stroke="#00ffe1"
 stroke-width="3"
 />
-
-<text
-x="200"
-y="45"
-fill="#00ffe1"
-font-size="18"
-text-anchor="middle">
-
-☀
-
-</text>
-
-<text
-x="200"
-y="67"
-fill="#fff"
-font-size="11"
-text-anchor="middle"
-id="pv_v">
-
-0V
-
-</text>
-
-<text
-x="200"
-y="84"
-fill="#fff"
-font-size="11"
-text-anchor="middle"
-id="pv_i">
-
-0A
-
-</text>
-
-<text
-x="200"
-y="101"
-fill="#fff"
-font-size="11"
-text-anchor="middle"
-id="pv_p">
-
-0W
-
-</text>
 
 <!-- MPPT -->
 
 <circle
 cx="200"
 cy="200"
-r="48"
+r="50"
 fill="#001b33"
 stroke="#00ffe1"
 stroke-width="3"
 />
-
-<text
-x="200"
-y="190"
-fill="#00ffe1"
-font-size="18"
-text-anchor="middle">
-
-⚙
-
-</text>
-
-<text
-x="200"
-y="214"
-fill="#fff"
-font-size="11"
-text-anchor="middle"
-id="charge_p">
-
-0W
-
-</text>
-
-<text
-x="200"
-y="230"
-fill="#fff"
-font-size="11"
-text-anchor="middle"
-id="mppt_eff">
-
-0%
-
-</text>
 
 <!-- BAT -->
 
 <circle
 cx="110"
 cy="400"
-r="48"
+r="50"
 fill="#001b33"
 stroke="#00ffe1"
 stroke-width="3"
 />
-
-<text
-x="110"
-y="390"
-fill="#00ffe1"
-font-size="18"
-text-anchor="middle">
-
-🔋
-
-</text>
-
-<text
-x="110"
-y="410"
-fill="#fff"
-font-size="11"
-text-anchor="middle"
-id="bat_v">
-
-0V
-
-</text>
-
-<text
-x="110"
-y="426"
-fill="#fff"
-font-size="11"
-text-anchor="middle"
-id="bat_i">
-
-0A
-
-</text>
-
-<text
-x="110"
-y="442"
-fill="#fff"
-font-size="11"
-text-anchor="middle"
-id="soc">
-
-0%
-
-</text>
 
 <!-- ENERGY -->
 
 <circle
 cx="290"
 cy="400"
-r="48"
+r="50"
 fill="#001b33"
 stroke="#00ffe1"
 stroke-width="3"
 />
-
-<text
-x="290"
-y="392"
-fill="#00ffe1"
-font-size="18"
-text-anchor="middle">
-
-⚡
-
-</text>
-
-<text
-x="290"
-y="412"
-fill="#fff"
-font-size="11"
-text-anchor="middle"
-id="kwh_day">
-
-0
-
-</text>
-
-<text
-x="290"
-y="428"
-fill="#fff"
-font-size="11"
-text-anchor="middle"
-id="kwh_month">
-
-0
-
-</text>
 
 </svg>
 
