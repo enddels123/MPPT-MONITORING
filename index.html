@@ -45,10 +45,10 @@ h1{
 
   text-align:center;
 
-  margin:10px;
+  margin:8px;
 
   font-size:
-  clamp(18px,3vw,34px);
+  clamp(16px,2vw,28px);
 }
 
 /* ================= FLOW ================= */
@@ -63,31 +63,33 @@ h1{
 
   flex-wrap:wrap;
 
-  gap:8px;
+  gap:6px;
 
-  padding:8px;
+  padding:6px;
 }
 
 /* ================= BOX ================= */
 
 .box{
 
-  flex:1 1 180px;
+  flex:0 1 auto;
 
-  max-width:220px;
+  width:fit-content;
 
-  min-width:140px;
+  min-width:110px;
 
-  min-height:130px;
+  max-width:170px;
+
+  min-height:auto;
 
   background:#101b33;
 
-  border-radius:16px;
+  border-radius:12px;
 
-  padding:12px;
+  padding:10px;
 
   box-shadow:
-  0 0 12px rgba(0,255,200,0.15);
+  0 0 10px rgba(0,255,200,0.12);
 
   transition:0.3s;
 }
@@ -101,27 +103,29 @@ h1{
 
   margin:0;
 
-  margin-bottom:10px;
+  margin-bottom:6px;
 
   font-size:
-  clamp(14px,2vw,22px);
+  clamp(12px,1.5vw,18px);
 }
 
 .box div{
 
-  margin-top:6px;
+  margin-top:4px;
 
   font-size:
-  clamp(11px,1.5vw,18px);
+  clamp(10px,1vw,15px);
+
+  word-break:break-word;
 }
 
 /* ================= ARROW ================= */
 
 .arrow-container{
 
-  width:50px;
+  width:40px;
 
-  height:35px;
+  height:30px;
 
   position:relative;
 
@@ -137,7 +141,7 @@ h1{
   top:0;
 
   font-size:
-  clamp(18px,2vw,30px);
+  clamp(16px,1.5vw,24px);
 
   animation:
   moveArrowHorizontal 1s linear infinite;
@@ -161,7 +165,7 @@ h1{
 
   100%{
 
-    left:50px;
+    left:40px;
 
     opacity:0;
   }
@@ -185,7 +189,7 @@ h1{
 
   100%{
 
-    top:35px;
+    top:30px;
 
     opacity:0;
   }
@@ -212,37 +216,37 @@ h1{
   display:grid;
 
   grid-template-columns:
-  repeat(auto-fit,minmax(140px,1fr));
+  repeat(auto-fit,minmax(120px,1fr));
 
-  gap:10px;
+  gap:8px;
 
-  padding:10px;
+  padding:8px;
 }
 
 .card{
 
   background:#101b33;
 
-  border-radius:16px;
+  border-radius:12px;
 
-  padding:14px;
+  padding:10px;
 
   box-shadow:
-  0 0 12px rgba(0,255,200,0.15);
+  0 0 10px rgba(0,255,200,0.12);
 }
 
 .card-title{
 
   font-size:
-  clamp(12px,1.5vw,18px);
+  clamp(10px,1vw,15px);
 }
 
 .value{
 
   font-size:
-  clamp(16px,2vw,28px);
+  clamp(14px,1.5vw,22px);
 
-  margin-top:8px;
+  margin-top:6px;
 }
 
 /* ================= CHART ================= */
@@ -253,20 +257,20 @@ h1{
 
   margin:auto;
 
-  margin-top:10px;
+  margin-top:8px;
 
   background:#101b33;
 
-  border-radius:16px;
+  border-radius:12px;
 
-  padding:10px;
+  padding:8px;
 }
 
 canvas{
 
   width:100% !important;
 
-  height:300px !important;
+  height:240px !important;
 }
 
 /* ================= TABLET ================= */
@@ -275,7 +279,7 @@ canvas{
 
   .box{
 
-    max-width:180px;
+    max-width:150px;
   }
 }
 
@@ -283,39 +287,27 @@ canvas{
 
 @media(max-width:768px){
 
-  body{
-
-    font-size:12px;
-  }
-
-  h1{
-
-    font-size:22px;
-  }
-
   .flow{
 
     flex-direction:column;
 
-    gap:5px;
+    gap:4px;
   }
 
   .box{
 
-    width:95%;
+    width:92%;
 
-    max-width:none;
+    max-width:320px;
 
-    min-height:auto;
-
-    padding:10px;
+    padding:8px;
   }
 
   .arrow-container{
 
-    width:35px;
+    width:30px;
 
-    height:45px;
+    height:40px;
   }
 
   .arrow{
@@ -327,7 +319,7 @@ canvas{
     animation:
     moveArrowVertical 1s linear infinite;
 
-    font-size:22px;
+    font-size:20px;
   }
 
   .grid{
@@ -337,7 +329,7 @@ canvas{
 
   canvas{
 
-    height:220px !important;
+    height:180px !important;
   }
 }
 
@@ -347,27 +339,27 @@ canvas{
 
   h1{
 
-    font-size:18px;
+    font-size:16px;
   }
 
   .box h2{
 
-    font-size:15px;
+    font-size:13px;
   }
 
   .box div{
 
-    font-size:12px;
+    font-size:11px;
   }
 
   .value{
 
-    font-size:18px;
+    font-size:16px;
   }
 
   canvas{
 
-    height:180px !important;
+    height:150px !important;
   }
 }
 

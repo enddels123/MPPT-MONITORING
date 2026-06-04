@@ -49,35 +49,23 @@ const chart = new Chart(ctx,{
     datasets:[
 
       {
-
-        label:'PV Power (W)',
-
+        label:'PV W',
         data:pvData,
-
-        borderWidth:2,
-
+        borderWidth:1.5,
         tension:0.3
       },
 
       {
-
-        label:'Load Power (W)',
-
+        label:'LOAD W',
         data:loadData,
-
-        borderWidth:2,
-
+        borderWidth:1.5,
         tension:0.3
       },
 
       {
-
-        label:'Battery Voltage (V)',
-
+        label:'BAT V',
         data:batData,
-
-        borderWidth:2,
-
+        borderWidth:1.5,
         tension:0.3
       }
     ]
@@ -96,7 +84,10 @@ const chart = new Chart(ctx,{
       legend:{
 
         labels:{
-          color:'#00ffd5'
+          color:'#00ffd5',
+          font:{
+            size:10
+          }
         }
       }
     },
@@ -106,14 +97,20 @@ const chart = new Chart(ctx,{
       x:{
 
         ticks:{
-          color:'#00ffd5'
+          color:'#00ffd5',
+          font:{
+            size:9
+          }
         }
       },
 
       y:{
 
         ticks:{
-          color:'#00ffd5'
+          color:'#00ffd5',
+          font:{
+            size:9
+          }
         }
       }
     }
@@ -139,7 +136,6 @@ function updateArrow(id,power){
 
   power = safe(power);
 
-  // LOW
   if(power < 20){
 
     arrow.className =
@@ -149,7 +145,6 @@ function updateArrow(id,power){
     "2s";
   }
 
-  // MEDIUM
   else if(power < 100){
 
     arrow.className =
@@ -159,7 +154,6 @@ function updateArrow(id,power){
     "1s";
   }
 
-  // HIGH
   else{
 
     arrow.className =
@@ -209,14 +203,11 @@ function updateArrowDirection(){
 
   arrows.forEach(a=>{
 
-    // MOBILE
     if(mobile){
 
       a.innerHTML = "▼";
-    }
 
-    // PC
-    else{
+    }else{
 
       a.innerHTML = "➜";
     }
@@ -352,8 +343,7 @@ client.on("message",(topic,message)=>{
       safe(data.bat_v)
     );
 
-    // LIMIT
-    if(labels.length > 30){
+    if(labels.length > 20){
 
       labels.shift();
 
