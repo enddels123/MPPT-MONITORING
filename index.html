@@ -1,17 +1,36 @@
 ```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport"
-content="width=device-width,initial-scale=1.0">
+content="width=device-width,
+initial-scale=1.0">
 
-<title>ISOKUIKI SMART ENERGY</title>
+<title>
+ISOKUIKI SMART MONITORING
+</title>
 
-<link rel="stylesheet"
-href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap">
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href=
+"https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap"
+rel="stylesheet">
+
+<script src=
+"https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src=
+"https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+<script src=
+"https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+
+<script src=
+"https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <style>
 
@@ -22,296 +41,363 @@ box-sizing:border-box;
 }
 
 body{
-font-family:'Orbitron',sans-serif;
+
 background:
-linear-gradient(180deg,#020617,#001233);
-color:#fff;
-height:100vh;
+linear-gradient(
+180deg,
+#000814,
+#00152d
+);
+
+font-family:
+Orbitron,sans-serif;
+
 overflow:hidden;
+
+color:white;
 }
+
+/* ================================= */
 
 .dashboard{
+
+width:100vw;
 height:100vh;
+
 display:flex;
 flex-direction:column;
-padding:8px;
-gap:8px;
+
+padding:.5vw;
+
+gap:.5vw;
 }
 
-/* =========================
-HEADER
-========================= */
+/* ================================= */
 
 .header{
-text-align:center;
+
+height:9vh;
+
+display:flex;
+flex-direction:column;
+
+justify-content:center;
+align-items:center;
 }
 
 .title{
-font-size:clamp(20px,2vw,42px);
-color:#00ffe5;
-text-shadow:0 0 15px #00ffe5;
+
+font-size:
+clamp(20px,2vw,40px);
+
+color:#00ffe1;
+
+text-shadow:
+0 0 12px #00ffe1;
 }
 
 .online{
-font-size:12px;
+
+font-size:
+clamp(10px,.8vw,14px);
+
 color:#00ff88;
 }
 
-.device-box{
+/* ================================= */
+
+.deviceBox{
+
+height:4.5vh;
+
+width:38vw;
+
 margin:auto;
-margin-top:6px;
-width:min(500px,92%);
-padding:10px;
-border-radius:18px;
-border:3px solid #00ff99;
-box-shadow:
-0 0 15px #00ff99;
-background:#06142b;
-font-size:clamp(12px,1vw,20px);
-font-weight:700;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+border:
+2px solid #00ffcc;
+
+border-radius:20px;
+
+background:
+rgba(0,20,40,.5);
+
+font-size:
+clamp(12px,1vw,18px);
+
+font-weight:bold;
 }
 
-/* =========================
-MAIN GRID
-========================= */
+/* ================================= */
 
 .main{
+
 flex:1;
+
 display:grid;
+
 grid-template-columns:
-36% 64%;
-gap:10px;
+28% 72%;
+
+gap:.6vw;
+
 min-height:0;
 }
 
-/* =========================
-SCADA
-========================= */
+/* ================================= */
 
-.scada-panel{
-background:#06142b;
+.scada{
+
+background:
+rgba(0,20,40,.45);
+
 border-radius:18px;
-padding:8px;
-display:flex;
-align-items:center;
-justify-content:center;
+
+position:relative;
+
 overflow:hidden;
 }
 
-.scada{
-position:relative;
+/* ================================= */
+
+.scada svg{
+
 width:100%;
 height:100%;
 }
 
-.line{
-position:absolute;
-background:#3b82f6;
-box-shadow:0 0 10px #3b82f6;
-}
+/* ================================= */
 
-.vertical{
-width:4px;
-}
+.widgetsArea{
 
-.horizontal{
-height:4px;
-}
+display:grid;
 
-.node{
-position:absolute;
-width:12px;
-height:12px;
-border-radius:50%;
-background:#00ff88;
-box-shadow:
-0 0 15px #00ff88;
-}
+grid-template-rows:
+38% 28% 34%;
 
-/* FLOW ANIMATION */
+gap:.6vw;
 
-.flow1{
-animation:flow1 3s linear infinite;
-}
-
-.flow2{
-animation:flow2 3s linear infinite;
-}
-
-.flow3{
-animation:flow3 3s linear infinite;
-}
-
-@keyframes flow1{
-0%{top:18%;left:50%;}
-100%{top:42%;left:50%;}
-}
-
-@keyframes flow2{
-0%{top:58%;left:50%;}
-100%{top:82%;left:26%;}
-}
-
-@keyframes flow3{
-0%{top:58%;left:50%;}
-100%{top:82%;left:74%;}
-}
-
-/* =========================
-CIRCLE
-========================= */
-
-.circle{
-position:absolute;
-width:92px;
-height:92px;
-border-radius:50%;
-border:3px solid #00ffe5;
-background:#071a35;
-box-shadow:
-0 0 18px #00ffe5;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-}
-
-.circle .icon{
-font-size:22px;
-}
-
-.circle .mini{
-font-size:9px;
-line-height:1.4;
-}
-
-.label{
-position:absolute;
-font-size:11px;
-color:#00ffe5;
-}
-
-/* =========================
-RIGHT PANEL
-========================= */
-
-.right{
-display:flex;
-flex-direction:column;
-gap:8px;
 min-height:0;
 }
 
-/* =========================
-WIDGETS
-========================= */
+/* ================================= */
 
 .widgets{
+
 display:grid;
+
 grid-template-columns:
-repeat(2,1fr);
-gap:8px;
+1fr 1fr;
+
+grid-template-rows:
+1fr 1fr;
+
+gap:.6vw;
 }
 
-.widget{
-background:#06142b;
+/* ================================= */
+
+.card{
+
+background:
+rgba(0,20,50,.55);
+
 border-radius:16px;
-padding:10px;
-min-height:110px;
+
+padding:.6vw;
+
+overflow:hidden;
+
 box-shadow:
-0 0 12px rgba(0,255,255,.15);
+0 0 10px rgba(0,255,255,.08);
 }
 
-.widget h3{
+.card h2{
+
 text-align:center;
-color:#00ffe5;
-font-size:18px;
-margin-bottom:8px;
+
+color:#00ffe1;
+
+font-size:
+clamp(12px,1vw,18px);
+
+margin-bottom:.5vw;
 }
+
+/* ================================= */
 
 .row{
+
 display:flex;
 justify-content:space-between;
-padding:4px 0;
+
+padding:.22vw 0;
+
+font-size:
+clamp(10px,.8vw,14px);
+
 border-bottom:
-1px solid rgba(255,255,255,.08);
-font-size:13px;
+1px solid rgba(255,255,255,.05);
 }
 
-/* =========================
-GAUGE
-========================= */
+/* ================================= */
 
 .gauges{
+
 display:grid;
+
 grid-template-columns:
-repeat(3,1fr);
-gap:8px;
-flex:1;
-min-height:0;
+1fr 1fr 1fr;
+
+gap:.6vw;
 }
 
-.gauge{
-background:#06142b;
+/* ================================= */
+
+.gaugeCard{
+
+background:
+rgba(0,20,50,.55);
+
 border-radius:16px;
-padding:8px;
-height:170px;
-display:flex;
-flex-direction:column;
+
+padding:.5vw;
+
+position:relative;
 }
 
-.gauge canvas{
-flex:1;
+/* ================================= */
+
+.gaugeCard canvas{
+
+width:100% !important;
+height:100% !important;
 }
 
-/* =========================
-RESPONSIVE
-========================= */
+/* ================================= */
+
+.chartRow{
+
+display:grid;
+
+grid-template-columns:
+1fr 1fr;
+
+gap:.6vw;
+}
+
+/* ================================= */
+
+.chartCard{
+
+background:
+rgba(0,20,50,.55);
+
+border-radius:16px;
+
+padding:.5vw;
+}
+
+/* ================================= */
+
+.chartCard canvas{
+
+width:100% !important;
+height:100% !important;
+}
+
+/* ================================= */
+
+.flowLine{
+
+stroke:#2d7dff;
+
+stroke-width:5;
+
+fill:none;
+
+stroke-linecap:round;
+}
+
+/* ================================= */
+
+.circle{
+
+fill:#03152d;
+
+stroke:#00ffe1;
+
+stroke-width:3;
+
+filter:
+drop-shadow(0 0 10px #00ffe1);
+}
+
+/* ================================= */
+
+.node{
+
+fill:#00ff99;
+
+filter:
+drop-shadow(0 0 8px #00ff99);
+}
+
+/* ================================= */
+
+.label{
+
+fill:#00ffe1;
+
+font-size:12px;
+
+text-anchor:middle;
+}
+
+.dataTxt{
+
+fill:white;
+
+font-size:10px;
+
+text-anchor:middle;
+}
+
+/* ================================= */
 
 @media(max-width:900px){
 
-body{
-overflow:auto;
-height:auto;
-}
-
-.dashboard{
-height:auto;
-}
-
 .main{
-grid-template-columns:1fr;
+
+grid-template-columns:
+34% 66%;
 }
 
-.scada-panel{
-height:260px;
+.deviceBox{
+
+width:70vw;
 }
 
-.widgets{
-grid-template-columns:1fr 1fr;
-}
+.title{
 
-.gauges{
-grid-template-columns:1fr;
-}
-
-.gauge{
-height:150px;
-}
-
-.circle{
-width:78px;
-height:78px;
+font-size:24px;
 }
 
 }
 
 </style>
+
 </head>
 
 <body>
 
 <div class="dashboard">
+
+<!-- HEADER -->
 
 <div class="header">
 
@@ -320,220 +406,328 @@ ISOKUIKI SMART ENERGY
 </div>
 
 <div class="online"
-id="onlineStatus">
-ONLINE
+id="onlineText">
+OFFLINE
 </div>
 
-<div class="device-box"
+</div>
+
+<!-- DEVICE -->
+
+<div class="deviceBox"
 id="deviceStatus">
-DEVICE WORKING
-</div>
+
+DEVICE SHUTDOWN
 
 </div>
+
+<!-- MAIN -->
 
 <div class="main">
 
 <!-- SCADA -->
 
-<div class="scada-panel">
-
 <div class="scada">
 
-<!-- LINES -->
+<svg viewBox="0 0 300 520">
 
-<div class="line vertical"
-style="top:15%;left:50%;height:18%;">
-</div>
+<!-- FLOW -->
 
-<div class="line horizontal"
-style="top:58%;left:26%;width:48%;">
-</div>
+<path class="flowLine"
+d="M150 90 L150 190" />
 
-<div class="line vertical"
-style="top:58%;left:26%;height:22%;">
-</div>
+<path class="flowLine"
+d="M150 260 L80 260 L80 390" />
 
-<div class="line vertical"
-style="top:58%;left:74%;height:22%;">
-</div>
+<path class="flowLine"
+d="M150 260 L220 260 L220 390" />
 
 <!-- NODES -->
 
-<div class="node flow1"></div>
-<div class="node flow2"></div>
-<div class="node flow3"></div>
+<circle id="node1"
+class="node"
+cx="150"
+cy="110"
+r="5"/>
+
+<circle id="node2"
+class="node"
+cx="120"
+cy="260"
+r="5"/>
+
+<circle id="node3"
+class="node"
+cx="180"
+cy="260"
+r="5"/>
 
 <!-- PV -->
 
-<div class="circle"
-style="top:2%;left:38%;">
+<circle class="circle"
+cx="150"
+cy="60"
+r="42"/>
 
-<div class="icon">☀</div>
+<text class="label"
+x="150"
+y="132">
 
-<div class="mini">
-<div id="pvV">0V</div>
-<div id="pvI">0A</div>
-<div id="pvP">0W</div>
-</div>
-
-</div>
-
-<div class="label"
-style="top:28%;left:37%;">
 PHOTOVOLTAIC
-</div>
+
+</text>
+
+<text class="dataTxt"
+id="pvVolt"
+x="150"
+y="66">
+
+0V
+
+</text>
+
+<text class="dataTxt"
+id="pvAmp"
+x="150"
+y="82">
+
+0A
+
+</text>
+
+<text class="dataTxt"
+id="pvPower"
+x="150"
+y="98">
+
+0W
+
+</text>
 
 <!-- MPPT -->
 
-<div class="circle"
-style="top:34%;left:38%;">
+<circle class="circle"
+cx="150"
+cy="210"
+r="42"/>
 
-<div class="icon">⚙</div>
+<text class="label"
+x="150"
+y="282">
 
-<div class="mini">
-<div id="mpptP">0W</div>
-<div id="mpptEff">0%</div>
-</div>
-
-</div>
-
-<div class="label"
-style="top:60%;left:46%;">
 MPPT
-</div>
 
-<!-- BATTERY -->
+</text>
 
-<div class="circle"
-style="top:76%;left:12%;">
+<text class="dataTxt"
+id="mpptW"
+x="150"
+y="218">
 
-<div class="icon">🔋</div>
+0W
 
-<div class="mini">
-<div id="batV">0V</div>
-<div id="batI">0A</div>
-<div id="socText">0%</div>
-</div>
+</text>
 
-</div>
+<text class="dataTxt"
+id="mpptEff"
+x="150"
+y="236">
 
-<div class="label"
-style="top:98%;left:13%;">
+0%
+
+</text>
+
+<!-- BAT -->
+
+<circle class="circle"
+cx="80"
+cy="430"
+r="42"/>
+
+<text class="label"
+x="80"
+y="502">
+
 BATTERY
-</div>
+
+</text>
+
+<text class="dataTxt"
+id="batVolt"
+x="80"
+y="438">
+
+0V
+
+</text>
+
+<text class="dataTxt"
+id="batAmp"
+x="80"
+y="456">
+
+0A
+
+</text>
+
+<text class="dataTxt"
+id="batSoc"
+x="80"
+y="474">
+
+0%
+
+</text>
 
 <!-- ENERGY -->
 
-<div class="circle"
-style="top:76%;left:62%;">
+<circle class="circle"
+cx="220"
+cy="430"
+r="42"/>
 
-<div class="icon">⚡</div>
+<text class="label"
+x="220"
+y="502">
 
-<div class="mini">
-<div id="dayKwh">0</div>
-<div>KWH</div>
-</div>
-
-</div>
-
-<div class="label"
-style="top:98%;left:66%;">
 ENERGY
-</div>
 
-</div>
+</text>
+
+<text class="dataTxt"
+id="kwhDay"
+x="220"
+y="448">
+
+0
+
+</text>
+
+<text class="dataTxt"
+id="kwhMonth"
+x="220"
+y="468">
+
+0
+
+</text>
+
+</svg>
+
 </div>
 
 <!-- RIGHT -->
 
-<div class="right">
+<div class="widgetsArea">
+
+<!-- WIDGETS -->
 
 <div class="widgets">
 
-<div class="widget">
-<h3>PHOTOVOLTAIC</h3>
+<div class="card">
+
+<h2>PHOTOVOLTAIC</h2>
 
 <div class="row">
 <span>Voltage</span>
-<span id="pvv2">0V</span>
+<span id="pvv">0V</span>
 </div>
 
 <div class="row">
 <span>Current</span>
-<span id="pvi2">0A</span>
+<span id="pvi">0A</span>
 </div>
 
 <div class="row">
 <span>Power</span>
-<span id="pvp2">0W</span>
+<span id="pvp">0W</span>
 </div>
 
 </div>
 
-<div class="widget">
-<h3>MPPT</h3>
+<div class="card">
+
+<h2>MPPT</h2>
 
 <div class="row">
 <span>Charge</span>
-<span id="chg2">0W</span>
+<span id="charge">0W</span>
 </div>
 
 <div class="row">
 <span>Efficiency</span>
-<span id="eff2">0%</span>
+<span id="eff">0%</span>
 </div>
 
 </div>
 
-<div class="widget">
-<h3>BATTERY</h3>
+<div class="card">
+
+<h2>BATTERY</h2>
 
 <div class="row">
 <span>Voltage</span>
-<span id="bv2">0V</span>
+<span id="bv">0V</span>
 </div>
 
 <div class="row">
 <span>Current</span>
-<span id="bi2">0A</span>
+<span id="bi">0A</span>
 </div>
 
 <div class="row">
 <span>SOC</span>
-<span id="soc2">0%</span>
+<span id="soc">0%</span>
 </div>
 
 </div>
 
-<div class="widget">
-<h3>ENERGY</h3>
+<div class="card">
+
+<h2>ENERGY</h2>
 
 <div class="row">
 <span>Daily</span>
-<span id="day2">0</span>
+<span id="day">0</span>
 </div>
 
 <div class="row">
 <span>Monthly</span>
-<span id="month2">0</span>
+<span id="month">0</span>
 </div>
 
 </div>
 
 </div>
+
+<!-- GAUGES -->
 
 <div class="gauges">
 
-<div class="gauge">
-<canvas id="g1"></canvas>
+<div class="gaugeCard">
+<canvas id="gaugePV"></canvas>
 </div>
 
-<div class="gauge">
-<canvas id="g2"></canvas>
+<div class="gaugeCard">
+<canvas id="gaugeBattery"></canvas>
 </div>
 
-<div class="gauge">
-<canvas id="g3"></canvas>
+<div class="gaugeCard">
+<canvas id="gaugeMPPT"></canvas>
+</div>
+
+</div>
+
+<!-- CHARTS -->
+
+<div class="chartRow">
+
+<div class="chartCard">
+<canvas id="chartPV"></canvas>
+</div>
+
+<div class="chartCard">
+<canvas id="chartDay"></canvas>
 </div>
 
 </div>
