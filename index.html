@@ -20,6 +20,8 @@ rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
 <style>
@@ -70,14 +72,21 @@ overflow-x:hidden;
 
 .main{
 
+width:100%;
+
+max-width:1500px;
+
+margin:auto;
+
 display:grid;
 
 grid-template-columns:
-360px 1fr;
+320px 1fr;
 
-gap:12px;
+gap:14px;
 
-padding:12px;
+padding:
+14px 18px;
 
 min-height:100vh;
 
@@ -102,7 +111,7 @@ box-shadow:
 }
 
 /* =========================
-   LEFT
+   LEFT PANEL
 ========================= */
 
 .leftPanel{
@@ -193,7 +202,7 @@ box-shadow:
 
 .scada{
 
-height:640px;
+height:560px;
 
 display:flex;
 
@@ -201,7 +210,7 @@ align-items:center;
 
 justify-content:center;
 
-padding:10px;
+padding:6px;
 
 overflow:hidden;
 
@@ -250,7 +259,7 @@ text-anchor:middle;
 
 fill:white;
 
-font-size:21px;
+font-size:22px;
 
 font-weight:bold;
 
@@ -284,7 +293,7 @@ drop-shadow(0 0 8px #00ffe5);
 }
 
 /* =========================
-   RIGHT
+   RIGHT PANEL
 ========================= */
 
 .rightPanel{
@@ -374,13 +383,15 @@ repeat(3,1fr);
 
 gap:12px;
 
+align-items:stretch;
+
 }
 
 .chartBox{
 
-padding:12px;
+padding:10px;
 
-height:270px;
+height:240px;
 
 }
 
@@ -401,7 +412,7 @@ margin-bottom:8px;
 
 position:relative;
 
-height:190px;
+height:160px;
 
 }
 
@@ -414,6 +425,20 @@ height:190px;
 .main{
 
 grid-template-columns:1fr;
+
+padding:10px;
+
+}
+
+.leftPanel{
+
+order:1;
+
+}
+
+.rightPanel{
+
+order:2;
 
 }
 
@@ -438,21 +463,19 @@ grid-column:auto;
 
 .scada{
 
-height:580px;
+height:500px;
+
+}
+
+.chartBox{
+
+height:220px;
 
 }
 
 }
 
 @media(max-width:650px){
-
-.main{
-
-padding:8px;
-
-gap:8px;
-
-}
 
 .dataGrid{
 
@@ -466,21 +489,9 @@ grid-template-columns:1fr;
 
 }
 
-.chartBox{
-
-height:230px;
-
-}
-
-.chartCanvas{
-
-height:150px;
-
-}
-
 .scada{
 
-height:520px;
+height:460px;
 
 }
 
@@ -518,8 +529,6 @@ border-radius:10px;
 
 <div class="leftPanel">
 
-<!-- HEADER -->
-
 <div class="panel header">
 
 <div class="title">
@@ -544,188 +553,174 @@ DEVICE SHUTDOWN
 
 <div class="panel scada">
 
-<svg viewBox="0 0 360 620">
+<svg viewBox="0 0 340 520">
 
-<!-- =========================
-     LINE PV → MPPT
-========================= -->
+<!-- MAIN LINE -->
 
-<line x1="180"
-y1="120"
-x2="180"
-y2="220"
+<line x1="170"
+y1="95"
+x2="170"
+y2="180"
 stroke="#36a3ff"
 stroke-width="5"/>
 
-<!-- =========================
-     SPLIT LINE
-========================= -->
+<!-- SPLIT -->
 
-<line x1="180"
-y1="310"
-x2="115"
-y2="310"
+<line x1="170"
+y1="255"
+x2="120"
+y2="255"
 stroke="#36a3ff"
 stroke-width="5"/>
 
-<line x1="180"
-y1="310"
-x2="245"
-y2="310"
+<line x1="170"
+y1="255"
+x2="220"
+y2="255"
 stroke="#36a3ff"
 stroke-width="5"/>
 
-<line x1="115"
-y1="310"
-x2="115"
-y2="450"
+<line x1="120"
+y1="255"
+x2="120"
+y2="360"
 stroke="#36a3ff"
 stroke-width="5"/>
 
-<line x1="245"
-y1="310"
-x2="245"
-y2="450"
+<line x1="220"
+y1="255"
+x2="220"
+y2="360"
 stroke="#36a3ff"
 stroke-width="5"/>
 
-<!-- =========================
-     FLOW NODE
-========================= -->
+<!-- FLOW NODE -->
 
 <circle id="n1"
 class="flowNode"
-cx="180"
-cy="130"
+cx="170"
+cy="105"
 r="6"
 fill="#00ff88"/>
 
 <circle id="n2"
 class="flowNode"
 cx="150"
-cy="310"
+cy="255"
 r="6"
 fill="#00ff88"/>
 
 <circle id="n3"
 class="flowNode"
-cx="210"
-cy="310"
+cx="190"
+cy="255"
 r="6"
 fill="#00ff88"/>
 
-<!-- =========================
-     PV PANEL
-========================= -->
+<!-- PV -->
 
-<text x="180"
-y="38"
+<text x="170"
+y="30"
 class="scada-name">
 PV PANEL
 </text>
 
-<circle cx="180"
-cy="85"
-r="42"
+<circle cx="170"
+cy="70"
+r="34"
 class="scada-circle"/>
 
-<text x="180"
-y="78"
+<text x="170"
+y="64"
 class="scada-value"
 id="pvPowerScada">
 0W
 </text>
 
-<text x="180"
-y="98"
+<text x="170"
+y="82"
 class="scada-sub"
 id="pvVoltScada">
 0V | 0A
 </text>
 
-<!-- =========================
-     MPPT
-========================= -->
+<!-- MPPT -->
 
-<circle cx="180"
-cy="265"
-r="42"
+<circle cx="170"
+cy="210"
+r="34"
 class="scada-circle"/>
 
-<text x="180"
-y="258"
+<text x="170"
+y="204"
 class="scada-value"
 id="mpptPowerScada">
 0W
 </text>
 
-<text x="180"
-y="278"
+<text x="170"
+y="222"
 class="scada-sub"
 id="mpptEffScada">
 0%
 </text>
 
-<text x="180"
-y="360"
+<text x="170"
+y="300"
 class="scada-name">
 MPPT
 </text>
 
-<!-- =========================
-     BATTERY
-========================= -->
+<!-- BATTERY -->
 
-<circle cx="115"
-cy="495"
-r="42"
+<circle cx="120"
+cy="390"
+r="34"
 class="scada-circle"/>
 
-<text x="115"
-y="488"
+<text x="120"
+y="384"
 class="scada-value"
 id="batSocScada">
 0%
 </text>
 
-<text x="115"
-y="508"
+<text x="120"
+y="402"
 class="scada-sub"
 id="batVoltScada">
 0V | 0A
 </text>
 
-<text x="115"
-y="575"
+<text x="120"
+y="460"
 class="scada-name">
 BATTERY
 </text>
 
-<!-- =========================
-     LOAD
-========================= -->
+<!-- LOAD -->
 
-<circle cx="245"
-cy="495"
-r="42"
+<circle cx="220"
+cy="390"
+r="34"
 class="scada-circle"/>
 
-<text x="245"
-y="488"
+<text x="220"
+y="384"
 class="scada-value"
 id="loadPowerScada">
 0W
 </text>
 
-<text x="245"
-y="508"
+<text x="220"
+y="402"
 class="scada-sub"
 id="loadVoltScada">
 0V | 0A
 </text>
 
-<text x="245"
-y="575"
+<text x="220"
+y="460"
 class="scada-name">
 LOAD
 </text>
@@ -754,17 +749,17 @@ PHOTOVOLTAIC
 
 <div class="row">
 <span>Voltage</span>
-<span id="pvv">0V</span>
+<span id="pvVoltage">0V</span>
 </div>
 
 <div class="row">
 <span>Current</span>
-<span id="pvi">0A</span>
+<span id="pvCurrent">0A</span>
 </div>
 
 <div class="row">
 <span>Power</span>
-<span id="pvp">0W</span>
+<span id="pvPower">0W</span>
 </div>
 
 </div>
@@ -777,12 +772,12 @@ MPPT
 
 <div class="row">
 <span>Charge</span>
-<span id="charge">0W</span>
+<span id="mpptCharge">0W</span>
 </div>
 
 <div class="row">
 <span>Efficiency</span>
-<span id="eff">0%</span>
+<span id="mpptEff">0%</span>
 </div>
 
 </div>
@@ -795,17 +790,17 @@ BATTERY
 
 <div class="row">
 <span>Voltage</span>
-<span id="bv">0V</span>
+<span id="batVoltage">0V</span>
 </div>
 
 <div class="row">
 <span>Current</span>
-<span id="bi">0A</span>
+<span id="batCurrent">0A</span>
 </div>
 
 <div class="row">
 <span>SOC</span>
-<span id="soc">0%</span>
+<span id="batSoc">0%</span>
 </div>
 
 </div>
@@ -818,12 +813,12 @@ ENERGY
 
 <div class="row">
 <span>Daily</span>
-<span id="day">0 kWh</span>
+<span id="dailyEnergy">0 kWh</span>
 </div>
 
 <div class="row">
 <span>Monthly</span>
-<span id="month">0 kWh</span>
+<span id="monthlyEnergy">0 kWh</span>
 </div>
 
 </div>
