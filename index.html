@@ -1,3 +1,7 @@
+<!-- =========================
+INDEX.HTML FINAL
+========================= -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,24 +24,31 @@ rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <style>
 
+/* =========================
+ROOT
+========================= */
+
 :root{
 
---bg:#010b1d;
---card:#031326;
---accent:#00ffe1;
+--bg:#020b1d;
+--panel:#03162d;
+--cyan:#00ffe5;
+--blue:#36a3ff;
 --lime:#7CFC00;
---red:#ff4040;
---text:#ffffff;
+--red:#ff3b3b;
+--white:#ffffff;
 
 }
+
+/* =========================
+GLOBAL
+========================= */
 
 *{
 
@@ -50,71 +61,80 @@ box-sizing:border-box;
 body{
 
 background:var(--bg);
-color:var(--text);
+
 font-family:'Orbitron',sans-serif;
+
+color:var(--white);
+
 overflow-x:hidden;
 
 }
 
 /* =========================
-   MAIN
+MAIN
 ========================= */
 
 .main{
 
 width:100%;
-min-height:100vh;
+
+max-width:1500px;
+
+margin:auto;
 
 display:grid;
 
 grid-template-columns:
-minmax(260px, 28%)
-1fr;
+300px 1fr;
 
-gap:10px;
+gap:14px;
 
-padding:10px;
+padding:
+14px 18px 20px 18px;
+
+min-height:100vh;
 
 }
 
 /* =========================
-   PANEL
+PANEL
 ========================= */
 
 .panel{
 
-background:var(--card);
+background:var(--panel);
 
-border-radius:18px;
+border-radius:22px;
 
 border:
 1px solid rgba(255,255,255,.05);
 
 box-shadow:
-0 0 14px rgba(0,255,225,.08);
+0 0 18px rgba(0,255,229,.08);
 
 }
 
 /* =========================
-   LEFT PANEL
+LEFT PANEL
 ========================= */
 
 .leftPanel{
 
 display:flex;
+
 flex-direction:column;
-gap:10px;
-height:100%;
+
+gap:12px;
 
 }
 
 /* =========================
-   HEADER
+HEADER
 ========================= */
 
 .header{
 
-padding:8px 10px;
+padding:14px;
 
 text-align:center;
 
@@ -122,38 +142,38 @@ text-align:center;
 
 .title{
 
-color:var(--accent);
-
 font-size:
-clamp(.9rem,1.3vw,1.35rem);
+clamp(1rem,1.5vw,1.6rem);
+
+color:var(--cyan);
 
 text-shadow:
-0 0 8px var(--accent);
+0 0 10px var(--cyan);
 
-margin-bottom:2px;
+line-height:1.3;
 
-line-height:1.2;
+margin-bottom:5px;
 
 }
 
 .online{
 
 font-size:
-clamp(.62rem,.72vw,.82rem);
+clamp(.7rem,.8vw,.85rem);
 
 font-weight:bold;
 
-margin-bottom:5px;
+margin-bottom:8px;
 
 }
 
-.online.online-status{
+.online-status{
 
 color:var(--lime);
 
 }
 
-.online.offline-status{
+.offline-status{
 
 color:var(--red);
 
@@ -161,46 +181,48 @@ color:var(--red);
 
 .device{
 
+width:92%;
+
 margin:auto;
 
-width:90%;
+padding:7px;
+
+border-radius:12px;
 
 border:
-2px solid #00ffb3;
-
-border-radius:10px;
-
-padding:5px;
+2px solid #00ffae;
 
 font-size:
-clamp(.58rem,.7vw,.8rem);
+clamp(.65rem,.75vw,.8rem);
 
 box-shadow:
-0 0 8px rgba(0,255,136,.18);
+0 0 10px rgba(0,255,174,.15);
 
 }
 
 /* =========================
-   SCADA
+SCADA
 ========================= */
 
 .scada{
 
-padding:4px;
-
-height:100%;
-
-min-height:540px;
+height:470px;
 
 display:flex;
 
-align-items:stretch;
+align-items:center;
 
 justify-content:center;
+
+padding:4px;
 
 overflow:hidden;
 
 }
+
+/* =========================
+SVG
+========================= */
 
 svg{
 
@@ -209,24 +231,28 @@ height:100%;
 
 }
 
+/* =========================
+SCADA STYLE
+========================= */
+
 .scada-circle{
 
-fill:#04152d;
+fill:#041933;
 
-stroke:var(--accent);
+stroke:var(--cyan);
 
 stroke-width:4;
 
 filter:
-drop-shadow(0 0 10px rgba(0,255,225,.5));
+drop-shadow(0 0 10px rgba(0,255,229,.6));
 
 }
 
 .scada-name{
 
-fill:var(--accent);
+fill:var(--cyan);
 
-font-size:15px;
+font-size:12px;
 
 font-weight:700;
 
@@ -236,9 +262,9 @@ text-anchor:middle;
 
 .scada-value{
 
-fill:#ffffff;
+fill:white;
 
-font-size:15px;
+font-size:16px;
 
 font-weight:bold;
 
@@ -250,9 +276,9 @@ dominant-baseline:middle;
 
 .scada-sub{
 
-fill:#7CFC00;
+fill:var(--lime);
 
-font-size:12px;
+font-size:10px;
 
 text-anchor:middle;
 
@@ -261,7 +287,18 @@ dominant-baseline:middle;
 }
 
 /* =========================
-   RIGHT PANEL
+FLOW NODE
+========================= */
+
+.flowNode{
+
+filter:
+drop-shadow(0 0 8px #00ffe5);
+
+}
+
+/* =========================
+RIGHT PANEL
 ========================= */
 
 .rightPanel{
@@ -270,30 +307,30 @@ display:flex;
 
 flex-direction:column;
 
-gap:10px;
+gap:12px;
 
 }
 
 /* =========================
-   DATA GRID
+DATA GRID
 ========================= */
 
-.dataArea{
+.dataGrid{
 
 display:grid;
 
 grid-template-columns:
 repeat(3,1fr);
 
-gap:10px;
+gap:12px;
 
 }
 
 .box{
 
-padding:12px;
+padding:14px;
 
-min-height:130px;
+min-height:140px;
 
 }
 
@@ -301,12 +338,12 @@ min-height:130px;
 
 text-align:center;
 
-color:var(--accent);
+color:var(--cyan);
 
 font-size:
-clamp(.8rem,.9vw,1rem);
+clamp(.85rem,.95vw,1rem);
 
-margin-bottom:10px;
+margin-bottom:12px;
 
 }
 
@@ -318,7 +355,7 @@ justify-content:space-between;
 
 align-items:center;
 
-padding:8px 0;
+padding:9px 0;
 
 border-bottom:
 1px solid rgba(255,255,255,.08);
@@ -329,7 +366,7 @@ clamp(.72rem,.82vw,.92rem);
 }
 
 /* =========================
-   ENERGY CENTER
+ENERGY
 ========================= */
 
 .energyBox{
@@ -339,7 +376,7 @@ grid-column:2/3;
 }
 
 /* =========================
-   CHART
+CHART GRID
 ========================= */
 
 .chartGrid{
@@ -349,7 +386,9 @@ display:grid;
 grid-template-columns:
 repeat(3,1fr);
 
-gap:10px;
+gap:12px;
+
+align-items:stretch;
 
 }
 
@@ -357,7 +396,7 @@ gap:10px;
 
 padding:10px;
 
-height:260px;
+height:180px;
 
 }
 
@@ -365,12 +404,12 @@ height:260px;
 
 text-align:center;
 
-color:var(--accent);
+color:var(--cyan);
 
 font-size:
-clamp(.8rem,.9vw,1rem);
+clamp(.85rem,.95vw,1rem);
 
-margin-bottom:6px;
+margin-bottom:8px;
 
 }
 
@@ -378,36 +417,25 @@ margin-bottom:6px;
 
 position:relative;
 
-width:100%;
-
-height:190px;
+height:120px;
 
 }
 
 /* =========================
-   FLOW NODE
+MOBILE
 ========================= */
 
-circle.flowNode{
-
-filter:
-drop-shadow(0 0 8px #00ffe1);
-
-}
-
-/* =========================
-   MOBILE
-========================= */
-
-@media(max-width:980px){
+@media(max-width:1000px){
 
 .main{
 
 grid-template-columns:1fr;
 
+padding:10px;
+
 }
 
-.dataArea{
+.dataGrid{
 
 grid-template-columns:
 1fr 1fr;
@@ -416,8 +444,7 @@ grid-template-columns:
 
 .chartGrid{
 
-grid-template-columns:
-1fr;
+grid-template-columns:1fr;
 
 }
 
@@ -429,23 +456,15 @@ grid-column:auto;
 
 .scada{
 
-min-height:500px;
+height:440px;
 
 }
 
 }
 
-@media(max-width:640px){
+@media(max-width:650px){
 
-.main{
-
-padding:8px;
-
-gap:8px;
-
-}
-
-.dataArea{
+.dataGrid{
 
 grid-template-columns:1fr;
 
@@ -457,28 +476,10 @@ grid-template-columns:1fr;
 
 }
 
-.chartBox{
-
-height:230px;
-
-}
-
-.chartCanvas{
-
-height:160px;
-
-}
-
-.scada{
-
-min-height:430px;
-
-}
-
 }
 
 /* =========================
-   SCROLLBAR
+SCROLLBAR
 ========================= */
 
 ::-webkit-scrollbar{
@@ -489,7 +490,8 @@ width:6px;
 
 ::-webkit-scrollbar-thumb{
 
-background:#00ffe1;
+background:var(--cyan);
+
 border-radius:10px;
 
 }
@@ -503,12 +505,10 @@ border-radius:10px;
 <div class="main">
 
 <!-- =========================
-     LEFT
+LEFT PANEL
 ========================= -->
 
 <div class="leftPanel">
-
-<!-- HEADER -->
 
 <div class="panel header">
 
@@ -523,87 +523,103 @@ ONLINE
 
 <div class="device"
 id="deviceStatus">
-DEVICE SHUTDOWN
+DEVICE ACTIVE
 </div>
 
 </div>
 
-<!-- SCADA -->
+<!-- =========================
+SCADA
+========================= -->
 
 <div class="panel scada">
 
-<svg viewBox="0 30 400 650">
+<svg viewBox="0 20 340 430">
 
-<!-- LINE -->
+<!-- MAIN LINE -->
 
-<path d="
-M200 140
-L200 260
-"
-
+<line x1="170"
+y1="90"
+x2="170"
+y2="165"
 stroke="#36a3ff"
-stroke-width="5"
-fill="none"/>
+stroke-width="5"/>
 
-<path d="
-M200 355
-L110 355
-L110 520
-"
+<!-- SPLIT -->
 
+<line x1="170"
+y1="235"
+x2="120"
+y2="235"
 stroke="#36a3ff"
-stroke-width="5"
-fill="none"/>
+stroke-width="5"/>
 
-<path d="
-M200 355
-L290 355
-L290 520
-"
-
+<line x1="170"
+y1="235"
+x2="220"
+y2="235"
 stroke="#36a3ff"
-stroke-width="5"
-fill="none"/>
+stroke-width="5"/>
 
-<!-- FLOW -->
+<line x1="120"
+y1="235"
+x2="120"
+y2="335"
+stroke="#36a3ff"
+stroke-width="5"/>
+
+<line x1="220"
+y1="235"
+x2="220"
+y2="335"
+stroke="#36a3ff"
+stroke-width="5"/>
+
+<!-- NODE -->
 
 <circle id="n1"
 class="flowNode"
-r="8"
+cx="170"
+cy="100"
+r="5"
 fill="#00ff88"/>
 
 <circle id="n2"
 class="flowNode"
-r="8"
+cx="150"
+cy="235"
+r="5"
 fill="#00ff88"/>
 
 <circle id="n3"
 class="flowNode"
-r="8"
+cx="190"
+cy="235"
+r="5"
 fill="#00ff88"/>
 
 <!-- PV -->
 
-<text x="200"
-y="55"
+<text x="170"
+y="25"
 class="scada-name">
 PV PANEL
 </text>
 
-<circle cx="200"
-cy="105"
-r="55"
+<circle cx="170"
+cy="65"
+r="28"
 class="scada-circle"/>
 
-<text x="200"
-y="92"
+<text x="170"
+y="60"
 class="scada-value"
 id="pvPowerScada">
 0W
 </text>
 
-<text x="200"
-y="118"
+<text x="170"
+y="76"
 class="scada-sub"
 id="pvVoltScada">
 0V | 0A
@@ -611,83 +627,83 @@ id="pvVoltScada">
 
 <!-- MPPT -->
 
-<text x="200"
-y="245"
-class="scada-name">
-MPPT
-</text>
-
-<circle cx="200"
-cy="305"
-r="55"
+<circle cx="170"
+cy="190"
+r="28"
 class="scada-circle"/>
 
-<text x="200"
-y="292"
+<text x="170"
+y="185"
 class="scada-value"
 id="mpptPowerScada">
 0W
 </text>
 
-<text x="200"
-y="318"
+<text x="170"
+y="201"
 class="scada-sub"
 id="mpptEffScada">
 0%
 </text>
 
-<!-- BAT -->
-
-<text x="110"
-y="470"
+<text x="170"
+y="275"
 class="scada-name">
-BATTERY
+MPPT
 </text>
 
-<circle cx="110"
-cy="575"
-r="55"
+<!-- BATTERY -->
+
+<circle cx="120"
+cy="360"
+r="28"
 class="scada-circle"/>
 
-<text x="110"
-y="562"
+<text x="120"
+y="355"
 class="scada-value"
 id="batSocScada">
 0%
 </text>
 
-<text x="110"
-y="588"
+<text x="120"
+y="371"
 class="scada-sub"
 id="batVoltScada">
 0V | 0A
 </text>
 
-<!-- LOAD -->
-
-<text x="290"
-y="470"
+<text x="120"
+y="430"
 class="scada-name">
-LOAD
+BATTERY
 </text>
 
-<circle cx="290"
-cy="575"
-r="55"
+<!-- LOAD -->
+
+<circle cx="220"
+cy="360"
+r="28"
 class="scada-circle"/>
 
-<text x="290"
-y="562"
+<text x="220"
+y="355"
 class="scada-value"
 id="loadPowerScada">
 0W
 </text>
 
-<text x="290"
-y="588"
+<text x="220"
+y="371"
 class="scada-sub"
 id="loadVoltScada">
 0V | 0A
+</text>
+
+<text x="220"
+y="430"
+class="scada-name">
+LOAD
 </text>
 
 </svg>
@@ -697,14 +713,12 @@ id="loadVoltScada">
 </div>
 
 <!-- =========================
-     RIGHT
+RIGHT PANEL
 ========================= -->
 
 <div class="rightPanel">
 
-<!-- DATA -->
-
-<div class="dataArea">
+<div class="dataGrid">
 
 <div class="panel box">
 
@@ -714,17 +728,17 @@ PHOTOVOLTAIC
 
 <div class="row">
 <span>Voltage</span>
-<span id="pvv">0V</span>
+<span id="pvVoltage">0V</span>
 </div>
 
 <div class="row">
 <span>Current</span>
-<span id="pvi">0A</span>
+<span id="pvCurrent">0A</span>
 </div>
 
 <div class="row">
 <span>Power</span>
-<span id="pvp">0W</span>
+<span id="pvPower">0W</span>
 </div>
 
 </div>
@@ -737,12 +751,12 @@ MPPT
 
 <div class="row">
 <span>Charge</span>
-<span id="charge">0W</span>
+<span id="mpptCharge">0W</span>
 </div>
 
 <div class="row">
 <span>Efficiency</span>
-<span id="eff">0%</span>
+<span id="mpptEff">0%</span>
 </div>
 
 </div>
@@ -755,17 +769,17 @@ BATTERY
 
 <div class="row">
 <span>Voltage</span>
-<span id="bv">0V</span>
+<span id="batVoltage">0V</span>
 </div>
 
 <div class="row">
 <span>Current</span>
-<span id="bi">0A</span>
+<span id="batCurrent">0A</span>
 </div>
 
 <div class="row">
 <span>SOC</span>
-<span id="soc">0%</span>
+<span id="batSoc">0%</span>
 </div>
 
 </div>
@@ -778,19 +792,17 @@ ENERGY
 
 <div class="row">
 <span>Daily</span>
-<span id="day">0 kWh</span>
+<span id="dailyEnergy">0 kWh</span>
 </div>
 
 <div class="row">
 <span>Monthly</span>
-<span id="month">0 kWh</span>
+<span id="monthlyEnergy">0 kWh</span>
 </div>
 
 </div>
 
 </div>
-
-<!-- CHART -->
 
 <div class="chartGrid">
 
