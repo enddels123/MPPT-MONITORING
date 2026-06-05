@@ -68,7 +68,7 @@ min-height:100vh;
 display:grid;
 
 grid-template-columns:
-minmax(260px, 28%)
+minmax(280px, 28%)
 1fr;
 
 gap:10px;
@@ -190,7 +190,7 @@ padding:4px;
 
 height:100%;
 
-min-height:540px;
+min-height:560px;
 
 display:flex;
 
@@ -226,7 +226,7 @@ drop-shadow(0 0 10px rgba(0,255,225,.5));
 
 fill:var(--accent);
 
-font-size:15px;
+font-size:14px;
 
 font-weight:700;
 
@@ -252,7 +252,7 @@ dominant-baseline:middle;
 
 fill:#7CFC00;
 
-font-size:12px;
+font-size:11px;
 
 text-anchor:middle;
 
@@ -329,7 +329,7 @@ clamp(.72rem,.82vw,.92rem);
 }
 
 /* =========================
-   ENERGY CENTER
+   ENERGY
 ========================= */
 
 .energyBox{
@@ -503,7 +503,7 @@ border-radius:10px;
 <div class="main">
 
 <!-- =========================
-     LEFT
+     LEFT PANEL
 ========================= -->
 
 <div class="leftPanel">
@@ -528,17 +528,21 @@ DEVICE SHUTDOWN
 
 </div>
 
-<!-- SCADA -->
+<!-- =========================
+     SCADA
+========================= -->
 
 <div class="panel scada">
 
-<svg viewBox="0 30 400 650">
+<svg viewBox="0 0 400 620">
 
-<!-- LINE -->
+<!-- =========================
+     LINE
+========================= -->
 
 <path d="
-M200 140
-L200 260
+M200 120
+L200 220
 "
 
 stroke="#36a3ff"
@@ -546,9 +550,9 @@ stroke-width="5"
 fill="none"/>
 
 <path d="
-M200 355
-L110 355
-L110 520
+M200 300
+L140 300
+L140 430
 "
 
 stroke="#36a3ff"
@@ -556,138 +560,148 @@ stroke-width="5"
 fill="none"/>
 
 <path d="
-M200 355
-L290 355
-L290 520
+M200 300
+L260 300
+L260 430
 "
 
 stroke="#36a3ff"
 stroke-width="5"
 fill="none"/>
 
-<!-- FLOW -->
+<!-- =========================
+     FLOW NODE
+========================= -->
 
 <circle id="n1"
 class="flowNode"
-r="8"
+r="7"
 fill="#00ff88"/>
 
 <circle id="n2"
 class="flowNode"
-r="8"
+r="7"
 fill="#00ff88"/>
 
 <circle id="n3"
 class="flowNode"
-r="8"
+r="7"
 fill="#00ff88"/>
 
-<!-- PV -->
+<!-- =========================
+     PV
+========================= -->
 
 <text x="200"
-y="55"
+y="40"
 class="scada-name">
 PV PANEL
 </text>
 
 <circle cx="200"
-cy="105"
-r="55"
+cy="90"
+r="50"
 class="scada-circle"/>
 
 <text x="200"
-y="92"
+y="84"
 class="scada-value"
 id="pvPowerScada">
 0W
 </text>
 
 <text x="200"
-y="118"
+y="108"
 class="scada-sub"
 id="pvVoltScada">
 0V | 0A
 </text>
 
-<!-- MPPT -->
-
-<text x="200"
-y="245"
-class="scada-name">
-MPPT
-</text>
+<!-- =========================
+     MPPT
+========================= -->
 
 <circle cx="200"
-cy="305"
-r="55"
+cy="250"
+r="50"
 class="scada-circle"/>
 
 <text x="200"
-y="292"
+y="244"
 class="scada-value"
 id="mpptPowerScada">
 0W
 </text>
 
 <text x="200"
-y="318"
+y="268"
 class="scada-sub"
 id="mpptEffScada">
 0%
 </text>
 
-<!-- BAT -->
-
-<text x="110"
-y="470"
+<text x="200"
+y="325"
 class="scada-name">
-BATTERY
+MPPT
 </text>
 
-<circle cx="110"
-cy="575"
-r="55"
+<!-- =========================
+     BATTERY
+========================= -->
+
+<circle cx="140"
+cy="470"
+r="50"
 class="scada-circle"/>
 
-<text x="110"
-y="562"
+<text x="140"
+y="464"
 class="scada-value"
 id="batSocScada">
 0%
 </text>
 
-<text x="110"
-y="588"
+<text x="140"
+y="488"
 class="scada-sub"
 id="batVoltScada">
 0V | 0A
 </text>
 
-<!-- LOAD -->
-
-<text x="290"
-y="470"
+<text x="140"
+y="550"
 class="scada-name">
-LOAD
+BATTERY
 </text>
 
-<circle cx="290"
-cy="575"
-r="55"
+<!-- =========================
+     LOAD
+========================= -->
+
+<circle cx="260"
+cy="470"
+r="50"
 class="scada-circle"/>
 
-<text x="290"
-y="562"
+<text x="260"
+y="464"
 class="scada-value"
 id="loadPowerScada">
 0W
 </text>
 
-<text x="290"
-y="588"
+<text x="260"
+y="488"
 class="scada-sub"
 id="loadVoltScada">
 0V | 0A
+</text>
+
+<text x="260"
+y="550"
+class="scada-name">
+LOAD
 </text>
 
 </svg>
@@ -697,7 +711,7 @@ id="loadVoltScada">
 </div>
 
 <!-- =========================
-     RIGHT
+     RIGHT PANEL
 ========================= -->
 
 <div class="rightPanel">
@@ -790,7 +804,9 @@ ENERGY
 
 </div>
 
-<!-- CHART -->
+<!-- =========================
+     CHART
+========================= -->
 
 <div class="chartGrid">
 
