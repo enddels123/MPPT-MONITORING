@@ -1,7 +1,3 @@
-<!-- =========================
-INDEX.HTML FINAL
-========================= -->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,17 +12,23 @@ content="width=device-width, initial-scale=1.0">
 ISOKUIKI SMART ENERGY
 </title>
 
+<!-- FONT -->
+
 <link rel="preconnect"
 href="https://fonts.googleapis.com">
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap"
 rel="stylesheet">
 
+<!-- CHART -->
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<!-- FIREBASE -->
 
-<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <style>
 
@@ -37,10 +39,10 @@ ROOT
 :root{
 
 --bg:#020b1d;
---panel:#03162d;
+--panel:#041933;
 --cyan:#00ffe5;
 --blue:#36a3ff;
---lime:#7CFC00;
+--green:#7CFC00;
 --red:#ff3b3b;
 --white:#ffffff;
 
@@ -89,8 +91,7 @@ grid-template-columns:
 
 gap:14px;
 
-padding:
-14px 18px 20px 18px;
+padding:14px;
 
 min-height:100vh;
 
@@ -124,7 +125,7 @@ display:flex;
 
 flex-direction:column;
 
-gap:12px;
+gap:14px;
 
 }
 
@@ -134,7 +135,7 @@ HEADER
 
 .header{
 
-padding:14px;
+padding:18px;
 
 text-align:center;
 
@@ -142,61 +143,45 @@ text-align:center;
 
 .title{
 
-font-size:
-clamp(1rem,1.5vw,1.6rem);
+font-size:1.4rem;
 
 color:var(--cyan);
 
 text-shadow:
 0 0 10px var(--cyan);
 
-line-height:1.3;
+margin-bottom:10px;
 
-margin-bottom:5px;
+line-height:1.3;
 
 }
 
 .online{
 
-font-size:
-clamp(.7rem,.8vw,.85rem);
+font-size:.9rem;
 
 font-weight:bold;
 
-margin-bottom:8px;
+margin-bottom:12px;
 
-}
-
-.online-status{
-
-color:var(--lime);
-
-}
-
-.offline-status{
-
-color:var(--red);
+color:var(--green);
 
 }
 
 .device{
 
-width:92%;
+width:90%;
 
 margin:auto;
 
-padding:7px;
+padding:10px;
 
 border-radius:12px;
 
 border:
-2px solid #00ffae;
+2px solid var(--cyan);
 
-font-size:
-clamp(.65rem,.75vw,.8rem);
-
-box-shadow:
-0 0 10px rgba(0,255,174,.15);
+font-size:.85rem;
 
 }
 
@@ -206,15 +191,9 @@ SCADA
 
 .scada{
 
-height:470px;
+height:560px;
 
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-padding:4px;
+padding:10px;
 
 overflow:hidden;
 
@@ -237,14 +216,14 @@ SCADA STYLE
 
 .scada-circle{
 
-fill:#041933;
+fill:#062041;
 
 stroke:var(--cyan);
 
 stroke-width:4;
 
 filter:
-drop-shadow(0 0 10px rgba(0,255,229,.6));
+drop-shadow(0 0 10px rgba(0,255,229,.7));
 
 }
 
@@ -252,9 +231,9 @@ drop-shadow(0 0 10px rgba(0,255,229,.6));
 
 fill:var(--cyan);
 
-font-size:12px;
+font-size:13px;
 
-font-weight:700;
+font-weight:bold;
 
 text-anchor:middle;
 
@@ -270,19 +249,25 @@ font-weight:bold;
 
 text-anchor:middle;
 
-dominant-baseline:middle;
-
 }
 
 .scada-sub{
 
-fill:var(--lime);
+fill:var(--green);
 
 font-size:10px;
 
 text-anchor:middle;
 
-dominant-baseline:middle;
+}
+
+.flow-line{
+
+stroke:#36a3ff;
+
+stroke-width:5;
+
+stroke-linecap:round;
 
 }
 
@@ -292,8 +277,13 @@ FLOW NODE
 
 .flowNode{
 
+fill:#00ff88;
+
 filter:
 drop-shadow(0 0 8px #00ffe5);
+
+transition:
+all .3s ease;
 
 }
 
@@ -307,7 +297,7 @@ display:flex;
 
 flex-direction:column;
 
-gap:12px;
+gap:14px;
 
 }
 
@@ -322,7 +312,7 @@ display:grid;
 grid-template-columns:
 repeat(3,1fr);
 
-gap:12px;
+gap:14px;
 
 }
 
@@ -330,7 +320,7 @@ gap:12px;
 
 padding:14px;
 
-min-height:140px;
+min-height:160px;
 
 }
 
@@ -340,10 +330,9 @@ text-align:center;
 
 color:var(--cyan);
 
-font-size:
-clamp(.85rem,.95vw,1rem);
+font-size:1rem;
 
-margin-bottom:12px;
+margin-bottom:14px;
 
 }
 
@@ -355,23 +344,12 @@ justify-content:space-between;
 
 align-items:center;
 
-padding:9px 0;
+padding:10px 0;
 
 border-bottom:
-1px solid rgba(255,255,255,.08);
+1px solid rgba(255,255,255,.07);
 
-font-size:
-clamp(.72rem,.82vw,.92rem);
-
-}
-
-/* =========================
-ENERGY
-========================= */
-
-.energyBox{
-
-grid-column:2/3;
+font-size:.88rem;
 
 }
 
@@ -386,17 +364,15 @@ display:grid;
 grid-template-columns:
 repeat(3,1fr);
 
-gap:12px;
-
-align-items:stretch;
+gap:14px;
 
 }
 
 .chartBox{
 
-padding:10px;
+padding:12px;
 
-height:180px;
+height:240px;
 
 }
 
@@ -406,10 +382,7 @@ text-align:center;
 
 color:var(--cyan);
 
-font-size:
-clamp(.85rem,.95vw,1rem);
-
-margin-bottom:8px;
+margin-bottom:10px;
 
 }
 
@@ -417,7 +390,7 @@ margin-bottom:8px;
 
 position:relative;
 
-height:120px;
+height:180px;
 
 }
 
@@ -430,8 +403,6 @@ MOBILE
 .main{
 
 grid-template-columns:1fr;
-
-padding:10px;
 
 }
 
@@ -448,15 +419,9 @@ grid-template-columns:1fr;
 
 }
 
-.energyBox{
-
-grid-column:auto;
-
-}
-
 .scada{
 
-height:440px;
+height:520px;
 
 }
 
@@ -470,9 +435,9 @@ grid-template-columns:1fr;
 
 }
 
-.chartGrid{
+.chartBox{
 
-grid-template-columns:1fr;
+height:220px;
 
 }
 
@@ -510,13 +475,15 @@ LEFT PANEL
 
 <div class="leftPanel">
 
+<!-- HEADER -->
+
 <div class="panel header">
 
 <div class="title">
 ISOKUIKI SMART ENERGY
 </div>
 
-<div class="online online-status"
+<div class="online"
 id="onlineText">
 ONLINE
 </div>
@@ -528,98 +495,86 @@ DEVICE ACTIVE
 
 </div>
 
-<!-- =========================
-SCADA
-========================= -->
+<!-- SCADA -->
 
 <div class="panel scada">
 
-<svg viewBox="0 20 340 430">
+<svg viewBox="0 0 340 500">
 
-<!-- MAIN LINE -->
+<!-- FLOW LINE -->
 
-<line x1="170"
+<line class="flow-line"
+x1="170"
 y1="90"
 x2="170"
-y2="165"
-stroke="#36a3ff"
-stroke-width="5"/>
+y2="180"/>
 
-<!-- SPLIT -->
-
-<line x1="170"
-y1="235"
+<line class="flow-line"
+x1="170"
+y1="250"
 x2="120"
-y2="235"
-stroke="#36a3ff"
-stroke-width="5"/>
+y2="250"/>
 
-<line x1="170"
-y1="235"
+<line class="flow-line"
+x1="170"
+y1="250"
 x2="220"
-y2="235"
-stroke="#36a3ff"
-stroke-width="5"/>
+y2="250"/>
 
-<line x1="120"
-y1="235"
+<line class="flow-line"
+x1="120"
+y1="250"
 x2="120"
-y2="335"
-stroke="#36a3ff"
-stroke-width="5"/>
+y2="360"/>
 
-<line x1="220"
-y1="235"
+<line class="flow-line"
+x1="220"
+y1="250"
 x2="220"
-y2="335"
-stroke="#36a3ff"
-stroke-width="5"/>
+y2="360"/>
 
 <!-- NODE -->
 
 <circle id="n1"
 class="flowNode"
 cx="170"
-cy="100"
-r="5"
-fill="#00ff88"/>
+cy="130"
+r="6"/>
 
 <circle id="n2"
 class="flowNode"
-cx="150"
-cy="235"
-r="5"
-fill="#00ff88"/>
+cx="145"
+cy="250"
+r="6"/>
 
 <circle id="n3"
 class="flowNode"
-cx="190"
-cy="235"
-r="5"
-fill="#00ff88"/>
+cx="195"
+cy="250"
+r="6"/>
 
 <!-- PV -->
 
 <text x="170"
-y="25"
+y="30"
 class="scada-name">
 PV PANEL
 </text>
 
 <circle cx="170"
-cy="65"
-r="28"
+cy="70"
+r="34"
 class="scada-circle"/>
 
 <text x="170"
-y="60"
+y="66"
 class="scada-value"
 id="pvPowerScada">
 0W
 </text>
 
 <text x="170"
-y="76"
+y="82"
 class="scada-sub"
 id="pvVoltScada">
 0V | 0A
@@ -627,83 +582,83 @@ id="pvVoltScada">
 
 <!-- MPPT -->
 
+<text x="170"
+y="205"
+class="scada-name">
+MPPT
+</text>
+
 <circle cx="170"
-cy="190"
-r="28"
+cy="220"
+r="34"
 class="scada-circle"/>
 
 <text x="170"
-y="185"
+y="216"
 class="scada-value"
 id="mpptPowerScada">
 0W
 </text>
 
 <text x="170"
-y="201"
+y="232"
 class="scada-sub"
 id="mpptEffScada">
 0%
 </text>
 
-<text x="170"
-y="275"
-class="scada-name">
-MPPT
-</text>
-
 <!-- BATTERY -->
 
+<text x="120"
+y="445"
+class="scada-name">
+BATTERY
+</text>
+
 <circle cx="120"
-cy="360"
-r="28"
+cy="390"
+r="34"
 class="scada-circle"/>
 
 <text x="120"
-y="355"
+y="386"
 class="scada-value"
 id="batSocScada">
 0%
 </text>
 
 <text x="120"
-y="371"
+y="402"
 class="scada-sub"
 id="batVoltScada">
 0V | 0A
 </text>
 
-<text x="120"
-y="430"
-class="scada-name">
-BATTERY
-</text>
-
 <!-- LOAD -->
 
+<text x="220"
+y="445"
+class="scada-name">
+LOAD
+</text>
+
 <circle cx="220"
-cy="360"
-r="28"
+cy="390"
+r="34"
 class="scada-circle"/>
 
 <text x="220"
-y="355"
+y="386"
 class="scada-value"
 id="loadPowerScada">
 0W
 </text>
 
 <text x="220"
-y="371"
+y="402"
 class="scada-sub"
 id="loadVoltScada">
 0V | 0A
-</text>
-
-<text x="220"
-y="430"
-class="scada-name">
-LOAD
 </text>
 
 </svg>
@@ -718,7 +673,11 @@ RIGHT PANEL
 
 <div class="rightPanel">
 
+<!-- DATA -->
+
 <div class="dataGrid">
+
+<!-- PV -->
 
 <div class="panel box">
 
@@ -743,6 +702,8 @@ PHOTOVOLTAIC
 
 </div>
 
+<!-- MPPT -->
+
 <div class="panel box">
 
 <div class="boxTitle">
@@ -760,6 +721,8 @@ MPPT
 </div>
 
 </div>
+
+<!-- BATTERY -->
 
 <div class="panel box">
 
@@ -784,7 +747,13 @@ BATTERY
 
 </div>
 
-<div class="panel box energyBox">
+</div>
+
+<!-- ENERGY -->
+
+<div class="dataGrid">
+
+<div class="panel box">
 
 <div class="boxTitle">
 ENERGY
@@ -804,12 +773,16 @@ ENERGY
 
 </div>
 
+<!-- CHART -->
+
 <div class="chartGrid">
+
+<!-- PV -->
 
 <div class="panel chartBox">
 
 <div class="chartTitle">
-PV
+PV POWER
 </div>
 
 <div class="chartCanvas">
@@ -817,6 +790,8 @@ PV
 </div>
 
 </div>
+
+<!-- BATTERY -->
 
 <div class="panel chartBox">
 
@@ -829,6 +804,8 @@ BATTERY SOC
 </div>
 
 </div>
+
+<!-- MPPT -->
 
 <div class="panel chartBox">
 
@@ -847,6 +824,8 @@ MPPT EFFICIENCY
 </div>
 
 </div>
+
+<!-- APP -->
 
 <script src="app.js"></script>
 

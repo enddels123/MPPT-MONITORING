@@ -12,6 +12,19 @@ projectId: "isokuiki-scada"
 
 };
 
+/* =========================
+FIREBASE CONFIG
+========================= */
+
+const firebaseConfig = {
+
+apiKey:"AIzaSyC7ctgLv34n6pwg9cQpcTN9qd77FbMGbOg",
+authDomain:"isokuiki-scada.firebaseapp.com",
+databaseURL:"https://isokuiki-scada-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId: "isokuiki-scada"
+
+};
+
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
@@ -20,43 +33,83 @@ const db = firebase.database();
 SHORTCUT
 ========================= */
 
-function $(id){
-return document.getElementById(id);
-}
+const $ = (id) => document.getElementById(id);
 
-function setText(id,val){
+function setText(id, value){
 
 const el = $(id);
 
 if(el){
-el.innerText = val;
+el.innerHTML = value;
 }
 
 }
 
-function num(v,d=1){
+function num(v, d = 1){
 return Number(v || 0).toFixed(d);
 }
 
 /* =========================
-GAUGE CREATE
+CHART PLUGIN TEXT
 ========================= */
 
-function createGauge(canvasId,maxValue,color){
+const gaugeTextPlugin = {
 
-return new Chart($(canvasId),{
+id: 'gaugeText',
+
+beforeDraw(chart){
+
+const { width, height, ctx } = chart;
+
+ctx.restore();
+
+const value =
+chart.config.data.datasets[0].data[0];
+
+ctx.font = "bold 22px Orbitron";
+
+ctx.fillStyle = "#00ffe5";
+
+ctx.textAlign = "center";
+
+ctx.fillText(
+Math.round(value),
+width / 2,
+height / 1.3
+);
+
+ctx.save();
+
+}
+
+};
+
+Chart.register(gaugeTextPlugin);
+
+/* =========================
+CREATE GAUGE
+========================= */
+
+function createGauge(id,max,color){
+
+return new Chart($(id),{
 
 type:'doughnut',
 
 data:{
 datasets:[{
-data:[0,maxValue],
+
+data:[0,max],
+
 backgroundColor:[
 color,
 'rgba(255,255,255,.08)'
 ],
+
 borderWidth:0,
-cutout:'75%'
+
+hoverOffset:0
+
 }]
 },
 
@@ -66,22 +119,26 @@ responsive:true,
 
 maintainAspectRatio:false,
 
+cutout:'78%',
+
 rotation:-90,
 
 circumference:180,
 
 animation:{
-animateRotate:true,
-duration:700
+duration:800
 },
 
 plugins:{
+
 legend:{
 display:false
 },
+
 tooltip:{
 enabled:false
 }
+
 }
 
 }
@@ -91,7 +148,7 @@ enabled:false
 }
 
 /* =========================
-GAUGE
+GAUGE INIT
 ========================= */
 
 const gauge1 = createGauge(
@@ -135,67 +192,103 @@ function updateUI(data){
 
 /* PV */
 
-setText('pvVoltage',
-num(data.pv_v)+'V');
+setText(
+'pvVoltage',
+num(data.pv_v)+'V'
+);
 
-setText('pvCurrent',
-num(data.pv_i)+'A');
+setText(
+'pvCurrent',
+num(data.pv_i)+'A'
+);
 
-setText('pvPower',
-num(data.pv_p)+'W');
+setText(
+'pvPower',
+num(data.pv_p)+'W'
+);
 
 /* MPPT */
 
-setText('mpptCharge',
-num(data.charge_p)+'W');
+setText(
+'mpptCharge',
+num(data.charge_p)+'W'
+);
 
-setText('mpptEff',
-num(data.mppt_eff)+'%');
+setText(
+'mpptEff',
+num(data.mppt_eff)+'%'
+);
 
 /* BATTERY */
 
-setText('batVoltage',
-num(data.bat_v)+'V');
+setText(
+'batVoltage',
+num(data.bat_v)+'V'
+);
 
-setText('batCurrent',
-num(data.bat_i)+'A');
+setText(
+'batCurrent',
+num(data.bat_i)+'A'
+);
 
-setText('batSoc',
-num(data.soc)+'%');
+setText(
+'batSoc',
+num(data.soc)+'%'
+);
 
 /* ENERGY */
 
-setText('dailyEnergy',
-num(data.kwh_day,2)+' kWh');
+setText(
+'dailyEnergy',
+num(data.kwh_day,2)+' kWh'
+);
 
-setText('monthlyEnergy',
-num(data.kwh_month,2)+' kWh');
+setText(
+'monthlyEnergy',
+num(data.kwh_month,2)+' kWh'
+);
 
 /* SCADA */
 
-setText('pvPowerScada',
-num(data.pv_p,0)+'W');
+setText(
+'pvPowerScada',
+num(data.pv_p,0)+'W'
+);
 
-setText('pvVoltScada',
-num(data.pv_v)+'V | '+num(data.pv_i)+'A');
+setText(
+'pvVoltScada',
+num(data.pv_v)+'V | '+num(data.pv_i)+'A'
+);
 
-setText('mpptPowerScada',
-num(data.charge_p,0)+'W');
+setText(
+'mpptPowerScada',
+num(data.charge_p,0)+'W'
+);
 
-setText('mpptEffScada',
-num(data.mppt_eff,0)+'%');
+setText(
+'mpptEffScada',
+num(data.mppt_eff,0)+'%'
+);
 
-setText('batSocScada',
-num(data.soc,0)+'%');
+setText(
+'batSocScada',
+num(data.soc,0)+'%'
+);
 
-setText('batVoltScada',
-num(data.bat_v)+'V | '+num(data.bat_i)+'A');
+setText(
+'batVoltScada',
+num(data.bat_v)+'V | '+num(data.bat_i)+'A'
+);
 
-setText('loadPowerScada',
-num(data.load_p,0)+'W');
+setText(
+'loadPowerScada',
+num(data.load_p,0)+'W'
+);
 
-setText('loadVoltScada',
-num(data.load_v)+'V | '+num(data.load_i)+'A');
+setText(
+'loadVoltScada',
+num(data.load_v)+'V | '+num(data.load_i)+'A'
+);
 
 /* UPDATE GAUGE */
 
@@ -222,33 +315,32 @@ Math.min(data.mppt_eff,100),
 const online =
 (Date.now() - data.timestamp) < 15000;
 
-const onlineText = $('onlineText');
-
-const deviceStatus = $('deviceStatus');
-
 if(online){
 
-onlineText.innerText = 'ONLINE';
-onlineText.style.color = '#7CFC00';
+$('onlineText').innerHTML = 'ONLINE';
+$('onlineText').style.color = '#7CFC00';
 
-deviceStatus.innerText = 'DEVICE ACTIVE';
+$('deviceStatus').innerHTML =
+'DEVICE ACTIVE';
 
 }else{
 
-onlineText.innerText = 'OFFLINE';
-onlineText.style.color = '#ff3b3b';
+$('onlineText').innerHTML = 'OFFLINE';
+$('onlineText').style.color = '#ff3b3b';
 
-deviceStatus.innerText = 'DEVICE DISCONNECTED';
+$('deviceStatus').innerHTML =
+'DEVICE DISCONNECTED';
 
 }
 
 }
 
 /* =========================
-REALTIME FIREBASE
+FIREBASE REALTIME
 ========================= */
 
-db.ref('solar_monitor').on('value',(snapshot)=>{
+db.ref('solar_monitor')
+.on('value',(snapshot)=>{
 
 const data = snapshot.val();
 
@@ -265,35 +357,60 @@ SCADA NODE ANIMATION
 ========================= */
 
 const nodes = [
+
 $('n1'),
 $('n2'),
 $('n3')
+
 ];
 
-let active = 0;
+let activeNode = 0;
 
-setInterval(()=>{
+function animateNodes(){
 
 nodes.forEach((node,index)=>{
 
-if(index === active){
+if(index === activeNode){
 
-node.setAttribute('fill','#00ffe5');
-node.setAttribute('r','9');
+node.setAttribute(
+'fill',
+'#00ffe5'
+);
+
+node.setAttribute(
+'r',
+'10'
+);
 
 }else{
 
-node.setAttribute('fill','#00ff88');
-node.setAttribute('r','6');
+node.setAttribute(
+'fill',
+'#00ff88'
+);
+
+node.setAttribute(
+'r',
+'6'
+);
 
 }
 
 });
 
-active++;
+activeNode++;
 
-if(active >= nodes.length){
-active = 0;
+if(activeNode >= nodes.length){
+
+activeNode = 0;
+
 }
 
-},350);
+}
+
+/* START NODE */
+
+setInterval(
+animateNodes,
+300
+);
