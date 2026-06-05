@@ -353,64 +353,134 @@ updateUI(data);
 });
 
 /* =========================
-SCADA NODE ANIMATION
+SCADA FLOW ANIMATION
 ========================= */
 
-const nodes = [
+const svg = document.querySelector("svg");
 
-$('n1'),
-$('n2'),
-$('n3')
+/* HAPUS NODE LAMA */
+
+document.getElementById("n1").remove();
+document.getElementById("n2").remove();
+document.getElementById("n3").remove();
+
+/* BUAT NODE BARU */
+
+function createFlowNode(){
+
+const node =
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"circle"
+);
+
+node.setAttribute("r","6");
+
+node.setAttribute("fill","#00ffe5");
+
+node.setAttribute(
+"filter",
+"drop-shadow(0 0 8px #00ffe5)"
+);
+
+svg.appendChild(node);
+
+return node;
+
+}
+
+const flow1 = createFlowNode();
+const flow2 = createFlowNode();
+const flow3 = createFlowNode();
+
+/* =========================
+PATH TITIK FLOW
+========================= */
+
+const path = [
+
+/* PV KE MPPT */
+
+{x:170,y:90},
+{x:170,y:110},
+{x:170,y:130},
+{x:170,y:150},
+{x:170,y:170},
+{x:170,y:190},
+{x:170,y:210},
+
+/* SPLIT */
+
+{x:170,y:250},
+
+/* KE BATTERY */
+
+{x:150,y:250},
+{x:130,y:250},
+{x:120,y:270},
+{x:120,y:300},
+{x:120,y:330},
+{x:120,y:360},
+
+/* KEMBALI */
+
+{x:170,y:250},
+
+/* KE LOAD */
+
+{x:190,y:250},
+{x:210,y:250},
+{x:220,y:270},
+{x:220,y:300},
+{x:220,y:330},
+{x:220,y:360}
 
 ];
 
-let activeNode = 0;
+let p1 = 0;
+let p2 = 7;
+let p3 = 14;
 
-function animateNodes(){
+/* =========================
+ANIMATION
+========================= */
 
-nodes.forEach((node,index)=>{
+function animateFlow(){
 
-if(index === activeNode){
+const a = path[p1];
+const b = path[p2];
+const c = path[p3];
 
-node.setAttribute(
-'fill',
-'#00ffe5'
-);
+flow1.setAttribute("cx",a.x);
+flow1.setAttribute("cy",a.y);
 
-node.setAttribute(
-'r',
-'10'
-);
+flow2.setAttribute("cx",b.x);
+flow2.setAttribute("cy",b.y);
 
-}else{
+flow3.setAttribute("cx",c.x);
+flow3.setAttribute("cy",c.y);
 
-node.setAttribute(
-'fill',
-'#00ff88'
-);
+p1++;
+p2++;
+p3++;
 
-node.setAttribute(
-'r',
-'6'
-);
-
+if(p1 >= path.length){
+p1 = 0;
 }
 
-});
+if(p2 >= path.length){
+p2 = 0;
+}
 
-activeNode++;
-
-if(activeNode >= nodes.length){
-
-activeNode = 0;
-
+if(p3 >= path.length){
+p3 = 0;
 }
 
 }
 
-/* START NODE */
+/* START */
 
 setInterval(
-animateNodes,
-300
+animateFlow,
+120
 );
