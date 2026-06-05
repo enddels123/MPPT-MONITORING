@@ -433,5 +433,5 @@ animateFlow();
 
 setInterval(
 animateFlow,
-120
+400
 );
