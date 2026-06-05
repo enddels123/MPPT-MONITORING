@@ -431,7 +431,23 @@ i3 = 0;
 
 animateFlow();
 
+/* =========================
+ADAPTIVE SPEED
+========================= */
+
+const isMobile =
+window.innerWidth < 768;
+
+/* SPEED */
+
+const flowSpeed =
+isMobile ? 750 : 400;
+
+/* START */
+
+animateFlow();
+
 setInterval(
 animateFlow,
-600
+flowSpeed
 );
