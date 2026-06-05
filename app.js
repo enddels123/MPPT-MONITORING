@@ -1,187 +1,560 @@
+/* =========================
+   MQTT CONFIG
+========================= */
+
+const broker =
+"wss://broker.emqx.io:8084/mqtt";
+
+const topic =
+"isokuiki/smartenergy";
+
+/* =========================
+   MQTT CONNECT
+========================= */
+
 const client = mqtt.connect(
-  "wss://broker.hivemq.com:8884/mqtt"
+broker,
+{
+connectTimeout:4000,
+reconnectPeriod:2000,
+clean:true
+}
 );
 
-const topic = "solar/jnge/hybrid";
-
 /* =========================
-   FIREBASE
+   STATUS
 ========================= */
 
-const firebaseConfig = {
+const onlineText =
+document.getElementById(
+"onlineText"
+);
 
-  apiKey:
-  "AIzaSyC7ctgLv34n6pwg9cQpcTN9qd77FbMGbOg",
+const deviceStatus =
+document.getElementById(
+"deviceStatus"
+);
 
-  authDomain:
-  "isokuiki-scada.firebaseapp.com",
+/* =========================
+   MQTT CONNECTED
+========================= */
 
-  databaseURL:
-  "https://isokuiki-scada-default-rtdb.asia-southeast1.firebasedatabase.app",
+client.on(
+"connect",
+()=>{
 
-  projectId:
-  "isokuiki-scada",
+console.log(
+"MQTT Connected"
+);
 
-  storageBucket:
-  "isokuiki-scada.firebasestorage.app",
+onlineText.innerHTML =
+"ONLINE";
 
-  messagingSenderId:
-  "1078745557059",
+onlineText.classList.remove(
+"offline-status"
+);
 
-  appId:
-  "1:1078745557059:web:0f465f1a8a2ddf20dd8cf6"
+onlineText.classList.add(
+"online-status"
+);
+
+deviceStatus.innerHTML =
+"DEVICE ACTIVE";
+
+client.subscribe(topic);
+
+}
+);
+
+/* =========================
+   MQTT OFFLINE
+========================= */
+
+client.on(
+"offline",
+()=>{
+
+onlineText.innerHTML =
+"OFFLINE";
+
+onlineText.classList.remove(
+"online-status"
+);
+
+onlineText.classList.add(
+"offline-status"
+);
+
+deviceStatus.innerHTML =
+"RECONNECTING...";
+
+}
+);
+
+/* =========================
+   MQTT RECONNECT
+========================= */
+
+client.on(
+"reconnect",
+()=>{
+
+deviceStatus.innerHTML =
+"RECONNECTING MQTT...";
+
+}
+);
+
+/* =========================
+   MQTT ERROR
+========================= */
+
+client.on(
+"error",
+()=>{
+
+onlineText.innerHTML =
+"OFFLINE";
+
+onlineText.classList.remove(
+"online-status"
+);
+
+onlineText.classList.add(
+"offline-status"
+);
+
+deviceStatus.innerHTML =
+"MQTT ERROR";
+
+}
+);
+
+/* =========================
+   DATA VARIABLE
+========================= */
+
+let pvVoltage = 0;
+let pvCurrent = 0;
+let pvPower = 0;
+
+let batteryVoltage = 0;
+let batteryCurrent = 0;
+let batterySoc = 0;
+
+let mpptEfficiency = 0;
+
+let dailyEnergy = 0;
+let monthlyEnergy = 0;
+
+/* =========================
+   MQTT RECEIVE
+========================= */
+
+client.on(
+"message",
+(topic,message)=>{
+
+try{
+
+const data =
+JSON.parse(
+message.toString()
+);
+
+/* =========================
+   DATA
+========================= */
+
+pvVoltage =
+data.pv_voltage || 0;
+
+pvCurrent =
+data.pv_current || 0;
+
+pvPower =
+data.pv_power || 0;
+
+batteryVoltage =
+data.battery_voltage || 0;
+
+batteryCurrent =
+data.battery_current || 0;
+
+batterySoc =
+data.battery_soc || 0;
+
+mpptEfficiency =
+data.mppt_efficiency || 0;
+
+dailyEnergy =
+data.daily_energy || 0;
+
+monthlyEnergy =
+data.monthly_energy || 0;
+
+/* =========================
+   UPDATE UI
+========================= */
+
+updateUI();
+
+}catch(err){
+
+console.log(err);
+
+}
+
+}
+);
+
+/* =========================
+   UPDATE UI
+========================= */
+
+function updateUI(){
+
+/* =========================
+   PHOTOVOLTAIC
+========================= */
+
+setText(
+"pvVoltage",
+pvVoltage.toFixed(1)+"V"
+);
+
+setText(
+"pvCurrent",
+pvCurrent.toFixed(1)+"A"
+);
+
+setText(
+"pvPower",
+pvPower.toFixed(0)+"W"
+);
+
+/* =========================
+   MPPT
+========================= */
+
+setText(
+"mpptCharge",
+pvPower.toFixed(0)+"W"
+);
+
+setText(
+"mpptEff",
+mpptEfficiency.toFixed(0)+"%"
+);
+
+/* =========================
+   BATTERY
+========================= */
+
+setText(
+"batVoltage",
+batteryVoltage.toFixed(1)+"V"
+);
+
+setText(
+"batCurrent",
+batteryCurrent.toFixed(1)+"A"
+);
+
+setText(
+"batSoc",
+batterySoc.toFixed(0)+"%"
+);
+
+/* =========================
+   ENERGY
+========================= */
+
+setText(
+"dailyEnergy",
+dailyEnergy.toFixed(2)+" kWh"
+);
+
+setText(
+"monthlyEnergy",
+monthlyEnergy.toFixed(2)+" kWh"
+);
+
+/* =========================
+   SCADA
+========================= */
+
+setText(
+"pvPowerScada",
+pvPower.toFixed(0)+"W"
+);
+
+setText(
+"pvVoltScada",
+pvVoltage.toFixed(1)+
+"V | "+
+pvCurrent.toFixed(1)+"A"
+);
+
+setText(
+"mpptPowerScada",
+pvPower.toFixed(0)+"W"
+);
+
+setText(
+"mpptEffScada",
+mpptEfficiency.toFixed(0)+"%"
+);
+
+setText(
+"batSocScada",
+batterySoc.toFixed(0)+"%"
+);
+
+setText(
+"batVoltScada",
+batteryVoltage.toFixed(1)+
+"V | "+
+batteryCurrent.toFixed(1)+"A"
+);
+
+setText(
+"loadPowerScada",
+pvPower.toFixed(0)+"W"
+);
+
+setText(
+"loadVoltScada",
+pvVoltage.toFixed(1)+
+"V | "+
+pvCurrent.toFixed(1)+"A"
+);
+
+/* =========================
+   GAUGE UPDATE
+========================= */
+
+updateGauge(
+gaugePV,
+pvPower,
+5000
+);
+
+updateGauge(
+gaugeBattery,
+batterySoc,
+100
+);
+
+updateGauge(
+gaugeMppt,
+mpptEfficiency,
+100
+);
+
+}
+
+/* =========================
+   SET TEXT
+========================= */
+
+function setText(id,value){
+
+const el =
+document.getElementById(id);
+
+if(el){
+
+el.innerHTML = value;
+
+}
+
+}
+
+/* =========================
+   GAUGE FUNCTION
+========================= */
+
+function createGauge(
+canvasId,
+value,
+max,
+label
+){
+
+return new Chart(
+document.getElementById(canvasId),
+{
+
+type:"doughnut",
+
+data:{
+datasets:[{
+data:[
+value,
+max-value
+],
+backgroundColor:[
+"#00ffe5",
+"#102b63"
+],
+borderWidth:0,
+circumference:180,
+rotation:270,
+cutout:"75%"
+}]
+},
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false,
+
+plugins:{
+
+legend:{
+display:false
+},
+
+tooltip:{
+enabled:false
+}
+
+}
+
+},
+
+plugins:[{
+
+id:"gaugeText",
+
+beforeDraw(chart){
+
+const width =
+chart.width;
+
+const height =
+chart.height;
+
+const ctx =
+chart.ctx;
+
+ctx.restore();
+
+ctx.font =
+"bold 34px Orbitron";
+
+ctx.fillStyle =
+"#ffffff";
+
+ctx.textAlign =
+"center";
+
+ctx.fillText(
+label,
+width/2,
+height-20
+);
+
+ctx.save();
+
+}
+
+}]
+
+}
+
+);
+
+}
+
+/* =========================
+   UPDATE GAUGE
+========================= */
+
+function updateGauge(
+chart,
+value,
+max
+){
+
+chart.data.datasets[0].data = [
+value,
+max-value
+];
+
+chart.options.plugins.gaugeTextLabel =
+value;
+
+chart.config._config.plugins[0]
+.beforeDraw = function(chart){
+
+const width =
+chart.width;
+
+const height =
+chart.height;
+
+const ctx =
+chart.ctx;
+
+ctx.restore();
+
+ctx.font =
+"bold 34px Orbitron";
+
+ctx.fillStyle =
+"#ffffff";
+
+ctx.textAlign =
+"center";
+
+ctx.fillText(
+Math.round(value)+
+(chart === gaugePV ? "W" : "%"),
+width/2,
+height-20
+);
+
+ctx.save();
 
 };
 
-firebase.initializeApp(firebaseConfig);
+chart.update();
 
-const db = firebase.database();
-
-/* =========================
-   GAUGE TEXT
-========================= */
-
-const gaugeTextPlugin = {
-
-  id:'gaugeText',
-
-  afterDraw(chart){
-
-    const meta =
-    chart.getDatasetMeta(0);
-
-    if(!meta.data.length) return;
-
-    const x = meta.data[0].x;
-    const y = meta.data[0].y;
-
-    const value =
-    chart.config.data.datasets[0].data[0];
-
-    const ctx = chart.ctx;
-
-    ctx.save();
-
-    ctx.fillStyle='#ffffff';
-
-    ctx.textAlign='center';
-
-    ctx.font='bold 26px Orbitron';
-
-    ctx.fillText(
-      value + chart.options.unit,
-      x,
-      y + 10
-    );
-
-    ctx.restore();
-
-  }
-
-};
-
-Chart.register(gaugeTextPlugin);
+}
 
 /* =========================
    CREATE GAUGE
 ========================= */
 
-function createGauge(
-  id,
-  color,
-  max,
-  unit
-){
-
-  return new Chart(
-
-    document.getElementById(id),
-
-    {
-
-      type:'doughnut',
-
-      data:{
-        datasets:[{
-
-          data:[0,max],
-
-          backgroundColor:[
-            color,
-            '#132544'
-          ],
-
-          borderWidth:0,
-
-          borderRadius:10
-
-        }]
-      },
-
-      options:{
-
-        responsive:true,
-
-        maintainAspectRatio:false,
-
-        cutout:'78%',
-
-        rotation:-90,
-
-        circumference:180,
-
-        unit:unit,
-
-        plugins:{
-
-          legend:{
-            display:false
-          },
-
-          tooltip:{
-            enabled:false
-          }
-
-        }
-
-      }
-
-    }
-
-  );
-
-}
-
-/* =========================
-   GAUGE
-========================= */
-
-const gauge1 =
+const gaugePV =
 createGauge(
-  'gauge1',
-  '#00ffe1',
-  5000,
-  'W'
+"gauge1",
+0,
+5000,
+"0W"
 );
 
-const gauge2 =
+const gaugeBattery =
 createGauge(
-  'gauge2',
-  '#00ff88',
-  100,
-  '%'
+"gauge2",
+0,
+100,
+"0%"
 );
 
-const gauge3 =
+const gaugeMppt =
 createGauge(
-  'gauge3',
-  '#00aaff',
-  100,
-  '%'
+"gauge3",
+0,
+100,
+"0%"
 );
 
 /* =========================
-   FLOW NODE
+   FLOW NODE ANIMATION
 ========================= */
 
 let p1 = 0;
@@ -190,320 +563,113 @@ let p3 = 0;
 
 function animateFlow(){
 
-  p1 = (p1 + 2) % 100;
+/* =========================
+   PV -> MPPT
+========================= */
 
-  p2 = (p2 + 2) % 260;
+p1 += 2;
 
-  p3 = (p3 + 2) % 260;
+if(p1 > 75){
 
-  document
-  .getElementById("n1")
-  .setAttribute(
-    "transform",
-    `translate(200 ${140+p1})`
-  );
-
-  let x2,y2;
-
-  if(p2 < 90){
-
-    x2 = 200 - p2;
-    y2 = 355;
-
-  }else{
-
-    x2 = 110;
-    y2 = 355 + (p2 - 90);
-
-  }
-
-  document
-  .getElementById("n2")
-  .setAttribute(
-    "transform",
-    `translate(${x2} ${y2})`
-  );
-
-  let x3,y3;
-
-  if(p3 < 90){
-
-    x3 = 200 + p3;
-    y3 = 355;
-
-  }else{
-
-    x3 = 290;
-    y3 = 355 + (p3 - 90);
-
-  }
-
-  document
-  .getElementById("n3")
-  .setAttribute(
-    "transform",
-    `translate(${x3} ${y3})`
-  );
-
-  requestAnimationFrame(
-    animateFlow
-  );
+p1 = 0;
 
 }
 
-animateFlow();
-
-/* =========================
-   MQTT CONNECT
-========================= */
-
-client.on('connect',()=>{
-
-  client.subscribe(topic);
-
-  const online =
-  document.getElementById(
-    'onlineText'
-  );
-
-  online.innerHTML='ONLINE';
-
-  online.classList.remove(
-    'offline-status'
-  );
-
-  online.classList.add(
-    'online-status'
-  );
-
-  console.log(
-    "MQTT CONNECTED"
-  );
-
-});
-
-client.on('reconnect',()=>{
-
-  console.log(
-    "MQTT RECONNECT..."
-  );
-
-});
-
-client.on('offline',()=>{
-
-  const online =
-  document.getElementById(
-    'onlineText'
-  );
-
-  online.innerHTML='OFFLINE';
-
-  online.classList.remove(
-    'online-status'
-  );
-
-  online.classList.add(
-    'offline-status'
-  );
-
-});
-
-client.on('error',(err)=>{
-
-  console.log(err);
-
-});
-
-/* =========================
-   MQTT MESSAGE
-========================= */
-
-client.on(
-  'message',
-  (topic,message)=>{
-
-    const d =
-    JSON.parse(
-      message.toString()
-    );
-
-    /* FIREBASE SAVE */
-
-    db.ref('history').push({
-
-      time:Date.now(),
-
-      ...d
-
-    });
-
-    /* STATUS */
-
-    document
-    .getElementById(
-      'deviceStatus'
-    )
-    .innerHTML =
-
-    d.status === "WORKING"
-
-    ? "DEVICE WORKING"
-
-    : "DEVICE SHUTDOWN";
-
-    /* DATA PANEL */
-
-    document
-    .getElementById('pvv')
-    .innerHTML =
-    d.pv_v + "V";
-
-    document
-    .getElementById('pvi')
-    .innerHTML =
-    d.pv_i + "A";
-
-    document
-    .getElementById('pvp')
-    .innerHTML =
-    d.pv_p + "W";
-
-    document
-    .getElementById('charge')
-    .innerHTML =
-    d.charge_p + "W";
-
-    document
-    .getElementById('eff')
-    .innerHTML =
-    d.mppt_eff + "%";
-
-    document
-    .getElementById('bv')
-    .innerHTML =
-    d.bat_v + "V";
-
-    document
-    .getElementById('bi')
-    .innerHTML =
-    d.bat_i + "A";
-
-    document
-    .getElementById('soc')
-    .innerHTML =
-    d.soc + "%";
-
-    document
-    .getElementById('day')
-    .innerHTML =
-    d.kwh_day + " kWh";
-
-    document
-    .getElementById('month')
-    .innerHTML =
-    d.kwh_month + " kWh";
-
-    /* =========================
-       SCADA
-    ========================= */
-
-    document
-    .getElementById(
-      'pvPowerScada'
-    )
-    .textContent =
-    d.pv_p + "W";
-
-    document
-    .getElementById(
-      'pvVoltScada'
-    )
-    .textContent =
-    d.pv_v + "V | " +
-    d.pv_i + "A";
-
-    document
-    .getElementById(
-      'mpptPowerScada'
-    )
-    .textContent =
-    d.charge_p + "W";
-
-    document
-    .getElementById(
-      'mpptEffScada'
-    )
-    .textContent =
-    d.mppt_eff + "%";
-
-    document
-    .getElementById(
-      'batSocScada'
-    )
-    .textContent =
-    d.soc + "%";
-
-    document
-    .getElementById(
-      'batVoltScada'
-    )
-    .textContent =
-    d.bat_v + "V | " +
-    d.bat_i + "A";
-
-    document
-    .getElementById(
-      'loadPowerScada'
-    )
-    .textContent =
-    d.load_p + "W";
-
-    document
-    .getElementById(
-      'loadVoltScada'
-    )
-    .textContent =
-    d.load_v + "V | " +
-    d.load_i + "A";
-
-    /* =========================
-       GAUGE
-    ========================= */
-
-    gauge1.data.datasets[0].data = [
-
-      d.pv_p,
-
-      Math.max(
-        0,
-        5000 - d.pv_p
-      )
-
-    ];
-
-    gauge2.data.datasets[0].data = [
-
-      d.soc,
-
-      100 - d.soc
-
-    ];
-
-    gauge3.data.datasets[0].data = [
-
-      d.mppt_eff,
-
-      100 - d.mppt_eff
-
-    ];
-
-    gauge1.update();
-
-    gauge2.update();
-
-    gauge3.update();
-
-  }
-
+document
+.getElementById("n1")
+.setAttribute(
+"cy",
+105 + p1
 );
+
+/* =========================
+   MPPT -> BATTERY
+========================= */
+
+p2 += 2;
+
+if(p2 > 150){
+
+p2 = 0;
+
+}
+
+let x2,y2;
+
+if(p2 <= 50){
+
+x2 = 170 - p2;
+y2 = 255;
+
+}else{
+
+x2 = 120;
+y2 = 255 + (p2 - 50);
+
+}
+
+document
+.getElementById("n2")
+.setAttribute(
+"cx",
+x2
+);
+
+document
+.getElementById("n2")
+.setAttribute(
+"cy",
+y2
+);
+
+/* =========================
+   MPPT -> LOAD
+========================= */
+
+p3 += 2;
+
+if(p3 > 150){
+
+p3 = 0;
+
+}
+
+let x3,y3;
+
+if(p3 <= 50){
+
+x3 = 170 + p3;
+y3 = 255;
+
+}else{
+
+x3 = 220;
+y3 = 255 + (p3 - 50);
+
+}
+
+document
+.getElementById("n3")
+.setAttribute(
+"cx",
+x3
+);
+
+document
+.getElementById("n3")
+.setAttribute(
+"cy",
+y3
+);
+
+requestAnimationFrame(
+animateFlow
+);
+
+}
+
+/* =========================
+   START ANIMATION
+========================= */
+
+animateFlow();
