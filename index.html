@@ -20,8 +20,6 @@ rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -33,15 +31,10 @@ rel="stylesheet">
 :root{
 
 --bg:#010b1d;
-
---card:#04152d;
-
+--card:#031326;
 --accent:#00ffe1;
-
 --lime:#7CFC00;
-
 --red:#ff4040;
-
 --text:#ffffff;
 
 }
@@ -49,9 +42,7 @@ rel="stylesheet">
 *{
 
 margin:0;
-
 padding:0;
-
 box-sizing:border-box;
 
 }
@@ -59,11 +50,8 @@ box-sizing:border-box;
 body{
 
 background:var(--bg);
-
 color:var(--text);
-
 font-family:'Orbitron',sans-serif;
-
 overflow-x:hidden;
 
 }
@@ -75,13 +63,13 @@ overflow-x:hidden;
 .main{
 
 width:100%;
-
 min-height:100vh;
 
 display:grid;
 
 grid-template-columns:
-minmax(260px, 29%) 1fr;
+minmax(260px, 28%)
+1fr;
 
 gap:10px;
 
@@ -95,7 +83,7 @@ padding:10px;
 
 .panel{
 
-background:#031326;
+background:var(--card);
 
 border-radius:18px;
 
@@ -108,16 +96,15 @@ box-shadow:
 }
 
 /* =========================
-   LEFT
+   LEFT PANEL
 ========================= */
 
 .leftPanel{
 
 display:flex;
-
 flex-direction:column;
-
 gap:10px;
+height:100%;
 
 }
 
@@ -127,7 +114,7 @@ gap:10px;
 
 .header{
 
-padding:12px;
+padding:8px 10px;
 
 text-align:center;
 
@@ -138,23 +125,25 @@ text-align:center;
 color:var(--accent);
 
 font-size:
-clamp(.95rem,1.6vw,1.6rem);
+clamp(.9rem,1.3vw,1.35rem);
 
 text-shadow:
-0 0 10px var(--accent);
+0 0 8px var(--accent);
 
-margin-bottom:4px;
+margin-bottom:2px;
+
+line-height:1.2;
 
 }
 
 .online{
 
 font-size:
-clamp(.7rem,.8vw,.9rem);
+clamp(.62rem,.72vw,.82rem);
 
 font-weight:bold;
 
-margin-bottom:8px;
+margin-bottom:5px;
 
 }
 
@@ -174,20 +163,20 @@ color:var(--red);
 
 margin:auto;
 
-width:92%;
+width:90%;
 
 border:
 2px solid #00ffb3;
 
-border-radius:12px;
+border-radius:10px;
 
-padding:7px;
+padding:5px;
 
 font-size:
-clamp(.65rem,.8vw,.9rem);
+clamp(.58rem,.7vw,.8rem);
 
 box-shadow:
-0 0 10px rgba(0,255,136,.18);
+0 0 8px rgba(0,255,136,.18);
 
 }
 
@@ -197,13 +186,15 @@ box-shadow:
 
 .scada{
 
-padding:8px;
+padding:4px;
 
-height:640px;
+height:100%;
+
+min-height:540px;
 
 display:flex;
 
-align-items:center;
+align-items:stretch;
 
 justify-content:center;
 
@@ -214,7 +205,6 @@ overflow:hidden;
 svg{
 
 width:100%;
-
 height:100%;
 
 }
@@ -349,7 +339,7 @@ grid-column:2/3;
 }
 
 /* =========================
-   CHART GRID
+   CHART
 ========================= */
 
 .chartGrid{
@@ -439,19 +429,13 @@ grid-column:auto;
 
 .scada{
 
-height:540px;
+min-height:500px;
 
 }
 
 }
 
 @media(max-width:640px){
-
-.dataArea{
-
-grid-template-columns:1fr;
-
-}
 
 .main{
 
@@ -461,9 +445,15 @@ gap:8px;
 
 }
 
-.scada{
+.dataArea{
 
-height:470px;
+grid-template-columns:1fr;
+
+}
+
+.chartGrid{
+
+grid-template-columns:1fr;
 
 }
 
@@ -479,9 +469,9 @@ height:160px;
 
 }
 
-.title{
+.scada{
 
-font-size:1.1rem;
+min-height:430px;
 
 }
 
@@ -500,7 +490,6 @@ width:6px;
 ::-webkit-scrollbar-thumb{
 
 background:#00ffe1;
-
 border-radius:10px;
 
 }
@@ -514,7 +503,7 @@ border-radius:10px;
 <div class="main">
 
 <!-- =========================
-     LEFT PANEL
+     LEFT
 ========================= -->
 
 <div class="leftPanel">
@@ -543,7 +532,7 @@ DEVICE SHUTDOWN
 
 <div class="panel scada">
 
-<svg viewBox="0 0 400 700">
+<svg viewBox="0 30 400 650">
 
 <!-- LINE -->
 
@@ -596,7 +585,7 @@ fill="#00ff88"/>
 <!-- PV -->
 
 <text x="200"
-y="52"
+y="55"
 class="scada-name">
 PV PANEL
 </text>
@@ -623,7 +612,7 @@ id="pvVoltScada">
 <!-- MPPT -->
 
 <text x="200"
-y="250"
+y="245"
 class="scada-name">
 MPPT
 </text>
@@ -708,7 +697,7 @@ id="loadVoltScada">
 </div>
 
 <!-- =========================
-     RIGHT PANEL
+     RIGHT
 ========================= -->
 
 <div class="rightPanel">
@@ -789,12 +778,12 @@ ENERGY
 
 <div class="row">
 <span>Daily</span>
-<span id="day">0</span>
+<span id="day">0 kWh</span>
 </div>
 
 <div class="row">
 <span>Monthly</span>
-<span id="month">0</span>
+<span id="month">0 kWh</span>
 </div>
 
 </div>
