@@ -7,23 +7,10 @@ const firebaseConfig = {
 apiKey:"AIzaSyC7ctgLv34n6pwg9cQpcTN9qd77FbMGbOg",
 authDomain:"isokuiki-scada.firebaseapp.com",
 databaseURL:"https://isokuiki-scada-default-rtdb.asia-southeast1.firebasedatabase.app",
-
 projectId: "isokuiki-scada"
 
 };
 
-/* =========================
-FIREBASE CONFIG
-========================= */
-
-const firebaseConfig = {
-
-apiKey:"AIzaSyC7ctgLv34n6pwg9cQpcTN9qd77FbMGbOg",
-authDomain:"isokuiki-scada.firebaseapp.com",
-databaseURL:"https://isokuiki-scada-default-rtdb.asia-southeast1.firebasedatabase.app",
-projectId: "isokuiki-scada"
-
-};
 
 firebase.initializeApp(firebaseConfig);
 
@@ -33,49 +20,56 @@ const db = firebase.database();
 SHORTCUT
 ========================= */
 
-const $ = (id) => document.getElementById(id);
+const $ = (id) =>
+document.getElementById(id);
 
-function setText(id, value){
+function setText(id,val){
 
 const el = $(id);
 
 if(el){
-el.innerHTML = value;
+el.innerHTML = val;
 }
 
 }
 
-function num(v, d = 1){
+function num(v,d=1){
+
 return Number(v || 0).toFixed(d);
+
 }
 
 /* =========================
-CHART PLUGIN TEXT
+CHART TEXT
 ========================= */
 
-const gaugeTextPlugin = {
+const gaugeText = {
 
-id: 'gaugeText',
+id:'gaugeText',
 
 beforeDraw(chart){
 
-const { width, height, ctx } = chart;
+const {width,height,ctx} =
+chart;
 
 ctx.restore();
 
 const value =
 chart.config.data.datasets[0].data[0];
 
-ctx.font = "bold 22px Orbitron";
+ctx.font =
+'bold 22px Orbitron';
 
-ctx.fillStyle = "#00ffe5";
+ctx.fillStyle =
+'#00ffe5';
 
-ctx.textAlign = "center";
+ctx.textAlign =
+'center';
 
 ctx.fillText(
 Math.round(value),
-width / 2,
-height / 1.3
+width/2,
+height/1.3
 );
 
 ctx.save();
@@ -84,7 +78,7 @@ ctx.save();
 
 };
 
-Chart.register(gaugeTextPlugin);
+Chart.register(gaugeText);
 
 /* =========================
 CREATE GAUGE
@@ -106,9 +100,7 @@ color,
 'rgba(255,255,255,.08)'
 ],
 
-borderWidth:0,
-
-hoverOffset:0
+borderWidth:0
 
 }]
 },
@@ -119,15 +111,11 @@ responsive:true,
 
 maintainAspectRatio:false,
 
-cutout:'78%',
-
 rotation:-90,
 
 circumference:180,
 
-animation:{
-duration:800
-},
+cutout:'78%',
 
 plugins:{
 
@@ -151,19 +139,22 @@ enabled:false
 GAUGE INIT
 ========================= */
 
-const gauge1 = createGauge(
+const gauge1 =
+createGauge(
 'gauge1',
 5000,
 '#00ffe5'
 );
 
-const gauge2 = createGauge(
+const gauge2 =
+createGauge(
 'gauge2',
 100,
 '#7CFC00'
 );
 
-const gauge3 = createGauge(
+const gauge3 =
+createGauge(
 'gauge3',
 100,
 '#36a3ff'
@@ -190,8 +181,6 @@ UPDATE UI
 
 function updateUI(data){
 
-/* PV */
-
 setText(
 'pvVoltage',
 num(data.pv_v)+'V'
@@ -207,8 +196,6 @@ setText(
 num(data.pv_p)+'W'
 );
 
-/* MPPT */
-
 setText(
 'mpptCharge',
 num(data.charge_p)+'W'
@@ -218,8 +205,6 @@ setText(
 'mpptEff',
 num(data.mppt_eff)+'%'
 );
-
-/* BATTERY */
 
 setText(
 'batVoltage',
@@ -235,20 +220,6 @@ setText(
 'batSoc',
 num(data.soc)+'%'
 );
-
-/* ENERGY */
-
-setText(
-'dailyEnergy',
-num(data.kwh_day,2)+' kWh'
-);
-
-setText(
-'monthlyEnergy',
-num(data.kwh_month,2)+' kWh'
-);
-
-/* SCADA */
 
 setText(
 'pvPowerScada',
@@ -290,8 +261,6 @@ setText(
 num(data.load_v)+'V | '+num(data.load_i)+'A'
 );
 
-/* UPDATE GAUGE */
-
 updateGauge(
 gauge1,
 Math.min(data.pv_p,5000),
@@ -309,29 +278,6 @@ gauge3,
 Math.min(data.mppt_eff,100),
 100
 );
-
-/* ONLINE STATUS */
-
-const online =
-(Date.now() - data.timestamp) < 15000;
-
-if(online){
-
-$('onlineText').innerHTML = 'ONLINE';
-$('onlineText').style.color = '#7CFC00';
-
-$('deviceStatus').innerHTML =
-'DEVICE ACTIVE';
-
-}else{
-
-$('onlineText').innerHTML = 'OFFLINE';
-$('onlineText').style.color = '#ff3b3b';
-
-$('deviceStatus').innerHTML =
-'DEVICE DISCONNECTED';
-
-}
 
 }
 
@@ -353,20 +299,15 @@ updateUI(data);
 });
 
 /* =========================
-SCADA FLOW ANIMATION
+FLOW NODE
 ========================= */
 
-const svg = document.querySelector("svg");
+const svg =
+document.getElementById(
+'scadaSvg'
+);
 
-/* HAPUS NODE LAMA */
-
-document.getElementById("n1").remove();
-document.getElementById("n2").remove();
-document.getElementById("n3").remove();
-
-/* BUAT NODE BARU */
-
-function createFlowNode(){
+function createNode(color){
 
 const node =
 document.createElementNS(
@@ -374,13 +315,11 @@ document.createElementNS(
 "circle"
 );
 
-node.setAttribute("r","6");
-
-node.setAttribute("fill","#00ffe5");
+node.setAttribute('r',6);
 
 node.setAttribute(
-"filter",
-"drop-shadow(0 0 8px #00ffe5)"
+'fill',
+color
 );
 
 svg.appendChild(node);
@@ -389,17 +328,20 @@ return node;
 
 }
 
-const flow1 = createFlowNode();
-const flow2 = createFlowNode();
-const flow3 = createFlowNode();
+const node1 =
+createNode('#00ffe5');
+
+const node2 =
+createNode('#7CFC00');
+
+const node3 =
+createNode('#36a3ff');
 
 /* =========================
-PATH TITIK FLOW
+FLOW PATH
 ========================= */
 
 const path = [
-
-/* PV KE MPPT */
 
 {x:170,y:90},
 {x:170,y:110},
@@ -409,11 +351,7 @@ const path = [
 {x:170,y:190},
 {x:170,y:210},
 
-/* SPLIT */
-
 {x:170,y:250},
-
-/* KE BATTERY */
 
 {x:150,y:250},
 {x:130,y:250},
@@ -421,12 +359,6 @@ const path = [
 {x:120,y:300},
 {x:120,y:330},
 {x:120,y:360},
-
-/* KEMBALI */
-
-{x:170,y:250},
-
-/* KE LOAD */
 
 {x:190,y:250},
 {x:210,y:250},
@@ -437,48 +369,67 @@ const path = [
 
 ];
 
-let p1 = 0;
-let p2 = 7;
-let p3 = 14;
+let i1 = 0;
+let i2 = 7;
+let i3 = 14;
 
 /* =========================
-ANIMATION
+MOVE FLOW
 ========================= */
 
 function animateFlow(){
 
-const a = path[p1];
-const b = path[p2];
-const c = path[p3];
+node1.setAttribute(
+'cx',
+path[i1].x
+);
 
-flow1.setAttribute("cx",a.x);
-flow1.setAttribute("cy",a.y);
+node1.setAttribute(
+'cy',
+path[i1].y
+);
 
-flow2.setAttribute("cx",b.x);
-flow2.setAttribute("cy",b.y);
+node2.setAttribute(
+'cx',
+path[i2].x
+);
 
-flow3.setAttribute("cx",c.x);
-flow3.setAttribute("cy",c.y);
+node2.setAttribute(
+'cy',
+path[i2].y
+);
 
-p1++;
-p2++;
-p3++;
+node3.setAttribute(
+'cx',
+path[i3].x
+);
 
-if(p1 >= path.length){
-p1 = 0;
+node3.setAttribute(
+'cy',
+path[i3].y
+);
+
+i1++;
+i2++;
+i3++;
+
+if(i1 >= path.length){
+i1 = 0;
 }
 
-if(p2 >= path.length){
-p2 = 0;
+if(i2 >= path.length){
+i2 = 0;
 }
 
-if(p3 >= path.length){
-p3 = 0;
+if(i3 >= path.length){
+i3 = 0;
 }
 
 }
 
 /* START */
+
+animateFlow();
 
 setInterval(
 animateFlow,
