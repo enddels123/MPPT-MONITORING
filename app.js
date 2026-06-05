@@ -1,86 +1,126 @@
+/* =========================
+FIREBASE
+========================= */
+
 const firebaseConfig = {
+
 apiKey:"AIzaSyC7ctgLv34n6pwg9cQpcTN9qd77FbMGbOg",
 authDomain:"isokuiki-scada.firebaseapp.com",
 databaseURL:"https://isokuiki-scada-default-rtdb.asia-southeast1.firebasedatabase.app",
-projectId:"isokuiki-scada"
+
+projectId: "isokuiki-scada"
+
 };
 
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
 
-const $ = (id) => document.getElementById(id);
+/* =========================
+SHORTCUT
+========================= */
 
-function setText(id, value){
-const el = $(id);
-if(el) el.innerText = value;
+function $(id){
+return document.getElementById(id);
 }
 
-function num(v, d = 1){
+function setText(id,val){
+
+const el = $(id);
+
+if(el){
+el.innerText = val;
+}
+
+}
+
+function num(v,d=1){
 return Number(v || 0).toFixed(d);
 }
 
 /* =========================
-GAUGE CONFIG
+GAUGE CREATE
 ========================= */
 
-function gaugeConfig(label, max){
+function createGauge(canvasId,maxValue,color){
 
-return {
+return new Chart($(canvasId),{
+
 type:'doughnut',
 
 data:{
-labels:[label,'Empty'],
 datasets:[{
-data:[0,max],
-borderWidth:0
+data:[0,maxValue],
+backgroundColor:[
+color,
+'rgba(255,255,255,.08)'
+],
+borderWidth:0,
+cutout:'75%'
 }]
 },
 
 options:{
+
 responsive:true,
+
 maintainAspectRatio:false,
+
 rotation:-90,
+
 circumference:180,
+
+animation:{
+animateRotate:true,
+duration:700
+},
 
 plugins:{
 legend:{
 display:false
+},
+tooltip:{
+enabled:false
 }
 }
+
 }
-};
+
+});
 
 }
 
 /* =========================
-CREATE GAUGE
+GAUGE
 ========================= */
 
-const gauge1 = new Chart(
-document.getElementById('gauge1'),
-gaugeConfig('PV', 5000)
+const gauge1 = createGauge(
+'gauge1',
+5000,
+'#00ffe5'
 );
 
-const gauge2 = new Chart(
-document.getElementById('gauge2'),
-gaugeConfig('SOC', 100)
+const gauge2 = createGauge(
+'gauge2',
+100,
+'#7CFC00'
 );
 
-const gauge3 = new Chart(
-document.getElementById('gauge3'),
-gaugeConfig('EFF', 100)
+const gauge3 = createGauge(
+'gauge3',
+100,
+'#36a3ff'
 );
 
 /* =========================
 UPDATE GAUGE
 ========================= */
 
-function updateGauge(chart, val, max){
+function updateGauge(chart,val,max){
 
 chart.data.datasets[0].data = [
 val,
-Math.max(max - val, 0)
+Math.max(max-val,0)
 ];
 
 chart.update();
@@ -93,83 +133,71 @@ UPDATE UI
 
 function updateUI(data){
 
-/* =========================
-PV
-========================= */
+/* PV */
 
-setText('pvVoltage', num(data.pv_v) + 'V');
-setText('pvCurrent', num(data.pv_i) + 'A');
-setText('pvPower', num(data.pv_p) + 'W');
+setText('pvVoltage',
+num(data.pv_v)+'V');
 
-/* =========================
-MPPT
-========================= */
+setText('pvCurrent',
+num(data.pv_i)+'A');
 
-setText('mpptCharge', num(data.charge_p) + 'W');
-setText('mpptEff', num(data.mppt_eff) + '%');
+setText('pvPower',
+num(data.pv_p)+'W');
 
-/* =========================
-BATTERY
-========================= */
+/* MPPT */
 
-setText('batVoltage', num(data.bat_v) + 'V');
-setText('batCurrent', num(data.bat_i) + 'A');
-setText('batSoc', num(data.soc) + '%');
+setText('mpptCharge',
+num(data.charge_p)+'W');
 
-/* =========================
-ENERGY
-========================= */
+setText('mpptEff',
+num(data.mppt_eff)+'%');
 
-setText('dailyEnergy', num(data.kwh_day,2) + ' kWh');
-setText('monthlyEnergy', num(data.kwh_month,2) + ' kWh');
+/* BATTERY */
 
-/* =========================
-SCADA
-========================= */
+setText('batVoltage',
+num(data.bat_v)+'V');
 
-setText('pvPowerScada', num(data.pv_p,0) + 'W');
+setText('batCurrent',
+num(data.bat_i)+'A');
 
-setText(
-'pvVoltScada',
-num(data.pv_v) + 'V | ' +
-num(data.pv_i) + 'A'
-);
+setText('batSoc',
+num(data.soc)+'%');
 
-setText(
-'mpptPowerScada',
-num(data.charge_p,0) + 'W'
-);
+/* ENERGY */
 
-setText(
-'mpptEffScada',
-num(data.mppt_eff,0) + '%'
-);
+setText('dailyEnergy',
+num(data.kwh_day,2)+' kWh');
 
-setText(
-'batSocScada',
-num(data.soc,0) + '%'
-);
+setText('monthlyEnergy',
+num(data.kwh_month,2)+' kWh');
 
-setText(
-'batVoltScada',
-num(data.bat_v) + 'V | ' +
-num(data.bat_i) + 'A'
-);
+/* SCADA */
 
-setText(
-'loadPowerScada',
-num(data.load_p,0) + 'W'
-);
+setText('pvPowerScada',
+num(data.pv_p,0)+'W');
 
-setText(
-'loadVoltScada',
-num(data.load_v) + 'V | ' +
-num(data.load_i) + 'A'
-);
+setText('pvVoltScada',
+num(data.pv_v)+'V | '+num(data.pv_i)+'A');
 
-/* =========================
-GAUGE UPDATE
-========================= */
+setText('mpptPowerScada',
+num(data.charge_p,0)+'W');
+
+setText('mpptEffScada',
+num(data.mppt_eff,0)+'%');
+
+setText('batSocScada',
+num(data.soc,0)+'%');
+
+setText('batVoltScada',
+num(data.bat_v)+'V | '+num(data.bat_i)+'A');
+
+setText('loadPowerScada',
+num(data.load_p,0)+'W');
+
+setText('loadVoltScada',
+num(data.load_v)+'V | '+num(data.load_i)+'A');
+
+/* UPDATE GAUGE */
 
 updateGauge(
 gauge1,
@@ -189,77 +217,83 @@ Math.min(data.mppt_eff,100),
 100
 );
 
-/* =========================
-ONLINE STATUS
-========================= */
+/* ONLINE STATUS */
 
 const online =
-(Date.now() - (data.timestamp || 0)) < 15000;
+(Date.now() - data.timestamp) < 15000;
 
 const onlineText = $('onlineText');
+
 const deviceStatus = $('deviceStatus');
 
-onlineText.innerText =
-online ? 'ONLINE' : 'OFFLINE';
+if(online){
 
-onlineText.style.color =
-online ? '#7CFC00' : '#ff4d4d';
+onlineText.innerText = 'ONLINE';
+onlineText.style.color = '#7CFC00';
 
-deviceStatus.innerText =
-online ?
-'DEVICE ACTIVE' :
-'DEVICE DISCONNECTED';
+deviceStatus.innerText = 'DEVICE ACTIVE';
+
+}else{
+
+onlineText.innerText = 'OFFLINE';
+onlineText.style.color = '#ff3b3b';
+
+deviceStatus.innerText = 'DEVICE DISCONNECTED';
+
+}
 
 }
 
 /* =========================
-FIREBASE REALTIME
+REALTIME FIREBASE
 ========================= */
 
-db.ref('solar_monitor').on('value', (snapshot)=>{
+db.ref('solar_monitor').on('value',(snapshot)=>{
 
 const data = snapshot.val();
 
 if(data){
+
 updateUI(data);
+
 }
 
 });
 
 /* =========================
-FLOW NODE ANIMATION
+SCADA NODE ANIMATION
 ========================= */
 
-let pos = 0;
+const nodes = [
+$('n1'),
+$('n2'),
+$('n3')
+];
+
+let active = 0;
 
 setInterval(()=>{
 
-const nodes = [
-document.getElementById('n1'),
-document.getElementById('n2'),
-document.getElementById('n3')
-];
+nodes.forEach((node,index)=>{
 
-nodes.forEach((n,i)=>{
+if(index === active){
 
-if(i === pos){
-
-n.setAttribute('fill','#00ffe5');
-n.setAttribute('r','7');
+node.setAttribute('fill','#00ffe5');
+node.setAttribute('r','9');
 
 }else{
 
-n.setAttribute('fill','#00ff88');
-n.setAttribute('r','5');
+node.setAttribute('fill','#00ff88');
+node.setAttribute('r','6');
 
 }
 
 });
 
-pos++;
+active++;
 
-if(pos >= nodes.length){
-pos = 0;
+if(active >= nodes.length){
+active = 0;
 }
 
-},500);
+},350);
