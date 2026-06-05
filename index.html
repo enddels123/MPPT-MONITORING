@@ -1,282 +1,225 @@
+```html
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>ISOKUIKI SMART ENERGY</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
 
-/* ===================================================== */
-/* BODY */
-/* ===================================================== */
-
 *{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
 body{
-  background:#020b1c;
-  color:#fff;
-  font-family:'Orbitron',sans-serif;
-  overflow-x:hidden;
+background:#000f2b;
+font-family:'Orbitron',sans-serif;
+color:#00ffff;
+padding:14px;
+overflow-x:hidden;
 }
 
-.container{
-  width:100%;
-  padding:18px;
+.dashboard{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:14px;
+max-width:1600px;
+margin:auto;
 }
-
-/* ===================================================== */
-/* GRID */
-/* ===================================================== */
-
-.top-grid{
-  display:grid;
-  grid-template-columns:1.1fr 1fr 1fr 1fr;
-  gap:18px;
-}
-
-.bottom-grid{
-  display:grid;
-  grid-template-columns:300px repeat(3,1fr);
-  gap:18px;
-  margin-top:18px;
-  align-items:stretch;
-}
-
-/* ===================================================== */
-/* PANEL */
-/* ===================================================== */
 
 .panel{
-  background:#041630;
-  border:1px solid rgba(0,255,255,.12);
-  border-radius:22px;
-  padding:16px;
-  box-shadow:
-    inset 0 0 18px rgba(0,255,255,.03),
-    0 0 10px rgba(0,255,255,.03);
+background:#001538;
+border-radius:22px;
+border:1px solid rgba(0,255,255,.12);
+padding:14px;
+box-shadow:
+0 0 18px rgba(0,255,255,.05),
+inset 0 0 15px rgba(0,255,255,.02);
 }
 
-/* ===================================================== */
-/* HEADER */
-/* ===================================================== */
-
-.header-panel{
-  text-align:center;
-  min-height:116px;
+.title-panel{
+text-align:center;
+font-size:15px;
+margin-bottom:12px;
+color:#00ffff;
 }
 
-.header-title{
-  color:#00ffee;
-  font-size:2rem;
-  font-weight:700;
-  text-shadow:0 0 12px #00ffee;
+.top-title{
+text-align:center;
+font-size:17px;
+font-weight:700;
+margin-bottom:5px;
+text-shadow:0 0 10px #00ffff;
 }
 
 .status{
-  margin-top:8px;
-  font-size:.95rem;
-  font-weight:700;
+text-align:center;
+font-size:11px;
+font-weight:700;
+margin-bottom:10px;
 }
 
-.status-online{
-  color:#7CFF00;
+.online{
+color:#7CFF00;
 }
 
-.status-offline{
-  color:#ff3b3b;
+.offline{
+color:#ff3b3b;
 }
 
 .device-box{
-  margin-top:12px;
-  border:2px solid #00ffbf;
-  border-radius:14px;
-  padding:10px;
-  font-size:.9rem;
-  box-shadow:0 0 12px rgba(0,255,180,.25);
-}
-
-/* ===================================================== */
-/* DATA PANEL */
-/* ===================================================== */
-
-.data-panel h3{
-  text-align:center;
-  color:#00ffee;
-  margin-bottom:14px;
-  font-size:1.2rem;
+border:2px solid #00ffaa;
+border-radius:14px;
+padding:7px;
+text-align:center;
+font-size:11px;
+color:#fff;
 }
 
 .data-row{
-  display:flex;
-  justify-content:space-between;
-  margin:16px 0;
-  border-bottom:1px solid rgba(255,255,255,.08);
-  padding-bottom:10px;
-  font-size:.95rem;
+display:flex;
+justify-content:space-between;
+padding:10px 0;
+border-bottom:1px solid rgba(255,255,255,.08);
+font-size:12px;
 }
 
-/* ===================================================== */
-/* SCADA */
-/* ===================================================== */
-
 .scada-panel{
-  min-height:500px;
-  max-height:500px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  overflow:hidden;
+height:445px;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
 }
 
 .scada-svg{
-  width:100%;
-  height:100%;
+width:100%;
+height:100%;
 }
 
-.energy-circle{
-  fill:#041d3c;
-  stroke:#00ffee;
-  stroke-width:4;
-  filter:drop-shadow(0 0 10px #00ffee);
+.line{
+stroke:#2aa3ff;
+stroke-width:5;
+fill:none;
 }
 
-.energy-line{
-  stroke:#39a9ff;
-  stroke-width:5;
-  fill:none;
+.node{
+fill:#00ff88;
+filter:drop-shadow(0 0 8px #00ff88);
 }
 
-.flow-node{
-  fill:#00ff88;
-  filter:drop-shadow(0 0 10px #00ff88);
+.circle{
+fill:#021b40;
+stroke:#00ffff;
+stroke-width:4;
+filter:drop-shadow(0 0 10px #00ffff);
 }
 
 .scada-label{
-  fill:#00ffee;
-  font-size:15px;
-  font-weight:700;
-  text-anchor:middle;
+fill:#00ffff;
+font-size:13px;
+font-weight:700;
+text-anchor:middle;
 }
 
-.circle-main{
-  fill:#ffffff;
-  font-size:16px;
-  font-weight:800;
-  text-anchor:middle;
+.scada-value{
+fill:#ffffff;
+font-size:18px;
+font-weight:700;
+text-anchor:middle;
 }
 
-.circle-main.small{
-  font-size:15px;
+.scada-sub{
+fill:#7CFF00;
+font-size:10px;
+text-anchor:middle;
 }
 
-.circle-sub{
-  fill:#7CFF00;
-  font-size:10px;
-  text-anchor:middle;
+.gauge-box{
+height:180px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
 }
 
-.circle-sub.small{
-  font-size:9px;
+.gauge-title{
+font-size:13px;
+margin-bottom:10px;
 }
 
-/* ===================================================== */
-/* GAUGE */
-/* ===================================================== */
-
-.gauge-panel{
-  min-height:500px;
-  display:flex;
-  flex-direction:column;
+.gauge{
+width:220px;
+height:110px;
+border-top-left-radius:220px;
+border-top-right-radius:220px;
+border:14px solid #19357a;
+border-bottom:none;
+position:relative;
+overflow:hidden;
 }
 
-.gauge-panel h3{
-  text-align:center;
-  color:#00ffee;
-  margin-bottom:8px;
-}
-
-.gauge-wrap{
-  position:relative;
-  width:100%;
-  height:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-.gauge-wrap canvas{
-  width:100% !important;
-  max-width:280px;
-  height:auto !important;
-}
-
-.gauge-center{
-  position:absolute;
-  top:58%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  text-align:center;
+.gauge-value{
+position:absolute;
+bottom:16px;
+left:50%;
+transform:translateX(-50%);
+text-align:center;
 }
 
 .gauge-main{
-  font-size:15px;
-  font-weight:800;
-  color:#ffffff;
+font-size:17px;
+font-weight:700;
+color:#ffffff;
 }
 
 .gauge-sub{
-  margin-top:6px;
-  font-size:12px;
-  color:#00ff88;
+font-size:10px;
+line-height:15px;
 }
 
-.divider{
-  color:#ffffff;
-  margin:0 5px;
+.volt{
+color:#00ffff;
 }
 
-/* ===================================================== */
-/* RESPONSIVE HP */
-/* ===================================================== */
+.amp{
+color:#7CFF00;
+}
 
-@media(max-width:980px){
+.watt{
+color:#ffd000;
+}
 
-  .top-grid{
-    grid-template-columns:1fr;
-  }
+@media(max-width:768px){
 
-  .bottom-grid{
-    grid-template-columns:1fr;
-  }
+.dashboard{
+grid-template-columns:1fr;
+}
 
-  .header-title{
-    font-size:1.5rem;
-  }
+.scada-panel{
+height:390px;
+}
 
-  .scada-panel{
-    min-height:470px;
-    max-height:470px;
-  }
+.gauge{
+width:180px;
+height:90px;
+border-width:12px;
+}
 
-  .gauge-panel{
-    min-height:320px;
-  }
+.gauge-main{
+font-size:15px;
+}
 
-  .gauge-wrap canvas{
-    max-width:240px;
-  }
+.top-title{
+font-size:14px;
+}
 
 }
 
@@ -285,292 +228,206 @@ body{
 
 <body>
 
-<div class="container">
+<div class="dashboard">
 
-  <!-- ================================================= -->
-  <!-- TOP -->
-  <!-- ================================================= -->
+<div class="panel">
 
-  <div class="top-grid">
+<div class="top-title">
+ISOKUIKI SMART ENERGY
+</div>
 
-    <!-- HEADER -->
-    <div class="panel header-panel">
+<div id="statusText" class="status online">
+ONLINE
+</div>
 
-      <div class="header-title">
-        ISOKUIKI SMART ENERGY
-      </div>
-
-      <div class="status status-online" id="systemStatus">
-        ONLINE
-      </div>
-
-      <div class="device-box">
-        DEVICE ACTIVE
-      </div>
-
-    </div>
-
-    <!-- PV -->
-    <div class="panel data-panel">
-
-      <h3>PHOTOVOLTAIC</h3>
-
-      <div class="data-row">
-        <span>Voltage</span>
-        <span id="pvVoltage">0V</span>
-      </div>
-
-      <div class="data-row">
-        <span>Current</span>
-        <span id="pvCurrent">0A</span>
-      </div>
-
-      <div class="data-row">
-        <span>Power</span>
-        <span id="pvPower">0W</span>
-      </div>
-
-    </div>
-
-    <!-- MPPT -->
-    <div class="panel data-panel">
-
-      <h3>MPPT</h3>
-
-      <div class="data-row">
-        <span>Charge</span>
-        <span id="mpptCharge">0W</span>
-      </div>
-
-      <div class="data-row">
-        <span>Efficiency</span>
-        <span id="mpptEfficiency">0%</span>
-      </div>
-
-    </div>
-
-    <!-- BATTERY -->
-    <div class="panel data-panel">
-
-      <h3>BATTERY</h3>
-
-      <div class="data-row">
-        <span>Voltage</span>
-        <span id="batteryVoltage">0V</span>
-      </div>
-
-      <div class="data-row">
-        <span>Current</span>
-        <span id="batteryCurrent">0A</span>
-      </div>
-
-      <div class="data-row">
-        <span>SOC</span>
-        <span id="batterySoc">0%</span>
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- ================================================= -->
-  <!-- BOTTOM -->
-  <!-- ================================================= -->
-
-  <div class="bottom-grid">
-
-    <!-- ========================= -->
-    <!-- SCADA -->
-    <!-- ========================= -->
-
-    <div class="panel scada-panel">
-
-      <svg class="scada-svg"
-           viewBox="0 0 320 500"
-           preserveAspectRatio="xMidYMid meet">
-
-        <!-- PV -->
-        <text x="160" y="40" class="scada-label">
-          PV PANEL
-        </text>
-
-        <circle cx="160" cy="90" r="34" class="energy-circle"/>
-
-        <text x="160" y="86" class="circle-main">
-          <tspan id="scadaPvPower">0W</tspan>
-        </text>
-
-        <text x="160" y="106" class="circle-sub">
-          <tspan id="scadaPvVI">0V | 0A</tspan>
-        </text>
-
-        <!-- LINE -->
-        <line x1="160" y1="124" x2="160" y2="195" class="energy-line"/>
-
-        <!-- NODE -->
-        <circle r="5" class="flow-node">
-          <animateMotion
-            dur="2s"
-            repeatCount="indefinite"
-            path="M160 124 L160 195"/>
-        </circle>
-
-        <!-- MPPT -->
-        <circle cx="160" cy="220" r="34" class="energy-circle"/>
-
-        <text x="160" y="216" class="circle-main">
-          <tspan id="scadaMpptPower">0W</tspan>
-        </text>
-
-        <text x="160" y="236" class="circle-sub">
-          <tspan id="scadaMpptEff">0%</tspan>
-        </text>
-
-        <text x="160" y="290" class="scada-label">
-          MPPT
-        </text>
-
-        <!-- DISTRIBUTION -->
-        <line x1="118" y1="260" x2="202" y2="260" class="energy-line"/>
-
-        <line x1="118" y1="260" x2="118" y2="340" class="energy-line"/>
-
-        <line x1="202" y1="260" x2="202" y2="340" class="energy-line"/>
-
-        <!-- NODE LEFT -->
-        <circle r="5" class="flow-node">
-          <animateMotion
-            dur="2s"
-            repeatCount="indefinite"
-            path="M160 260 L118 260 L118 340"/>
-        </circle>
-
-        <!-- NODE RIGHT -->
-        <circle r="5" class="flow-node">
-          <animateMotion
-            dur="2s"
-            repeatCount="indefinite"
-            path="M160 260 L202 260 L202 340"/>
-        </circle>
-
-        <!-- BATTERY -->
-        <circle cx="118" cy="385" r="31" class="energy-circle"/>
-
-        <text x="118" y="381" class="circle-main small">
-          <tspan id="scadaBatterySoc">0%</tspan>
-        </text>
-
-        <text x="118" y="399" class="circle-sub small">
-          <tspan id="scadaBatteryVI">0V | 0A</tspan>
-        </text>
-
-        <text x="118" y="445" class="scada-label">
-          BATTERY
-        </text>
-
-        <!-- LOAD -->
-        <circle cx="202" cy="385" r="31" class="energy-circle"/>
-
-        <text x="202" y="381" class="circle-main small">
-          <tspan id="scadaLoadPower">0W</tspan>
-        </text>
-
-        <text x="202" y="399" class="circle-sub small">
-          <tspan id="scadaLoadVI">0V | 0A</tspan>
-        </text>
-
-        <text x="202" y="445" class="scada-label">
-          LOAD
-        </text>
-
-      </svg>
-
-    </div>
-
-    <!-- PV -->
-    <div class="panel gauge-panel">
-
-      <h3>PV</h3>
-
-      <div class="gauge-wrap">
-
-        <canvas id="pvGauge"></canvas>
-
-        <div class="gauge-center">
-
-          <div class="gauge-main" id="pvPowerGauge">
-            0W
-          </div>
-
-          <div class="gauge-sub">
-            <span id="pvVoltageGauge">0V</span>
-            <span class="divider">|</span>
-            <span id="pvCurrentGauge">0A</span>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- BATTERY -->
-    <div class="panel gauge-panel">
-
-      <h3>BATTERY SOC</h3>
-
-      <div class="gauge-wrap">
-
-        <canvas id="batteryGauge"></canvas>
-
-        <div class="gauge-center">
-
-          <div class="gauge-main" id="batterySocGauge">
-            0%
-          </div>
-
-          <div class="gauge-sub">
-            <span id="batteryVoltageGauge">0V</span>
-            <span class="divider">|</span>
-            <span id="batteryCurrentGauge">0A</span>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- MPPT -->
-    <div class="panel gauge-panel">
-
-      <h3>MPPT EFFICIENCY</h3>
-
-      <div class="gauge-wrap">
-
-        <canvas id="effGauge"></canvas>
-
-        <div class="gauge-center">
-
-          <div class="gauge-main" id="efficiencyGauge">
-            0%
-          </div>
-
-          <div class="gauge-sub">
-            <span id="mpptChargeGauge">0W</span>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
+<div class="device-box">
+DEVICE ACTIVE
+</div>
 
 </div>
 
-<script src="app.js"></script>
+<div class="panel">
+<div class="title-panel">PHOTOVOLTAIC</div>
+
+<div class="data-row">
+<span>Voltage</span>
+<span id="pvVoltageText">0V</span>
+</div>
+
+<div class="data-row">
+<span>Current</span>
+<span id="pvCurrentText">0A</span>
+</div>
+
+<div class="data-row">
+<span>Power</span>
+<span id="pvPowerText">0W</span>
+</div>
+
+</div>
+
+<div class="panel">
+<div class="title-panel">MPPT</div>
+
+<div class="data-row">
+<span>Charge</span>
+<span id="mpptPowerText">0W</span>
+</div>
+
+<div class="data-row">
+<span>Efficiency</span>
+<span id="mpptEffText">0%</span>
+</div>
+
+</div>
+
+<div class="panel">
+<div class="title-panel">BATTERY</div>
+
+<div class="data-row">
+<span>Voltage</span>
+<span id="batVoltageText">0V</span>
+</div>
+
+<div class="data-row">
+<span>Current</span>
+<span id="batCurrentText">0A</span>
+</div>
+
+<div class="data-row">
+<span>SOC</span>
+<span id="socText">0%</span>
+</div>
+
+</div>
+
+<div class="panel scada-panel">
+
+<svg class="scada-svg" viewBox="0 0 320 430">
+
+<line class="line" x1="160" y1="80" x2="160" y2="155"/>
+<line class="line" x1="160" y1="205" x2="160" y2="255"/>
+
+<line class="line" x1="110" y1="255" x2="210" y2="255"/>
+<line class="line" x1="110" y1="255" x2="110" y2="340"/>
+<line class="line" x1="210" y1="255" x2="210" y2="340"/>
+
+<circle class="circle" cx="160" cy="60" r="36"/>
+<circle class="circle" cx="160" cy="185" r="36"/>
+<circle class="circle" cx="110" cy="365" r="32"/>
+<circle class="circle" cx="210" cy="365" r="32"/>
+
+<text class="scada-label" x="160" y="20">PV PANEL</text>
+<text class="scada-label" x="160" y="302">MPPT</text>
+<text class="scada-label" x="110" y="418">BATTERY</text>
+<text class="scada-label" x="210" y="418">LOAD</text>
+
+<text class="scada-value" x="160" y="58" id="pvScadaPower">0W</text>
+<text class="scada-sub" x="160" y="76" id="pvScadaVA">0V | 0A</text>
+
+<text class="scada-value" x="160" y="183" id="mpptScadaPower">0W</text>
+<text class="scada-sub" x="160" y="201" id="mpptScadaEff">0%</text>
+
+<text class="scada-value" x="110" y="363" id="batScadaSoc">0%</text>
+<text class="scada-sub" x="110" y="381" id="batScadaVA">0V | 0A</text>
+
+<text class="scada-value" x="210" y="363" id="loadScadaPower">0W</text>
+<text class="scada-sub" x="210" y="381" id="loadScadaVA">0V | 0A</text>
+
+<circle class="node" r="5">
+<animateMotion dur="3s" repeatCount="indefinite"
+path="M160 80 L160 155"/>
+</circle>
+
+<circle class="node" r="5">
+<animateMotion dur="4s" repeatCount="indefinite"
+path="M160 205 L160 255 L110 255 L110 340"/>
+</circle>
+
+<circle class="node" r="5">
+<animateMotion dur="4s" repeatCount="indefinite"
+path="M160 205 L160 255 L210 255 L210 340"/>
+</circle>
+
+</svg>
+
+</div>
+
+<div class="panel">
+<div class="title-panel">ENERGY</div>
+
+<div class="data-row">
+<span>Daily</span>
+<span id="dailyEnergy">0 kWh</span>
+</div>
+
+<div class="data-row">
+<span>Monthly</span>
+<span id="monthlyEnergy">0 kWh</span>
+</div>
+
+</div>
+
+<div class="panel gauge-box">
+
+<div class="gauge-title">PV</div>
+
+<div class="gauge">
+<div class="gauge-value">
+
+<div class="gauge-main" id="pvGaugePower">
+0W
+</div>
+
+<div class="gauge-sub volt" id="pvGaugeVolt">
+0V
+</div>
+
+<div class="gauge-sub amp" id="pvGaugeAmp">
+0A
+</div>
+
+</div>
+</div>
+
+</div>
+
+<div class="panel gauge-box">
+
+<div class="gauge-title">BATTERY SOC</div>
+
+<div class="gauge">
+<div class="gauge-value">
+
+<div class="gauge-main" id="socGauge">
+0%
+</div>
+
+</div>
+</div>
+
+</div>
+
+<div class="panel gauge-box">
+
+<div class="gauge-title">MPPT EFFICIENCY</div>
+
+<div class="gauge">
+<div class="gauge-value">
+
+<div class="gauge-main" id="effGauge">
+0%
+</div>
+
+</div>
+</div>
+
+</div>
+
+</div>
+
+<script type="module" src="app.js"></script>
 
 </body>
 </html>
+```
