@@ -1,23 +1,12 @@
-<!-- =========================================================
-ISOKUIKI SMART ENERGY
-FINAL INDEX.HTML
-RAPAT ANTAR WIDGET + SCADA COMPACT FINAL
-========================================================= -->
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
 <title>ISOKUIKI SMART ENERGY</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
-
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
 <style>
 
@@ -28,382 +17,278 @@ RAPAT ANTAR WIDGET + SCADA COMPACT FINAL
 }
 
 body{
-    background:#000f2c;
+    background:#010b24;
     font-family:'Orbitron',sans-serif;
     color:#fff;
     overflow-x:hidden;
 }
 
-/* =========================================================
-MAIN LAYOUT
-========================================================= */
+/* ======================================================
+   MAIN LAYOUT
+====================================================== */
 
 .dashboard{
-
     width:100%;
-    padding:12px;
-
-    display:grid;
-
-    grid-template-columns:
-    320px
-    1fr
-    1fr
-    1fr;
-
-    grid-auto-rows:minmax(150px,auto);
-
-    gap:10px;
+    padding:10px;
 }
 
-/* =========================================================
-PANEL
-========================================================= */
+.grid{
+    display:grid;
+    grid-template-columns: 320px repeat(3, 1fr);
+    grid-template-rows:auto auto auto;
+    gap:10px;
+    align-items:start;
+}
+
+/* ======================================================
+   PANEL
+====================================================== */
 
 .panel{
-
-    background:#001a45;
-
+    background:#021635;
+    border:1px solid rgba(0,255,255,0.12);
     border-radius:22px;
-
-    border:1px solid rgba(0,255,255,0.08);
-
     padding:14px;
-
     position:relative;
-
     overflow:hidden;
-
     box-shadow:
-    inset 0 0 30px rgba(0,255,255,0.03);
+        inset 0 0 20px rgba(0,255,255,.03),
+        0 0 10px rgba(0,255,255,.03);
 }
 
-.panel-title{
+/* ======================================================
+   HEADER
+====================================================== */
 
+.header-panel{
+    height:145px;
+}
+
+.brand{
     text-align:center;
-
-    color:#00ffff;
-
-    font-size:16px;
-
-    margin-bottom:10px;
-
-    text-shadow:0 0 10px #00ffff;
-}
-
-/* =========================================================
-TOP STATUS
-========================================================= */
-
-.status-panel{
-
-    height:150px;
-
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-}
-
-.main-title{
-
-    font-size:24px;
-
-    color:#00ffff;
-
-    text-align:center;
-
+    font-size:22px;
+    font-weight:700;
     line-height:1.15;
+    color:#00f7ff;
 
     text-shadow:
-    0 0 10px #00ffff,
-    0 0 22px #00ffff;
-
-    margin-bottom:6px;
+        0 0 8px #00f7ff,
+        0 0 16px rgba(0,255,255,.5);
 }
 
-#onlineStatus{
-
+.status{
+    margin-top:6px;
+    text-align:center;
     font-size:14px;
-
-    font-weight:bold;
-
-    margin-bottom:12px;
+    font-weight:700;
 }
 
-.device-box{
+.offline{
+    color:#ff2d55;
+    text-shadow:0 0 10px #ff2d55;
+}
 
-    width:92%;
+.online{
+    color:#5cff00;
+    text-shadow:0 0 10px #5cff00;
+}
 
+.device-btn{
+    width:100%;
+    margin-top:12px;
     height:38px;
 
-    border-radius:12px;
-
+    border-radius:14px;
     border:2px solid #00ffee;
+
+    background:transparent;
+
+    color:#fff;
+    font-size:14px;
+    font-family:'Orbitron',sans-serif;
 
     display:flex;
     align-items:center;
     justify-content:center;
 
-    font-size:14px;
-
-    color:#fff;
-
-    box-shadow:0 0 12px rgba(0,255,255,0.45);
+    box-shadow:
+        0 0 10px rgba(0,255,255,.5),
+        inset 0 0 10px rgba(0,255,255,.12);
 }
 
-/* =========================================================
-DATA PANEL
-========================================================= */
+/* ======================================================
+   INFO BOX
+====================================================== */
 
-.info-panel{
-
+.info-box{
     height:150px;
+}
+
+.box-title{
+    text-align:center;
+    font-size:16px;
+    color:#00ffee;
+    margin-bottom:18px;
+
+    text-shadow:0 0 10px rgba(0,255,255,.8);
 }
 
 .info-row{
-
     display:flex;
     justify-content:space-between;
     align-items:center;
 
-    padding:11px 0;
+    padding:10px 0;
+    border-bottom:1px solid rgba(255,255,255,.08);
 
-    border-bottom:1px solid rgba(255,255,255,0.08);
-
-    font-size:14px;
+    font-size:13px;
 }
 
-/* =========================================================
-ENERGY
-========================================================= */
-
-.energy-panel{
-
-    height:150px;
-}
-
-/* =========================================================
-GAUGE
-========================================================= */
-
-.gauge-panel{
-
-    height:250px;
-
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-start;
-    align-items:center;
-}
-
-.gauge-title{
-
-    color:#00ffff;
-
-    font-size:16px;
-
-    margin-bottom:8px;
-
-    text-shadow:0 0 10px #00ffff;
-}
-
-.gauge{
-
-    width:240px;
-    height:130px;
-
-    border:18px solid #193a8f;
-    border-bottom:none;
-
-    border-radius:240px 240px 0 0;
-
-    position:relative;
-
-    margin-top:32px;
-}
-
-.gauge-center{
-
-    position:absolute;
-
-    width:100%;
-
-    bottom:8px;
-
-    left:0;
-
-    text-align:center;
-}
-
-.gauge-value{
-
-    font-size:20px;
-
-    font-weight:bold;
-
+.info-value{
     color:#fff;
 }
 
-.gauge-sub{
+/* ======================================================
+   ENERGY
+====================================================== */
 
-    font-size:12px;
-
-    margin-top:4px;
-
-    color:#00ffff;
+.energy-panel{
+    height:150px;
 }
 
-.gauge-sub2{
+/* ======================================================
+   GAUGE
+====================================================== */
 
-    font-size:12px;
-
-    color:#7CFF00;
+.gauge-panel{
+    height:270px;
 }
 
-/* =========================================================
-SCADA PANEL
-========================================================= */
+.gauge-title{
+    text-align:center;
+    color:#00ffee;
+    font-size:16px;
+    margin-bottom:10px;
 
-.scada{
-
-    grid-row:2 / span 2;
-
-    height:430px;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    padding:8px;
+    text-shadow:0 0 10px rgba(0,255,255,.8);
 }
 
-/* =========================================================
-SVG
-========================================================= */
+.gauge-wrap{
+    position:relative;
+    width:100%;
+    height:190px;
+}
 
-.scada svg{
-
+.gauge-svg{
     width:100%;
     height:100%;
 }
 
-/* =========================================================
-LINE
-========================================================= */
+.gauge-value{
+    position:absolute;
+    left:50%;
+    top:58%;
 
-.line{
+    transform:translate(-50%,-50%);
 
-    stroke:#36a8ff;
-    stroke-width:5;
-    fill:none;
+    text-align:center;
 }
 
-/* =========================================================
-NODE
-========================================================= */
-
-.node{
-
-    fill:#00ff9d;
-
-    filter:drop-shadow(0 0 10px #00ff9d);
+.gauge-main{
+    font-size:24px;
+    font-weight:700;
 }
 
-/* =========================================================
-CIRCLE
-========================================================= */
-
-.scada-circle{
-
-    fill:#05214a;
-
-    stroke:#00ffff;
-
-    stroke-width:4;
-
-    filter:drop-shadow(0 0 12px #00ffff);
+.gauge-sub{
+    margin-top:4px;
+    font-size:12px;
+    line-height:1.5;
 }
 
-/* =========================================================
-SCADA TEXT
-========================================================= */
+.gauge-sub .v{
+    color:#00ffee;
+}
+
+.gauge-sub .a{
+    color:#7CFF00;
+}
+
+/* ======================================================
+   SCADA
+====================================================== */
+
+.scada-panel{
+    grid-row:2 / span 2;
+    height:570px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.scada-svg{
+    width:100%;
+    height:100%;
+}
+
+/* ======================================================
+   SCADA TEXT
+====================================================== */
 
 .scada-label{
-
-    fill:#00ffff;
-
-    font-size:16px;
-
-    font-weight:bold;
-
-    text-anchor:middle;
+    fill:#00ffee;
+    font-size:12px;
+    font-weight:700;
 }
 
 .scada-value{
-
     fill:#ffffff;
-
-    font-size:15px;
-
-    font-weight:bold;
-
-    text-anchor:middle;
+    font-size:18px;
+    font-weight:700;
 }
 
-.scada-sub{
-
+.scada-small{
     fill:#7CFF00;
-
-    font-size:10px;
-
-    text-anchor:middle;
+    font-size:9px;
+    font-weight:700;
 }
 
-/* =========================================================
-MPPT BOX
-========================================================= */
+/* ======================================================
+   NODE ANIMATION
+====================================================== */
 
-.mppt-box{
+.flow-node{
+    fill:#22ff99;
 
-    fill:none;
+    filter:
+        drop-shadow(0 0 6px #22ff99)
+        drop-shadow(0 0 10px #22ff99);
 
-    stroke:#36a8ff;
-
-    stroke-width:5;
+    animation:pulse 1s infinite;
 }
 
-.mppt-text{
-
-    fill:#00ffff;
-
-    font-size:16px;
-
-    font-weight:bold;
-
-    text-anchor:middle;
+@keyframes pulse{
+    0%{opacity:.5;}
+    50%{opacity:1;}
+    100%{opacity:.5;}
 }
 
-/* =========================================================
-RESPONSIVE HP
-========================================================= */
+/* ======================================================
+   MOBILE
+====================================================== */
 
-@media(max-width:1000px){
+@media(max-width:1100px){
 
-.dashboard{
-
+.grid{
     grid-template-columns:1fr;
 }
 
-.scada{
-
+.scada-panel{
+    grid-row:auto;
     height:520px;
 }
 
-.gauge{
-
-    width:220px;
-    height:120px;
+.gauge-panel{
+    height:240px;
 }
 
 }
@@ -415,320 +300,412 @@ RESPONSIVE HP
 
 <div class="dashboard">
 
-    <!-- =====================================================
-    STATUS
-    ====================================================== -->
+<div class="grid">
 
-    <div class="panel status-panel">
+<!-- ======================================================
+     HEADER
+====================================================== -->
 
-        <div class="main-title">
-            ISOKUIKI SMART ENERGY
-        </div>
+<div class="panel header-panel">
 
-        <div id="onlineStatus">
-            OFFLINE
-        </div>
-
-        <div class="device-box">
-            DEVICE ACTIVE
-        </div>
+    <div class="brand">
+        ISOKUIKI SMART<br>ENERGY
     </div>
 
-    <!-- =====================================================
-    PV INFO
-    ====================================================== -->
-
-    <div class="panel info-panel">
-
-        <div class="panel-title">PHOTOVOLTAIC</div>
-
-        <div class="info-row">
-            <span>Voltage</span>
-            <span id="pvVoltage">0V</span>
-        </div>
-
-        <div class="info-row">
-            <span>Current</span>
-            <span id="pvCurrent">0A</span>
-        </div>
-
-        <div class="info-row">
-            <span>Power</span>
-            <span id="pvPower">0W</span>
-        </div>
+    <div id="deviceStatus" class="status offline">
+        OFFLINE
     </div>
 
-    <!-- =====================================================
-    MPPT INFO
-    ====================================================== -->
-
-    <div class="panel info-panel">
-
-        <div class="panel-title">MPPT</div>
-
-        <div class="info-row">
-            <span>Charge</span>
-            <span id="mpptCharge">0W</span>
-        </div>
-
-        <div class="info-row">
-            <span>Efficiency</span>
-            <span id="mpptEff">0%</span>
-        </div>
-    </div>
-
-    <!-- =====================================================
-    BATTERY INFO
-    ====================================================== -->
-
-    <div class="panel info-panel">
-
-        <div class="panel-title">BATTERY</div>
-
-        <div class="info-row">
-            <span>Voltage</span>
-            <span id="batVoltage">0V</span>
-        </div>
-
-        <div class="info-row">
-            <span>Current</span>
-            <span id="batCurrent">0A</span>
-        </div>
-
-        <div class="info-row">
-            <span>SOC</span>
-            <span id="batSoc">0%</span>
-        </div>
-    </div>
-
-    <!-- =====================================================
-    SCADA
-    ====================================================== -->
-
-    <div class="panel scada">
-
-<svg viewBox="0 0 320 420">
-
-    <!-- MAIN LINE -->
-    <line class="line" x1="160" y1="80" x2="160" y2="255"/>
-
-    <!-- MPPT BRANCH -->
-    <line class="line" x1="110" y1="255" x2="210" y2="255"/>
-    <line class="line" x1="110" y1="255" x2="110" y2="340"/>
-    <line class="line" x1="210" y1="255" x2="210" y2="340"/>
-
-    <!-- NODE -->
-    <circle id="nodeMain" class="node" cx="160" cy="165" r="7"/>
-    <circle id="nodeLeft" class="node" cx="110" cy="255" r="7"/>
-    <circle id="nodeRight" class="node" cx="210" cy="255" r="7"/>
-
-    <!-- PV -->
-    <text class="scada-label" x="160" y="35">
-        PV PANEL
-    </text>
-
-    <circle class="scada-circle" cx="160" cy="80" r="38"/>
-
-    <text class="scada-value" id="scadaPvPower" x="160" y="78">
-        0W
-    </text>
-
-    <text class="scada-sub" id="scadaPvVolt" x="148" y="98">
-        0V
-    </text>
-
-    <text class="scada-sub" id="scadaPvAmp" x="176" y="98">
-        0A
-    </text>
-
-    <!-- MPPT -->
-    <circle class="scada-circle" cx="160" cy="190" r="38"/>
-
-    <text class="scada-value" id="scadaMpptPower" x="160" y="188">
-        0W
-    </text>
-
-    <text class="scada-sub" id="scadaMpptEff" x="160" y="208">
-        0%
-    </text>
-
-    <!-- MPPT BOX -->
-    <rect class="mppt-box"
-          x="110"
-          y="255"
-          width="100"
-          height="58"/>
-
-    <text class="mppt-text"
-          x="160"
-          y="288">
-          MPPT
-    </text>
-
-    <!-- BATTERY -->
-    <circle class="scada-circle" cx="110" cy="360" r="32"/>
-
-    <text class="scada-value"
-          id="scadaBatSoc"
-          x="110"
-          y="357">
-          0%
-    </text>
-
-    <text class="scada-sub"
-          id="scadaBatVolt"
-          x="98"
-          y="376">
-          0V
-    </text>
-
-    <text class="scada-sub"
-          id="scadaBatAmp"
-          x="122"
-          y="376">
-          0A
-    </text>
-
-    <text class="scada-label"
-          x="110"
-          y="410">
-          BATTERY
-    </text>
-
-    <!-- LOAD -->
-    <circle class="scada-circle" cx="210" cy="360" r="32"/>
-
-    <text class="scada-value"
-          id="scadaLoadPower"
-          x="210"
-          y="357">
-          0W
-    </text>
-
-    <text class="scada-sub"
-          id="scadaLoadVolt"
-          x="198"
-          y="376">
-          0V
-    </text>
-
-    <text class="scada-sub"
-          id="scadaLoadAmp"
-          x="222"
-          y="376">
-          0A
-    </text>
-
-    <text class="scada-label"
-          x="210"
-          y="410">
-          LOAD
-    </text>
-
-</svg>
-
-    </div>
-
-    <!-- =====================================================
-    ENERGY
-    ====================================================== -->
-
-    <div class="panel energy-panel">
-
-        <div class="panel-title">ENERGY</div>
-
-        <div class="info-row">
-            <span>Daily</span>
-            <span id="energyDaily">0 kWh</span>
-        </div>
-
-        <div class="info-row">
-            <span>Monthly</span>
-            <span id="energyMonthly">0 kWh</span>
-        </div>
-
-    </div>
-
-    <!-- =====================================================
-    PV GAUGE
-    ====================================================== -->
-
-    <div class="panel gauge-panel">
-
-        <div class="gauge-title">PV</div>
-
-        <div class="gauge">
-
-            <div class="gauge-center">
-
-                <div class="gauge-value"
-                     id="pvGaugeValue">
-                     0W
-                </div>
-
-                <div class="gauge-sub"
-                     id="pvGaugeVolt">
-                     0V
-                </div>
-
-                <div class="gauge-sub2"
-                     id="pvGaugeAmp">
-                     0A
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- =====================================================
-    BATTERY SOC
-    ====================================================== -->
-
-    <div class="panel gauge-panel">
-
-        <div class="gauge-title">
-            BATTERY SOC
-        </div>
-
-        <div class="gauge">
-
-            <div class="gauge-center">
-
-                <div class="gauge-value"
-                     id="batteryGaugeValue">
-                     0%
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- =====================================================
-    MPPT EFFICIENCY
-    ====================================================== -->
-
-    <div class="panel gauge-panel">
-
-        <div class="gauge-title">
-            MPPT EFFICIENCY
-        </div>
-
-        <div class="gauge">
-
-            <div class="gauge-center">
-
-                <div class="gauge-value"
-                     id="effGaugeValue">
-                     0%
-                </div>
-
-            </div>
-        </div>
+    <div class="device-btn">
+        DEVICE ACTIVE
     </div>
 
 </div>
 
-<script src="app.js"></script>
+<!-- ======================================================
+     PV
+====================================================== -->
+
+<div class="panel info-box">
+
+    <div class="box-title">PHOTOVOLTAIC</div>
+
+    <div class="info-row">
+        <span>Voltage</span>
+        <span class="info-value" id="pvVoltage">0V</span>
+    </div>
+
+    <div class="info-row">
+        <span>Current</span>
+        <span class="info-value" id="pvCurrent">0A</span>
+    </div>
+
+    <div class="info-row">
+        <span>Power</span>
+        <span class="info-value" id="pvPower">0W</span>
+    </div>
+
+</div>
+
+<!-- ======================================================
+     MPPT
+====================================================== -->
+
+<div class="panel info-box">
+
+    <div class="box-title">MPPT</div>
+
+    <div class="info-row">
+        <span>Charge</span>
+        <span class="info-value" id="mpptPower">0W</span>
+    </div>
+
+    <div class="info-row">
+        <span>Efficiency</span>
+        <span class="info-value" id="mpptEff">0%</span>
+    </div>
+
+</div>
+
+<!-- ======================================================
+     BATTERY
+====================================================== -->
+
+<div class="panel info-box">
+
+    <div class="box-title">BATTERY</div>
+
+    <div class="info-row">
+        <span>Voltage</span>
+        <span class="info-value" id="batVoltage">0V</span>
+    </div>
+
+    <div class="info-row">
+        <span>Current</span>
+        <span class="info-value" id="batCurrent">0A</span>
+    </div>
+
+    <div class="info-row">
+        <span>SOC</span>
+        <span class="info-value" id="batSoc">0%</span>
+    </div>
+
+</div>
+
+<!-- ======================================================
+     SCADA
+====================================================== -->
+
+<div class="panel scada-panel">
+
+<svg class="scada-svg" viewBox="0 0 320 560">
+
+    <!-- MAIN LINE -->
+    <line x1="160" y1="90" x2="160" y2="340"
+          stroke="#33aaff"
+          stroke-width="5"/>
+
+    <!-- MPPT BOX -->
+    <rect x="110" y="280"
+          width="100"
+          height="70"
+
+          fill="none"
+          stroke="#33aaff"
+          stroke-width="5"/>
+
+    <!-- BRANCH -->
+    <line x1="110" y1="350" x2="110" y2="420"
+          stroke="#33aaff"
+          stroke-width="5"/>
+
+    <line x1="210" y1="350" x2="210" y2="420"
+          stroke="#33aaff"
+          stroke-width="5"/>
+
+    <!-- PV -->
+    <circle cx="160" cy="70" r="38"
+            fill="#021635"
+            stroke="#00ffee"
+            stroke-width="5"/>
+
+    <text x="160" y="16"
+          text-anchor="middle"
+          class="scada-label">
+          PV PANEL
+    </text>
+
+    <text x="160" y="70"
+          text-anchor="middle"
+          class="scada-value">
+          0W
+    </text>
+
+    <text x="160" y="92"
+          text-anchor="middle"
+          class="scada-small">
+          0V | 0A
+    </text>
+
+    <!-- MPPT -->
+    <circle cx="160" cy="220" r="38"
+            fill="#021635"
+            stroke="#00ffee"
+            stroke-width="5"/>
+
+    <text x="160" y="220"
+          text-anchor="middle"
+          class="scada-value">
+          0W
+    </text>
+
+    <text x="160" y="242"
+          text-anchor="middle"
+          class="scada-small">
+          0%
+    </text>
+
+    <!-- MPPT LABEL -->
+    <text x="160" y="322"
+          text-anchor="middle"
+          class="scada-label"
+          style="font-size:16px;">
+          MPPT
+    </text>
+
+    <!-- BATTERY -->
+    <circle cx="110" cy="460" r="36"
+            fill="#021635"
+            stroke="#00ffee"
+            stroke-width="5"/>
+
+    <text x="110" y="460"
+          text-anchor="middle"
+          class="scada-value">
+          0%
+    </text>
+
+    <text x="110" y="482"
+          text-anchor="middle"
+          class="scada-small">
+          0V | 0A
+    </text>
+
+    <text x="110" y="535"
+          text-anchor="middle"
+          class="scada-label">
+          BATTERY
+    </text>
+
+    <!-- LOAD -->
+    <circle cx="210" cy="460" r="36"
+            fill="#021635"
+            stroke="#00ffee"
+            stroke-width="5"/>
+
+    <text x="210" y="460"
+          text-anchor="middle"
+          class="scada-value">
+          0W
+    </text>
+
+    <text x="210" y="482"
+          text-anchor="middle"
+          class="scada-small">
+          0V | 0A
+    </text>
+
+    <text x="210" y="535"
+          text-anchor="middle"
+          class="scada-label">
+          LOAD
+    </text>
+
+    <!-- MOVING NODE -->
+    <circle id="nodeMain"
+            class="flow-node"
+            r="7"
+            cx="160"
+            cy="110"/>
+
+    <circle id="nodeLeft"
+            class="flow-node"
+            r="7"
+            cx="110"
+            cy="350"/>
+
+    <circle id="nodeRight"
+            class="flow-node"
+            r="7"
+            cx="210"
+            cy="350"/>
+
+</svg>
+
+</div>
+
+<!-- ======================================================
+     ENERGY
+====================================================== -->
+
+<div class="panel energy-panel">
+
+    <div class="box-title">ENERGY</div>
+
+    <div class="info-row">
+        <span>Daily</span>
+        <span class="info-value" id="dailyKwh">0 kWh</span>
+    </div>
+
+    <div class="info-row">
+        <span>Monthly</span>
+        <span class="info-value" id="monthlyKwh">0 kWh</span>
+    </div>
+
+</div>
+
+<!-- ======================================================
+     GAUGE PV
+====================================================== -->
+
+<div class="panel gauge-panel">
+
+    <div class="gauge-title">PV</div>
+
+    <div class="gauge-wrap">
+
+        <svg class="gauge-svg" viewBox="0 0 300 180">
+
+            <path d="M40 150 A110 110 0 0 1 260 150"
+                  fill="none"
+                  stroke="#17398f"
+                  stroke-width="22"
+                  stroke-linecap="round"/>
+
+        </svg>
+
+        <div class="gauge-value">
+
+            <div class="gauge-main" id="pvGaugePower">
+                0W
+            </div>
+
+            <div class="gauge-sub">
+                <div class="v" id="pvGaugeVolt">0V</div>
+                <div class="a" id="pvGaugeAmp">0A</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ======================================================
+     GAUGE BATTERY
+====================================================== -->
+
+<div class="panel gauge-panel">
+
+    <div class="gauge-title">BATTERY SOC</div>
+
+    <div class="gauge-wrap">
+
+        <svg class="gauge-svg" viewBox="0 0 300 180">
+
+            <path d="M40 150 A110 110 0 0 1 260 150"
+                  fill="none"
+                  stroke="#17398f"
+                  stroke-width="22"
+                  stroke-linecap="round"/>
+
+        </svg>
+
+        <div class="gauge-value">
+
+            <div class="gauge-main" id="batteryGauge">
+                0%
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ======================================================
+     GAUGE MPPT
+====================================================== -->
+
+<div class="panel gauge-panel">
+
+    <div class="gauge-title">MPPT EFFICIENCY</div>
+
+    <div class="gauge-wrap">
+
+        <svg class="gauge-svg" viewBox="0 0 300 180">
+
+            <path d="M40 150 A110 110 0 0 1 260 150"
+                  fill="none"
+                  stroke="#17398f"
+                  stroke-width="22"
+                  stroke-linecap="round"/>
+
+        </svg>
+
+        <div class="gauge-value">
+
+            <div class="gauge-main" id="mpptGauge">
+                0%
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+</div>
+
+<script>
+
+/* =========================================
+   NODE ANIMATION
+========================================= */
+
+let mainY = 110;
+let dir = 1;
+
+setInterval(() => {
+
+    mainY += dir * 3;
+
+    if(mainY >= 260) dir = -1;
+    if(mainY <= 110) dir = 1;
+
+    document.getElementById("nodeMain")
+        .setAttribute("cy", mainY);
+
+}, 40);
+
+let side = 0;
+
+setInterval(() => {
+
+    side += 4;
+
+    if(side > 70) side = 0;
+
+    document.getElementById("nodeLeft")
+        .setAttribute("cy", 350 + side);
+
+    document.getElementById("nodeRight")
+        .setAttribute("cy", 350 + side);
+
+}, 50);
+
+</script>
 
 </body>
 </html>
