@@ -1,521 +1,447 @@
+/*************************************************
+ ISOKUIKI FINAL SCADA
+*************************************************/
 
-import { initializeApp }
-
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-
-  getDatabase,
-  ref,
-  onValue
-
-}
-
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 /* =========================================
-   FIREBASE CONFIG
+   FIREBASE
 ========================================= */
 
 const firebaseConfig = {
 
-  apiKey:
-  "AIzaSyC7ctgLv34n6pwg9cQpcTN9qd77FbMGbOg",
-
-  authDomain:
-  "isokuiki-scada.firebaseapp.com",
-
-  databaseURL:
-  "https://isokuiki-scada-default-rtdb.asia-southeast1.firebasedatabase.app",
-
-  projectId:
-  "isokuiki-scada",
-
-  storageBucket:
-  "isokuiki-scada.appspot.com",
-
-  messagingSenderId:
-  "123456789",
-
-  appId:
-  "1:123456789:web:123456"
+  apiKey:"AIzaSyC7ctgLv34n6pwg9cQpcTN9qd77FbMGbOg",
+authDomain:"isokuiki-scada.firebaseapp.com",
+databaseURL:"https://isokuiki-scada-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId:"isokuiki-scada",
+storageBucket:"isokuiki-scada.firebasestorage.app",
+messagingSenderId:"1078745557059",
+appId:"1:1078745557059:web:0f465f1a8a2ddf20dd8cf6"
 
 };
 
-/* =========================================
-   INIT FIREBASE
-========================================= */
+firebase.initializeApp(firebaseConfig);
 
-const app =
-initializeApp(firebaseConfig);
+const db = firebase.database();
 
-const database =
-getDatabase(app);
 
 /* =========================================
-   CHART DATA
+   GAUGE
 ========================================= */
 
-const pvData = [];
+function createGauge(id,max){
 
-const batteryData = [];
+  return new Chart(document.getElementById(id),{
 
-const labels = [];
-
-/* =========================================
-   PV CHART
-========================================= */
-
-const pvChart = new Chart(
-
-  document.getElementById(
-    "pvChart"
-  ),
-
-  {
-
-    type:"line",
+    type:'doughnut',
 
     data:{
-
-      labels:labels,
-
       datasets:[{
-
-        label:"PV Power",
-
-        data:pvData,
-
-        borderWidth:3,
-
-        tension:0.4,
-
-        fill:false
-
+        data:[0,max],
+        borderWidth:0,
+        backgroundColor:[
+          '#00ffe5',
+          '#16304a'
+        ]
       }]
-
     },
 
     options:{
 
       responsive:true,
-
       maintainAspectRatio:false,
 
-      scales:{
+      cutout:'78%',
 
-        y:{
-
-          beginAtZero:true
-
-        }
-
+      plugins:{
+        legend:{display:false},
+        tooltip:{enabled:false}
       }
 
     }
 
-  }
+  });
 
-);
-
-/* =========================================
-   BATTERY CHART
-========================================= */
-
-const batteryChart = new Chart(
-
-  document.getElementById(
-    "batteryChart"
-  ),
-
-  {
-
-    type:"line",
-
-    data:{
-
-      labels:labels,
-
-      datasets:[{
-
-        label:"Battery Voltage",
-
-        data:batteryData,
-
-        borderWidth:3,
-
-        tension:0.4,
-
-        fill:false
-
-      }]
-
-    },
-
-    options:{
-
-      responsive:true,
-
-      maintainAspectRatio:false,
-
-      scales:{
-
-        y:{
-
-          beginAtZero:false
-
-        }
-
-      }
-
-    }
-
-  }
-
-);
-
-/* =========================================
-   FORMAT NUMBER
-========================================= */
-
-function safeValue(val){
-
-  if(
-    val == null ||
-    isNaN(val)
-  ){
-
-    return 0;
-
-  }
-
-  return val;
 }
 
+const gaugePV   = createGauge('gauge1',1000);
+const gaugeBAT  = createGauge('gauge2',100);
+const gaugeMPPT = createGauge('gauge3',100);
+
+
 /* =========================================
-   UPDATE TEXT
+   HISTORY
 ========================================= */
 
-function setText(id, value){
+const historyChart = new Chart(
 
-  const el =
-  document.getElementById(id);
+  document.getElementById('historyChart'),
+
+  {
+
+    type:'line',
+
+    data:{
+
+      labels:[],
+
+      datasets:[
+
+        {
+          label:'Battery Voltage',
+          data:[],
+          tension:0.4
+        },
+
+        {
+          label:'PV Power',
+          data:[],
+          tension:0.4
+        }
+
+      ]
+
+    },
+
+    options:{
+
+      responsive:true,
+
+      maintainAspectRatio:true
+
+    }
+
+  }
+
+);
+
+
+/* =========================================
+   UPDATE
+========================================= */
+
+function updateText(id,val){
+
+  const el = document.getElementById(id);
 
   if(el){
 
-    el.innerText = value;
+    el.innerHTML = val;
 
   }
 
 }
 
+
 /* =========================================
-   FIREBASE REALTIME
+   ONLINE STATUS
 ========================================= */
 
-onValue(
+function setOnline(status){
 
-  ref(database, "/solar_monitor"),
+  if(status){
 
-  (snapshot)=>{
+    updateText("onlineText","ONLINE");
 
-    const data =
-    snapshot.val();
+    document.getElementById("onlineText")
+    .style.color="#7CFC00";
 
-    if(!data){
-
-      console.log(
-        "NO DATA"
-      );
-
-      return;
-
-    }
-
-    /* =========================
-       SAFE DATA
-    ========================= */
-
-    const pvVoltage =
-    safeValue(
-      data.pv_voltage
+    updateText(
+      "deviceStatus",
+      "ESP32 + EW11 ACTIVE"
     );
 
-    const pvCurrent =
-    safeValue(
-      data.pv_current
-    );
+  }else{
 
-    const pvPower =
-    safeValue(
-      data.pv_power
-    );
+    updateText("onlineText","OFFLINE");
 
-    const batteryVoltage =
-    safeValue(
-      data.battery_voltage
-    );
+    document.getElementById("onlineText")
+    .style.color="red";
 
-    const batteryCurrent =
-    safeValue(
-      data.battery_current
-    );
-
-    const batteryPower =
-    safeValue(
-      data.battery_power
-    );
-
-    const batterySOC =
-    safeValue(
-      data.battery_soc
-    );
-
-    const loadVoltage =
-    safeValue(
-      data.load_voltage
-    );
-
-    const loadCurrent =
-    safeValue(
-      data.load_current
-    );
-
-    const loadPower =
-    safeValue(
-      data.load_power
-    );
-
-    const mpptEfficiency =
-    safeValue(
-      data.mppt_efficiency
-    );
-
-    /* =========================
-       PV
-    ========================= */
-
-    setText(
-
-      "pvVoltage",
-
-      pvVoltage.toFixed(1)
-      + " V"
-
-    );
-
-    setText(
-
-      "pvCurrent",
-
-      pvCurrent.toFixed(1)
-      + " A"
-
-    );
-
-    setText(
-
-      "pvPower",
-
-      pvPower.toFixed(0)
-      + " W"
-
-    );
-
-    /* =========================
-       BATTERY
-    ========================= */
-
-    setText(
-
-      "batteryVoltage",
-
-      batteryVoltage.toFixed(1)
-      + " V"
-
-    );
-
-    setText(
-
-      "batteryCurrent",
-
-      batteryCurrent.toFixed(1)
-      + " A"
-
-    );
-
-    setText(
-
-      "batteryPower",
-
-      batteryPower.toFixed(0)
-      + " W"
-
-    );
-
-    setText(
-
-      "batterySOC",
-
-      batterySOC.toFixed(0)
-      + " %"
-
-    );
-
-    /* =========================
-       LOAD
-    ========================= */
-
-    setText(
-
-      "loadVoltage",
-
-      loadVoltage.toFixed(1)
-      + " V"
-
-    );
-
-    setText(
-
-      "loadCurrent",
-
-      loadCurrent.toFixed(1)
-      + " A"
-
-    );
-
-    setText(
-
-      "loadPower",
-
-      loadPower.toFixed(0)
-      + " W"
-
-    );
-
-    /* =========================
-       MPPT
-    ========================= */
-
-    setText(
-
-      "mpptEfficiency",
-
-      mpptEfficiency.toFixed(0)
-      + " %"
-
-    );
-
-    /* =========================
-       NODE FLOW
-    ========================= */
-
-    setText(
-
-      "solarNode",
-
-      pvPower.toFixed(0)
-      + "W"
-
-    );
-
-    setText(
-
-      "mpptNode",
-
-      mpptEfficiency.toFixed(0)
-      + "%"
-
-    );
-
-    setText(
-
-      "batteryNode",
-
-      batterySOC.toFixed(0)
-      + "%"
-
-    );
-
-    setText(
-
-      "loadNode",
-
-      loadPower.toFixed(0)
-      + "W"
-
-    );
-
-    /* =========================
-       STATUS
-    ========================= */
-
-    const status =
-    document.getElementById(
-      "systemStatus"
-    );
-
-    if(status){
-
-      if(data.online == 1){
-
-        status.innerText =
-        "ONLINE";
-
-        status.style.background =
-        "#16a34a";
-
-      }else{
-
-        status.innerText =
-        "OFFLINE";
-
-        status.style.background =
-        "#dc2626";
-
-      }
-
-    }
-
-    /* =========================
-       REALTIME CHART
-    ========================= */
-
-    const now =
-    new Date()
-    .toLocaleTimeString();
-
-    labels.push(now);
-
-    pvData.push(pvPower);
-
-    batteryData.push(
-      batteryVoltage
-    );
-
-    /*
-       LIMIT HISTORY
-    */
-
-    if(labels.length > 20){
-
-      labels.shift();
-
-      pvData.shift();
-
-      batteryData.shift();
-
-    }
-
-    pvChart.update();
-
-    batteryChart.update();
-
-    console.log(
-      "Realtime Update OK"
+    updateText(
+      "deviceStatus",
+      "NO DATA"
     );
 
   }
 
-);
+}
 
+
+/* =========================================
+   FILTER
+========================================= */
+
+function filterZero(v){
+
+  if(v < 0)
+    return 0;
+
+  return v;
+
+}
+
+
+/* =========================================
+   REALTIME
+========================================= */
+
+db.ref("solar_monitor")
+.on("value",(snapshot)=>{
+
+  if(snapshot.exists()){
+
+    setOnline(true);
+
+    const d = snapshot.val();
+
+
+    let pvVoltage =
+      filterZero(
+        parseFloat(d.pv_voltage || 0)
+      );
+
+    let pvCurrent =
+      filterZero(
+        parseFloat(d.pv_current || 0)
+      );
+
+    let pvPower =
+      filterZero(
+        parseFloat(d.pv_power || 0)
+      );
+
+    let batteryVoltage =
+      filterZero(
+        parseFloat(d.battery_voltage || 0)
+      );
+
+    let batteryCurrent =
+      filterZero(
+        parseFloat(d.battery_current || 0)
+      );
+
+    let batterySOC =
+      filterZero(
+        parseFloat(d.battery_soc || 0)
+      );
+
+    let loadVoltage =
+      filterZero(
+        parseFloat(d.load_voltage || 0)
+      );
+
+    let loadCurrent =
+      filterZero(
+        parseFloat(d.load_current || 0)
+      );
+
+    let loadPower =
+      filterZero(
+        parseFloat(d.load_power || 0)
+      );
+
+
+    /* =====================================
+       FILTER MALAM
+    ===================================== */
+
+    if(pvVoltage < 5){
+
+      pvVoltage = 0;
+      pvCurrent = 0;
+      pvPower   = 0;
+
+    }
+
+
+    /* =====================================
+       MPPT
+    ===================================== */
+
+    let mpptEff = 0;
+
+    if(pvPower > 0){
+
+      mpptEff =
+        (loadPower / pvPower) * 100;
+
+      if(mpptEff > 100)
+        mpptEff = 98;
+
+    }
+
+
+    /* =====================================
+       PANEL
+    ===================================== */
+
+    updateText(
+      "pvPower",
+      pvPower.toFixed(0)+"W"
+    );
+
+    updateText(
+      "pvVoltage",
+      pvVoltage.toFixed(1)+"V"
+    );
+
+    updateText(
+      "pvCurrent",
+      pvCurrent.toFixed(1)+"A"
+    );
+
+
+
+    updateText(
+      "batSoc",
+      batterySOC.toFixed(0)+"%"
+    );
+
+    updateText(
+      "batVoltage",
+      batteryVoltage.toFixed(2)+"V"
+    );
+
+    updateText(
+      "batCurrent",
+      batteryCurrent.toFixed(2)+"A"
+    );
+
+
+
+    updateText(
+      "mpptEff",
+      mpptEff.toFixed(0)+"%"
+    );
+
+    updateText(
+      "mpptCharge",
+      loadPower.toFixed(0)+"W"
+    );
+
+
+    /* =====================================
+       SCADA
+    ===================================== */
+
+    updateText(
+      "pvPowerScada",
+      pvPower.toFixed(0)+"W"
+    );
+
+    updateText(
+      "pvVoltScada",
+      pvVoltage.toFixed(1)
+      +"V | "+
+      pvCurrent.toFixed(1)+"A"
+    );
+
+
+
+    updateText(
+      "mpptPowerScada",
+      loadPower.toFixed(0)+"W"
+    );
+
+    updateText(
+      "mpptEffScada",
+      mpptEff.toFixed(0)+"%"
+    );
+
+
+
+    updateText(
+      "batSocScada",
+      batterySOC.toFixed(0)+"%"
+    );
+
+    updateText(
+      "batVoltScada",
+      batteryVoltage.toFixed(2)
+      +"V | "+
+      batteryCurrent.toFixed(2)+"A"
+    );
+
+
+
+    updateText(
+      "loadPowerScada",
+      loadPower.toFixed(0)+"W"
+    );
+
+    updateText(
+      "loadVoltScada",
+      loadVoltage.toFixed(1)
+      +"V | "+
+      loadCurrent.toFixed(1)+"A"
+    );
+
+
+    /* =====================================
+       GAUGE
+    ===================================== */
+
+    gaugePV.data.datasets[0].data = [
+      pvPower,
+      1000-pvPower
+    ];
+
+    gaugePV.update();
+
+
+
+    gaugeBAT.data.datasets[0].data = [
+      batterySOC,
+      100-batterySOC
+    ];
+
+    gaugeBAT.update();
+
+
+
+    gaugeMPPT.data.datasets[0].data = [
+      mpptEff,
+      100-mpptEff
+    ];
+
+    gaugeMPPT.update();
+
+
+    /* =====================================
+       HISTORY
+    ===================================== */
+
+    const now =
+      new Date().toLocaleTimeString();
+
+    historyChart.data.labels.push(now);
+
+    historyChart.data.datasets[0]
+    .data.push(batteryVoltage);
+
+    historyChart.data.datasets[1]
+    .data.push(pvPower);
+
+    if(historyChart.data.labels.length > 20){
+
+      historyChart.data.labels.shift();
+
+      historyChart.data.datasets[0]
+      .data.shift();
+
+      historyChart.data.datasets[1]
+      .data.shift();
+
+    }
+
+    historyChart.update();
+
+  }
+
+  else{
+
+    setOnline(false);
+
+  }
+
+});
