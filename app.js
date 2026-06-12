@@ -1,7 +1,10 @@
 /*************************************************
- ISOKUIKI FINAL SCADA
+ ISOKUIKI FINAL SCADA V2
+ Compatible:
+ - ESP32 Recovery
+ - ESP32 Final
+ - Firebase RTDB New Structure
 *************************************************/
-
 
 /* =========================================
    FIREBASE
@@ -9,20 +12,19 @@
 
 const firebaseConfig = {
 
-  apiKey:"AIzaSyC7ctgLv34n6pwg9cQpcTN9qd77FbMGbOg",
-authDomain:"isokuiki-scada.firebaseapp.com",
-databaseURL:"https://isokuiki-scada-default-rtdb.asia-southeast1.firebasedatabase.app",
-projectId:"isokuiki-scada",
-storageBucket:"isokuiki-scada.firebasestorage.app",
-messagingSenderId:"1078745557059",
-appId:"1:1078745557059:web:0f465f1a8a2ddf20dd8cf6"
+  apiKey: "AIzaSyC7ctgLv34n6pwg9cQpcTN9qd77FbMGbOg",
+  authDomain: "isokuiki-scada.firebaseapp.com",
+  databaseURL: "https://isokuiki-scada-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "isokuiki-scada",
+  storageBucket: "isokuiki-scada.firebasestorage.app",
+  messagingSenderId: "1078745557059",
+  appId: "1:1078745557059:web:0f465f1a8a2ddf20dd8cf6"
 
 };
 
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
-
 
 /* =========================================
    GAUGE
@@ -46,17 +48,13 @@ function createGauge(id,max){
     },
 
     options:{
-
       responsive:true,
       maintainAspectRatio:false,
-
       cutout:'78%',
-
       plugins:{
         legend:{display:false},
         tooltip:{enabled:false}
       }
-
     }
 
   });
@@ -66,7 +64,6 @@ function createGauge(id,max){
 const gaugePV   = createGauge('gauge1',1000);
 const gaugeBAT  = createGauge('gauge2',100);
 const gaugeMPPT = createGauge('gauge3',100);
-
 
 /* =========================================
    HISTORY
@@ -114,27 +111,27 @@ const historyChart = new Chart(
 
 );
 
-
 /* =========================================
-   UPDATE
+   UTIL
 ========================================= */
 
-function updateText(id,val){
+function filterZero(v){
 
-  const el = document.getElementById(id);
+  if(isNaN(v)) return 0;
 
-  if(el){
+  if(v < 0) return 0;
 
-    el.innerHTML = val;
-
-  }
+  return v;
 
 }
 
+function updateText(id,val){
 
-/* =========================================
-   ONLINE STATUS
-========================================= */
+  const el=document.getElementById(id);
+
+  if(el) el.innerHTML=val;
+
+}
 
 function setOnline(status){
 
@@ -143,7 +140,7 @@ function setOnline(status){
     updateText("onlineText","ONLINE");
 
     document.getElementById("onlineText")
-    .style.color="#7CFC00";
+      .style.color="#7CFC00";
 
     updateText(
       "deviceStatus",
@@ -155,7 +152,7 @@ function setOnline(status){
     updateText("onlineText","OFFLINE");
 
     document.getElementById("onlineText")
-    .style.color="red";
+      .style.color="red";
 
     updateText(
       "deviceStatus",
@@ -166,282 +163,296 @@ function setOnline(status){
 
 }
 
-
 /* =========================================
-   FILTER
+   ENERGY FLOW
 ========================================= */
 
-function filterZero(v){
+function updateFlow(pvPower,loadPower){
 
-  if(v < 0)
-    return 0;
+  const flowPV = document.getElementById("flowPV");
+  const flowBAT = document.getElementById("flowBAT");
 
-  return v;
+  if(flowPV){
 
-}
+    if(pvPower > 5){
 
+      flowPV.classList.add("active");
 
-/* =========================================
-   REALTIME
-========================================= */
+    }else{
 
-db.ref("solar_monitor")
-.on("value",(snapshot)=>{
-
-  if(snapshot.exists()){
-
-    setOnline(true);
-
-    const d = snapshot.val();
-
-
-    let pvVoltage =
-      filterZero(
-        parseFloat(d.pv_voltage || 0)
-      );
-
-    let pvCurrent =
-      filterZero(
-        parseFloat(d.pv_current || 0)
-      );
-
-    let pvPower =
-      filterZero(
-        parseFloat(d.pv_power || 0)
-      );
-
-    let batteryVoltage =
-      filterZero(
-        parseFloat(d.battery_voltage || 0)
-      );
-
-    let batteryCurrent =
-      filterZero(
-        parseFloat(d.battery_current || 0)
-      );
-
-    let batterySOC =
-      filterZero(
-        parseFloat(d.battery_soc || 0)
-      );
-
-    let loadVoltage =
-      filterZero(
-        parseFloat(d.load_voltage || 0)
-      );
-
-    let loadCurrent =
-      filterZero(
-        parseFloat(d.load_current || 0)
-      );
-
-    let loadPower =
-      filterZero(
-        parseFloat(d.load_power || 0)
-      );
-
-
-    /* =====================================
-       FILTER MALAM
-    ===================================== */
-
-    if(pvVoltage < 5){
-
-      pvVoltage = 0;
-      pvCurrent = 0;
-      pvPower   = 0;
+      flowPV.classList.remove("active");
 
     }
 
+  }
 
-    /* =====================================
-       MPPT
-    ===================================== */
+  if(flowBAT){
 
-    let mpptEff = 0;
+    if(loadPower > 1){
 
-    if(pvPower > 0){
+      flowBAT.classList.add("active");
+
+    }else{
+
+      flowBAT.classList.remove("active");
+
+    }
+
+  }
+
+}
+
+/* =========================================
+   REALTIME FIREBASE
+========================================= */
+
+db.ref("/")
+.on("value",(snapshot)=>{
+
+  if(!snapshot.exists()){
+
+    setOnline(false);
+
+    return;
+
+  }
+
+  const root = snapshot.val() || {};
+
+  const solar   = root.solar || {};
+  const battery = root.battery || {};
+  const load    = root.load || {};
+  const mppt    = root.mppt || {};
+  const system  = root.system || {};
+
+  setOnline(system.online === 1);
+
+  /* =====================================
+     SOLAR
+  ===================================== */
+
+  let pvVoltage =
+    filterZero(
+      parseFloat(solar.voltage || 0)
+    );
+
+  let pvCurrent =
+    filterZero(
+      parseFloat(solar.current || 0)
+    );
+
+  let pvPower =
+    filterZero(
+      parseFloat(solar.power || 0)
+    );
+
+  /* =====================================
+     BATTERY
+  ===================================== */
+
+  let batteryVoltage =
+    filterZero(
+      parseFloat(battery.voltage || 0)
+    );
+
+  let batteryCurrent =
+    filterZero(
+      parseFloat(battery.current || 0)
+    );
+
+  let batteryPower =
+    filterZero(
+      parseFloat(battery.power || 0)
+    );
+
+  let batterySOC =
+    filterZero(
+      parseFloat(battery.soc || 0)
+    );
+
+  /* =====================================
+     LOAD
+  ===================================== */
+
+  let loadVoltage =
+    filterZero(
+      parseFloat(load.voltage || 0)
+    );
+
+  let loadCurrent =
+    filterZero(
+      parseFloat(load.current || 0)
+    );
+
+  let loadPower =
+    filterZero(
+      parseFloat(load.power || 0)
+    );
+
+  /* =====================================
+     MPPT
+  ===================================== */
+
+  let mpptEff =
+    filterZero(
+      parseFloat(mppt.efficiency || 0)
+    );
+
+  /* =====================================
+     FILTER MALAM
+  ===================================== */
+
+  if(pvVoltage < 5){
+
+    pvVoltage = 0;
+    pvCurrent = 0;
+    pvPower   = 0;
+
+  }
+
+  /* =====================================
+     AUTO MPPT CALC
+  ===================================== */
+
+  if(mpptEff <= 0){
+
+    if(pvPower > 1){
 
       mpptEff =
-        (loadPower / pvPower) * 100;
+        (batteryPower / pvPower) * 100;
 
-      if(mpptEff > 100)
+      if(mpptEff > 98)
         mpptEff = 98;
 
     }
 
+  }
 
-    /* =====================================
-       PANEL
-    ===================================== */
+  /* =====================================
+     PANEL
+  ===================================== */
 
-    updateText(
-      "pvPower",
-      pvPower.toFixed(0)+"W"
-    );
+  updateText("pvPower",pvPower.toFixed(0)+"W");
+  updateText("pvVoltage",pvVoltage.toFixed(1)+"V");
+  updateText("pvCurrent",pvCurrent.toFixed(1)+"A");
 
-    updateText(
-      "pvVoltage",
-      pvVoltage.toFixed(1)+"V"
-    );
+  updateText("batSoc",batterySOC.toFixed(0)+"%");
+  updateText("batVoltage",batteryVoltage.toFixed(2)+"V");
+  updateText("batCurrent",batteryCurrent.toFixed(2)+"A");
 
-    updateText(
-      "pvCurrent",
-      pvCurrent.toFixed(1)+"A"
-    );
+  updateText("mpptEff",mpptEff.toFixed(0)+"%");
+  updateText("mpptCharge",batteryPower.toFixed(0)+"W");
 
+  /* =====================================
+     SCADA
+  ===================================== */
 
+  updateText("pvPowerScada",pvPower.toFixed(0)+"W");
 
-    updateText(
-      "batSoc",
-      batterySOC.toFixed(0)+"%"
-    );
+  updateText(
+    "pvVoltScada",
+    pvVoltage.toFixed(1)+"V | "+
+    pvCurrent.toFixed(1)+"A"
+  );
 
-    updateText(
-      "batVoltage",
-      batteryVoltage.toFixed(2)+"V"
-    );
+  updateText(
+    "mpptPowerScada",
+    batteryPower.toFixed(0)+"W"
+  );
 
-    updateText(
-      "batCurrent",
-      batteryCurrent.toFixed(2)+"A"
-    );
+  updateText(
+    "mpptEffScada",
+    mpptEff.toFixed(0)+"%"
+  );
 
+  updateText(
+    "batSocScada",
+    batterySOC.toFixed(0)+"%"
+  );
 
+  updateText(
+    "batVoltScada",
+    batteryVoltage.toFixed(2)+"V | "+
+    batteryCurrent.toFixed(2)+"A"
+  );
 
-    updateText(
-      "mpptEff",
-      mpptEff.toFixed(0)+"%"
-    );
+  updateText(
+    "loadPowerScada",
+    loadPower.toFixed(0)+"W"
+  );
 
-    updateText(
-      "mpptCharge",
-      loadPower.toFixed(0)+"W"
-    );
+  updateText(
+    "loadVoltScada",
+    loadVoltage.toFixed(1)+"V | "+
+    loadCurrent.toFixed(2)+"A"
+  );
 
+  /* =====================================
+     FLOW
+  ===================================== */
 
-    /* =====================================
-       SCADA
-    ===================================== */
+  updateFlow(
+    pvPower,
+    loadPower
+  );
 
-    updateText(
-      "pvPowerScada",
-      pvPower.toFixed(0)+"W"
-    );
+  /* =====================================
+     GAUGE
+  ===================================== */
 
-    updateText(
-      "pvVoltScada",
-      pvVoltage.toFixed(1)
-      +"V | "+
-      pvCurrent.toFixed(1)+"A"
-    );
+  let pvGaugeValue = pvPower;
 
+  if(pvGaugeValue > 1000)
+    pvGaugeValue = 1000;
 
+  gaugePV.data.datasets[0].data = [
+    pvGaugeValue,
+    1000-pvGaugeValue
+  ];
 
-    updateText(
-      "mpptPowerScada",
-      loadPower.toFixed(0)+"W"
-    );
+  gaugePV.update();
 
-    updateText(
-      "mpptEffScada",
-      mpptEff.toFixed(0)+"%"
-    );
+  gaugeBAT.data.datasets[0].data = [
+    batterySOC,
+    100-batterySOC
+  ];
 
+  gaugeBAT.update();
 
+  gaugeMPPT.data.datasets[0].data = [
+    mpptEff,
+    100-mpptEff
+  ];
 
-    updateText(
-      "batSocScada",
-      batterySOC.toFixed(0)+"%"
-    );
+  gaugeMPPT.update();
 
-    updateText(
-      "batVoltScada",
-      batteryVoltage.toFixed(2)
-      +"V | "+
-      batteryCurrent.toFixed(2)+"A"
-    );
+  /* =====================================
+     HISTORY
+  ===================================== */
 
+  const now =
+    new Date().toLocaleTimeString();
 
+  historyChart.data.labels.push(now);
 
-    updateText(
-      "loadPowerScada",
-      loadPower.toFixed(0)+"W"
-    );
-
-    updateText(
-      "loadVoltScada",
-      loadVoltage.toFixed(1)
-      +"V | "+
-      loadCurrent.toFixed(1)+"A"
-    );
-
-
-    /* =====================================
-       GAUGE
-    ===================================== */
-
-    gaugePV.data.datasets[0].data = [
-      pvPower,
-      1000-pvPower
-    ];
-
-    gaugePV.update();
-
-
-
-    gaugeBAT.data.datasets[0].data = [
-      batterySOC,
-      100-batterySOC
-    ];
-
-    gaugeBAT.update();
-
-
-
-    gaugeMPPT.data.datasets[0].data = [
-      mpptEff,
-      100-mpptEff
-    ];
-
-    gaugeMPPT.update();
-
-
-    /* =====================================
-       HISTORY
-    ===================================== */
-
-    const now =
-      new Date().toLocaleTimeString();
-
-    historyChart.data.labels.push(now);
-
-    historyChart.data.datasets[0]
+  historyChart.data.datasets[0]
     .data.push(batteryVoltage);
 
-    historyChart.data.datasets[1]
+  historyChart.data.datasets[1]
     .data.push(pvPower);
 
-    if(historyChart.data.labels.length > 20){
+  if(historyChart.data.labels.length > 30){
 
-      historyChart.data.labels.shift();
+    historyChart.data.labels.shift();
 
-      historyChart.data.datasets[0]
+    historyChart.data.datasets[0]
       .data.shift();
 
-      historyChart.data.datasets[1]
+    historyChart.data.datasets[1]
       .data.shift();
-
-    }
-
-    historyChart.update();
 
   }
 
-  else{
-
-    setOnline(false);
-
-  }
+  historyChart.update();
 
 });
