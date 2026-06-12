@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>ISOKUIKI SMART ENERGY</title>
+<title>ISOKUIKI INDUSTRIAL SCADA</title>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -21,169 +23,260 @@ font-family:Arial,sans-serif;
 }
 
 body{
-background:#06131f;
+
+background:#071320;
 color:white;
 padding:15px;
+
 }
 
 .topbar{
-background:#08213a;
-padding:18px;
-border-radius:16px;
+
+background:#0b1f33;
+padding:20px;
+border-radius:20px;
+
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-bottom:15px;
+flex-wrap:wrap;
+
+margin-bottom:20px;
+
 }
 
 .title{
-font-size:20px;
+
+font-size:24px;
 font-weight:bold;
+
 }
 
 .status{
+
 text-align:right;
-font-size:14px;
-}
 
-.scada{
-background:#08213a;
-padding:18px;
-border-radius:18px;
-margin-bottom:15px;
-}
-
-.flow{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:15px;
-flex-wrap:wrap;
-}
-
-.node{
-width:180px;
-background:#102d4c;
-border-radius:15px;
-padding:15px;
-text-align:center;
-}
-
-.node h3{
-margin-bottom:10px;
-}
-
-.big{
-font-size:32px;
-font-weight:bold;
-}
-
-.line{
-flex:1;
-height:4px;
-background:#173f67;
-border-radius:10px;
-position:relative;
-overflow:hidden;
-min-width:80px;
-}
-
-.line::before{
-content:"";
-position:absolute;
-left:-50%;
-top:0;
-width:50%;
-height:100%;
-background:#00fff2;
-animation:flow 2s linear infinite;
-}
-
-@keyframes flow{
-0%{left:-50%;}
-100%{left:120%;}
 }
 
 .grid{
+
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+grid-template-columns:
+repeat(auto-fit,minmax(250px,1fr));
+
 gap:15px;
+
+margin-bottom:20px;
+
 }
 
 .card{
-background:#08213a;
-border-radius:18px;
+
+background:#0b1f33;
+
+border-radius:20px;
+
 padding:15px;
+
 }
 
-.card h2{
+.card h3{
+
 margin-bottom:10px;
-}
 
-.gauge{
-height:180px;
 }
 
 .value{
-font-size:24px;
+
+font-size:28px;
+
 font-weight:bold;
-margin-top:10px;
+
 }
 
 .sub{
-font-size:14px;
+
 margin-top:5px;
+
+color:#9bb8d1;
+
 }
 
-.health{
-margin-top:15px;
-background:#08213a;
-padding:15px;
-border-radius:18px;
+.gauge{
+
+height:180px;
+
+position:relative;
+
 }
 
-.health h2{
-margin-bottom:10px;
-}
+/* ==========================
+SCADA VERTICAL
+========================== */
 
-.chartBox{
-margin-top:15px;
-background:#08213a;
-padding:15px;
-border-radius:18px;
-}
+.scada{
 
-canvas{
-width:100% !important;
-}
+background:#0b1f33;
 
-@media(max-width:900px){
+border-radius:25px;
+
+padding:20px;
+
+margin-bottom:20px;
+
+}
 
 .flow{
+
+display:flex;
+
 flex-direction:column;
-}
 
-.line{
-width:4px;
-height:50px;
-min-width:auto;
-}
+align-items:center;
 
-.line::before{
-width:100%;
-height:40%;
-left:0;
-top:-40%;
-animation:flowVertical 2s linear infinite;
-}
+gap:15px;
 
-@keyframes flowVertical{
-0%{top:-40%;}
-100%{top:120%;}
 }
 
 .node{
+
+width:280px;
+
+background:#102842;
+
+border-radius:20px;
+
+padding:15px;
+
+text-align:center;
+
+position:relative;
+
+}
+
+.node h3{
+
+margin-bottom:8px;
+
+}
+
+.big{
+
+font-size:26px;
+
+font-weight:bold;
+
+}
+
+.line{
+
+width:8px;
+
+height:60px;
+
+background:#12385c;
+
+border-radius:20px;
+
+position:relative;
+
+overflow:hidden;
+
+}
+
+.line::before{
+
+content:"";
+
+position:absolute;
+
 width:100%;
+
+height:30px;
+
+background:#00ffe5;
+
+animation:flow 1.5s linear infinite;
+
+}
+
+@keyframes flow{
+
+0%{
+
+top:-30px;
+
+}
+
+100%{
+
+top:100%;
+
+}
+
+}
+
+/* ==========================
+INFO BOX
+========================== */
+
+.infoGrid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(250px,1fr));
+
+gap:15px;
+
+margin-bottom:20px;
+
+}
+
+.infoCard{
+
+background:#0b1f33;
+
+padding:20px;
+
+border-radius:20px;
+
+}
+
+.infoCard h3{
+
+margin-bottom:15px;
+
+}
+
+/* ==========================
+CHART
+========================== */
+
+.chartBox{
+
+background:#0b1f33;
+
+padding:20px;
+
+border-radius:20px;
+
+margin-bottom:20px;
+
+}
+
+canvas{
+
+width:100%!important;
+
+}
+
+@media(max-width:768px){
+
+.node{
+
+width:100%;
+
 }
 
 }
@@ -191,136 +284,396 @@ width:100%;
 </style>
 
 </head>
+
 <body>
+
+<!-- =========================
+TOPBAR
+========================= -->
 
 <div class="topbar">
 
+<div>
+
 <div class="title">
-ISOKUIKI SMART ENERGY
+ISOKUIKI INDUSTRIAL SCADA
+</div>
+
 </div>
 
 <div class="status">
-STATUS :
-<span id="onlineText" style="color:red">OFFLINE</span>
-<br>
-<span id="deviceStatus">NO DATA</span>
+
+<div>
+
+Status :
+<span id="onlineText"
+style="color:red">
+
+OFFLINE
+
+</span>
+
+</div>
+
+<div id="deviceStatus">
+
+NO DATA
+
+</div>
+
 </div>
 
 </div>
 
-<!-- SCADA FLOW DI ATAS -->
+<!-- =========================
+SCADA FLOW
+========================= -->
 
 <div class="scada">
 
 <div class="flow">
 
 <div class="node">
-<h3>Photovoltaic</h3>
-<div class="big" id="pvPowerScada">0W</div>
-<div id="pvVoltScada">0V | 0A</div>
+
+<h3>☀ SOLAR</h3>
+
+<div class="big"
+id="pvPowerScada">
+
+0 W
+
+</div>
+
+<div id="pvInfoScada">
+
+0V | 0A
+
+</div>
+
 </div>
 
 <div class="line"></div>
 
 <div class="node">
-<h3>MPPT</h3>
-<div class="big" id="mpptPowerScada">0W</div>
-<div id="mpptEffScada">0%</div>
+
+<h3>⚡ MPPT</h3>
+
+<div class="big"
+id="mpptEffScada">
+
+0%
+
+</div>
+
 </div>
 
 <div class="line"></div>
 
 <div class="node">
-<h3>Battery</h3>
-<div class="big" id="batSocScada">0%</div>
-<div id="batVoltScada">0V | 0A</div>
+
+<h3>🔋 BATTERY</h3>
+
+<div class="big"
+id="batterySocScada">
+
+0%
+
+</div>
+
+<div id="batteryInfoScada">
+
+0V | 0A
+
+</div>
+
 </div>
 
 <div class="line"></div>
 
 <div class="node">
-<h3>Load</h3>
-<div class="big" id="loadPowerScada">0W</div>
-<div id="loadVoltScada">0V | 0A</div>
+
+<h3>🏠 LOAD</h3>
+
+<div class="big"
+id="loadPowerScada">
+
+0 W
+
 </div>
+
+<div id="loadInfoScada">
+
+0V | 0A
 
 </div>
 
 </div>
 
-<!-- GAUGE -->
+</div>
+
+</div>
+
+<!-- =========================
+GAUGE
+========================= -->
 
 <div class="grid">
 
 <div class="card">
 
-<h2>Photovoltaic</h2>
+<h3>Solar Power</h3>
 
 <div class="gauge">
-<canvas id="gauge1"></canvas>
+
+<canvas id="gaugePV"></canvas>
+
 </div>
 
-<div class="value" id="pvPower">0W</div>
+<div class="value"
+id="pvPower">
 
-<div class="sub" id="pvVoltage">0V</div>
+0 W
 
-<div class="sub" id="pvCurrent">0A</div>
+</div>
+
+<div class="sub"
+id="pvVoltage">
+
+0 V
+
+</div>
+
+<div class="sub"
+id="pvCurrent">
+
+0 A
+
+</div>
 
 </div>
 
 <div class="card">
 
-<h2>Battery</h2>
+<h3>Battery SOC</h3>
 
 <div class="gauge">
-<canvas id="gauge2"></canvas>
+
+<canvas id="gaugeBAT"></canvas>
+
 </div>
 
-<div class="value" id="batSoc">0%</div>
+<div class="value"
+id="batterySoc">
 
-<div class="sub" id="batVoltage">0V</div>
+0%
 
-<div class="sub" id="batCurrent">0A</div>
+</div>
+
+<div class="sub"
+id="batteryVoltage">
+
+0 V
+
+</div>
+
+<div class="sub"
+id="batteryCurrent">
+
+0 A
+
+</div>
 
 </div>
 
 <div class="card">
 
-<h2>MPPT Efficiency</h2>
+<h3>Load Power</h3>
 
 <div class="gauge">
-<canvas id="gauge3"></canvas>
-</div>
 
-<div class="value" id="mpptEff">0%</div>
-
-<div class="sub" id="mpptCharge">0W</div>
+<canvas id="gaugeLOAD"></canvas>
 
 </div>
 
+<div class="value"
+id="loadPower">
+
+0 W
+
 </div>
 
-<!-- SYSTEM HEALTH -->
+<div class="sub"
+id="loadVoltage">
 
-<div class="health">
+0 V
 
-<h2>System Health</h2>
+</div>
 
-<div style="font-size:36px;font-weight:bold;">
+<div class="sub"
+id="loadCurrent">
+
+0 A
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>MPPT Efficiency</h3>
+
+<div class="gauge">
+
+<canvas id="gaugeEFF"></canvas>
+
+</div>
+
+<div class="value"
+id="mpptEff">
+
+0%
+
+</div>
+
+</div>
+
+</div>
+
+<!-- =========================
+ENERGY + INCOME
+========================= -->
+
+<div class="infoGrid">
+
+<div class="infoCard">
+
+<h3>Energy</h3>
+
+<p>Today :
+<span id="todayEnergy">
+
+0 kWh
+
+</span></p>
+
+<br>
+
+<p>Month :
+<span id="monthEnergy">
+
+0 kWh
+
+</span></p>
+
+<br>
+
+<p>Total :
+<span id="totalEnergy">
+
+0 kWh
+
+</span></p>
+
+</div>
+
+<div class="infoCard">
+
+<h3>Income</h3>
+
+<p>Today :
+<span id="todayIncome">
+
+Rp 0
+
+</span></p>
+
+<br>
+
+<p>Month :
+<span id="monthIncome">
+
+Rp 0
+
+</span></p>
+
+<br>
+
+<p>Total :
+<span id="totalIncome">
+
+Rp 0
+
+</span></p>
+
+</div>
+
+<div class="infoCard">
+
+<h3>System</h3>
+
+<p>WiFi RSSI :
+
+<span id="wifiRSSI">
+
+0
+
+</span>
+
+</p>
+
+<br>
+
+<p>Health :
+
+<span id="systemHealth">
+
 NORMAL
+
+</span>
+
+</p>
+
 </div>
 
-<div style="margin-top:5px;color:#8fc9ff;">
-Monitoring Active
 </div>
 
-</div>
-
-<!-- HISTORY -->
+<!-- =========================
+REALTIME CHART
+========================= -->
 
 <div class="chartBox">
 
-<canvas id="historyChart"></canvas>
+<h3>
+
+Realtime Monitoring
+
+</h3>
+
+<br>
+
+<canvas id="realtimeChart">
+
+</canvas>
+
+</div>
+
+<!-- =========================
+ENERGY CHART
+========================= -->
+
+<div class="chartBox">
+
+<h3>
+
+Energy Statistics
+
+</h3>
+
+<br>
+
+<canvas id="energyChart">
+
+</canvas>
 
 </div>
 
