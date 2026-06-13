@@ -1,4 +1,4 @@
-```javascript
+
 // FIREBASE CONFIG
 
 const firebaseConfig = {
@@ -131,4 +131,4 @@ db.ref("/").on("value",(snap)=>{
   );
 
 });
-```
+
