@@ -1,124 +1,458 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
 
-<meta charset="utf-8">
+  <meta charset="UTF-8">
 
-<title>ISOKUIKI SMART ENERGY</title>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+  <title>ISOKUIKI SCADA</title>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script type="module"
+          src="app.js"></script>
 
-<style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-body{
-background:#021529;
-font-family:Arial;
-color:#fff;
-padding:20px;
-}
+  <style>
 
-.grid{
-display:grid;
-grid-template-columns:
-repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
-}
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial;
+    }
 
-.card{
-background:#06233f;
-padding:20px;
-border-radius:15px;
-}
+    body{
 
-h2{
-color:#00ffff;
-margin-bottom:15px;
-}
+      background:#0b1220;
+      color:white;
+      padding:15px;
 
-.value{
-font-size:24px;
-font-weight:bold;
-}
+    }
 
-canvas{
-width:100%;
-max-width:220px;
-height:140px;
-}
+    .header{
 
-</style>
+      width:100%;
+      background:#111827;
+      border-radius:15px;
+      padding:20px;
+      margin-bottom:20px;
+
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:wrap;
+
+    }
+
+    .title{
+
+      font-size:28px;
+      font-weight:bold;
+
+    }
+
+    .status{
+
+      padding:10px 20px;
+      border-radius:30px;
+      background:#16a34a;
+      font-weight:bold;
+
+    }
+
+    .grid{
+
+      display:grid;
+
+      grid-template-columns:
+      repeat(auto-fit,minmax(250px,1fr));
+
+      gap:20px;
+
+    }
+
+    .card{
+
+      background:#111827;
+
+      border-radius:20px;
+
+      padding:20px;
+
+      box-shadow:
+      0 0 20px rgba(0,0,0,0.4);
+
+    }
+
+    .card h2{
+
+      margin-bottom:20px;
+      font-size:20px;
+
+    }
+
+    .value{
+
+      font-size:35px;
+      font-weight:bold;
+
+      margin-bottom:10px;
+
+    }
+
+    .sub{
+
+      font-size:15px;
+      color:#9ca3af;
+
+      margin-top:5px;
+
+    }
+
+    .scada{
+
+      margin-top:25px;
+
+      background:#111827;
+
+      border-radius:20px;
+
+      padding:25px;
+
+    }
+
+    .flow{
+
+      display:flex;
+
+      justify-content:space-between;
+
+      align-items:center;
+
+      flex-wrap:wrap;
+
+      gap:15px;
+
+      margin-top:30px;
+
+    }
+
+    .node{
+
+      width:130px;
+      height:130px;
+
+      border-radius:50%;
+
+      background:#1f2937;
+
+      display:flex;
+
+      flex-direction:column;
+
+      justify-content:center;
+
+      align-items:center;
+
+      font-weight:bold;
+
+      position:relative;
+
+      border:4px solid #22c55e;
+
+      box-shadow:
+      0 0 20px rgba(34,197,94,0.4);
+
+    }
+
+    .line{
+
+      flex:1;
+      height:6px;
+
+      background:
+      linear-gradient(
+      90deg,
+      #22c55e,
+      #4ade80,
+      #22c55e
+      );
+
+      background-size:200% 100%;
+
+      animation:flow 2s linear infinite;
+
+      min-width:60px;
+
+      border-radius:10px;
+
+    }
+
+    @keyframes flow{
+
+      0%{
+        background-position:0% 0%;
+      }
+
+      100%{
+        background-position:200% 0%;
+      }
+
+    }
+
+    .charts{
+
+      margin-top:25px;
+
+      display:grid;
+
+      grid-template-columns:
+      repeat(auto-fit,minmax(300px,1fr));
+
+      gap:20px;
+
+    }
+
+    canvas{
+
+      background:#111827;
+
+      border-radius:20px;
+
+      padding:20px;
+
+    }
+
+    @media(max-width:768px){
+
+      .node{
+
+        width:90px;
+        height:90px;
+
+        font-size:12px;
+
+      }
+
+      .value{
+
+        font-size:28px;
+
+      }
+
+    }
+
+  </style>
 
 </head>
 
 <body>
 
-<h1>ISOKUIKI SMART ENERGY</h1>
+  <div class="header">
 
-<h2 id="statusText">OFFLINE</h2>
+    <div class="title">
+      ISOKUIKI SMART ENERGY
+    </div>
 
-<div class="grid">
+    <div class="status"
+         id="systemStatus">
 
-<div class="card">
-<h2>PV</h2>
-<div id="pvVoltage">0V</div>
-<div id="pvCurrent">0A</div>
-<div id="pvPower">0W</div>
-</div>
+      ONLINE
 
-<div class="card">
-<h2>BATTERY</h2>
-<div id="batVoltage">0V</div>
-<div id="batCurrent">0A</div>
-<div id="batPower">0W</div>
-<div id="batSoc">0%</div>
-</div>
+    </div>
 
-<div class="card">
-<h2>LOAD</h2>
-<div id="loadVoltage">0V</div>
-<div id="loadCurrent">0A</div>
-<div id="loadPower">0W</div>
-</div>
+  </div>
 
-<div class="card">
-<h2>ENERGY</h2>
-<div id="todayKwh">0</div>
-<div id="monthKwh">0</div>
-<div id="totalKwh">0</div>
-</div>
+  <div class="grid">
 
-<div class="card">
-<h2>INCOME</h2>
-<div id="todayRp">0</div>
-<div id="monthRp">0</div>
-<div id="totalRp">0</div>
-</div>
+    <div class="card">
 
-<div class="card">
-<h2>BATTERY SOC</h2>
-<canvas id="socGauge"
-width="220"
-height="140">
-</canvas>
-</div>
+      <h2>PHOTOVOLTAIC</h2>
 
-<div class="card">
-<h2>MPPT EFFICIENCY</h2>
-<canvas id="effGauge"
-width="220"
-height="140">
-</canvas>
-</div>
+      <div class="value"
+           id="pvPower">
 
-</div>
+        0 W
 
-<script src="app.js"></script>
+      </div>
+
+      <div class="sub"
+           id="pvVoltage">
+
+        0 V
+
+      </div>
+
+      <div class="sub"
+           id="pvCurrent">
+
+        0 A
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>BATTERY</h2>
+
+      <div class="value"
+           id="batterySOC">
+
+        0 %
+
+      </div>
+
+      <div class="sub"
+           id="batteryVoltage">
+
+        0 V
+
+      </div>
+
+      <div class="sub"
+           id="batteryCurrent">
+
+        0 A
+
+      </div>
+
+      <div class="sub"
+           id="batteryPower">
+
+        0 W
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>LOAD</h2>
+
+      <div class="value"
+           id="loadPower">
+
+        0 W
+
+      </div>
+
+      <div class="sub"
+           id="loadVoltage">
+
+        0 V
+
+      </div>
+
+      <div class="sub"
+           id="loadCurrent">
+
+        0 A
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>MPPT EFFICIENCY</h2>
+
+      <div class="value"
+           id="mpptEfficiency">
+
+        0 %
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="scada">
+
+    <h2>REALTIME ENERGY FLOW</h2>
+
+    <div class="flow">
+
+      <div class="node">
+
+        SOLAR
+
+        <br>
+
+        <span id="solarNode">
+
+          0W
+
+        </span>
+
+      </div>
+
+      <div class="line"></div>
+
+      <div class="node">
+
+        MPPT
+
+        <br>
+
+        <span id="mpptNode">
+
+          0%
+
+        </span>
+
+      </div>
+
+      <div class="line"></div>
+
+      <div class="node">
+
+        BATTERY
+
+        <br>
+
+        <span id="batteryNode">
+
+          0%
+
+        </span>
+
+      </div>
+
+      <div class="line"></div>
+
+      <div class="node">
+
+        LOAD
+
+        <br>
+
+        <span id="loadNode">
+
+          0W
+
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="charts">
+
+    <canvas id="pvChart"></canvas>
+
+    <canvas id="batteryChart"></canvas>
+
+  </div>
 
 </body>
+
 </html>
 
